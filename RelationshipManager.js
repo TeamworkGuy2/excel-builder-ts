@@ -7,7 +7,7 @@ var Paths = require("./Paths");
 var RelationshipManager = (function () {
     function RelationshipManager() {
         this.Cctor = (function () {
-            Util._uniqueId('rId'); //priming
+            Util._uniqueId("rId"); //priming
         }());
         this.relations = {};
         this.lastId = 1;
@@ -24,7 +24,7 @@ var RelationshipManager = (function () {
     };
     RelationshipManager.prototype.addRelation = function (object, type) {
         var newRelation = this.relations[object.id] = {
-            id: Util._uniqueId('rId'),
+            id: Util._uniqueId("rId"),
             schema: Util.schemas[type]
         };
         return newRelation.id;
@@ -33,15 +33,15 @@ var RelationshipManager = (function () {
         return this.relations[object.id] ? this.relations[object.id].id : null;
     };
     RelationshipManager.prototype.toXML = function () {
-        var doc = Util.createXmlDoc(Util.schemas.relationshipPackage, 'Relationships');
+        var doc = Util.createXmlDoc(Util.schemas.relationshipPackage, "Relationships");
         var relationships = doc.documentElement;
         var rels = this.relations;
         Object.keys(rels).forEach(function (id) {
             var data = rels[id];
-            var relationship = Util.createElement(doc, 'Relationship', [
-                ['Id', data.id],
-                ['Type', data.schema],
-                ['Target', Paths[id]]
+            var relationship = Util.createElement(doc, "Relationship", [
+                ["Id", data.id],
+                ["Type", data.schema],
+                ["Target", Paths[id]]
             ]);
             relationships.appendChild(relationship);
         });

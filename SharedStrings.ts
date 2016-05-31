@@ -13,7 +13,7 @@ class SharedStrings {
     constructor() {
         this.strings = {};
         this.stringArray = [];
-        this.id = Util._uniqueId('SharedStrings');
+        this.id = Util._uniqueId("SharedStrings");
     }
 
 
@@ -36,16 +36,16 @@ class SharedStrings {
 
 
     public toXML() {
-        var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, 'sst');
+        var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, "sst");
         var sharedStringTable = doc.documentElement;
         this.stringArray.reverse();
         var l = this.stringArray.length;
-        sharedStringTable.setAttribute('count', l);
-        sharedStringTable.setAttribute('uniqueCount', l);
+        sharedStringTable.setAttribute("count", l);
+        sharedStringTable.setAttribute("uniqueCount", l);
 
-        var template = doc.createElement('si');
-        var templateValue = doc.createElement('t');
-        templateValue.appendChild(doc.createTextNode('--placeholder--'));
+        var template = doc.createElement("si");
+        var templateValue = doc.createElement("t");
+        templateValue.appendChild(doc.createTextNode("--placeholder--"));
         template.appendChild(templateValue);
         var strings = this.stringArray;
 

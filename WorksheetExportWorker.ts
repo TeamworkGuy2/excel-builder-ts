@@ -16,7 +16,7 @@ var console = {
 var start = function(data) {
     worksheet = new Worksheet();
     worksheet.importData(data);
-    postMessage({ status: 'sharedStrings', data: worksheet.collectSharedStrings() }, undefined);
+    postMessage({ status: "sharedStrings", data: worksheet.collectSharedStrings() }, undefined);
 };
 
 onmessage = function (event: { data: WorksheetExportWorkerData }) {

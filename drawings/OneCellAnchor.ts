@@ -50,15 +50,15 @@ class OneCellAnchor {
 
 
     public toXML(xmlDoc: XMLDocument, content: Node) {
-        var root = Util.createElement(xmlDoc, 'xdr:oneCellAnchor');
-        var from = Util.createElement(xmlDoc, 'xdr:from');
-        var fromCol = Util.createElement(xmlDoc, 'xdr:col');
+        var root = Util.createElement(xmlDoc, "xdr:oneCellAnchor");
+        var from = Util.createElement(xmlDoc, "xdr:from");
+        var fromCol = Util.createElement(xmlDoc, "xdr:col");
         fromCol.appendChild(xmlDoc.createTextNode(<any>this.x));
-        var fromColOff = Util.createElement(xmlDoc, 'xdr:colOff');
+        var fromColOff = Util.createElement(xmlDoc, "xdr:colOff");
         fromColOff.appendChild(xmlDoc.createTextNode(<any>this.xOff || 0));
-        var fromRow = Util.createElement(xmlDoc, 'xdr:row');
+        var fromRow = Util.createElement(xmlDoc, "xdr:row");
         fromRow.appendChild(xmlDoc.createTextNode(<any>this.y));
-        var fromRowOff = Util.createElement(xmlDoc, 'xdr:rowOff');
+        var fromRowOff = Util.createElement(xmlDoc, "xdr:rowOff");
         fromRowOff.appendChild(xmlDoc.createTextNode(<any>this.yOff || 0));
         from.appendChild(fromCol);
         from.appendChild(fromColOff);
@@ -67,14 +67,14 @@ class OneCellAnchor {
 
         root.appendChild(from);
 
-        var dimensions = Util.createElement(xmlDoc, 'xdr:ext');
-        dimensions.setAttribute('cx', <any>this.width);
-        dimensions.setAttribute('cy', <any>this.height);
+        var dimensions = Util.createElement(xmlDoc, "xdr:ext");
+        dimensions.setAttribute("cx", <any>this.width);
+        dimensions.setAttribute("cy", <any>this.height);
         root.appendChild(dimensions);
 
         root.appendChild(content);
 
-        root.appendChild(Util.createElement(xmlDoc, 'xdr:clientData'));
+        root.appendChild(Util.createElement(xmlDoc, "xdr:clientData"));
         return root;
     }
 

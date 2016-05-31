@@ -4,8 +4,8 @@ var Drawing = require("./Drawing");
 var Picture = (function () {
     function Picture() {
         this.media = null;
-        this.id = Util._uniqueId('Picture');
-        this.pictureId = Util.uniqueId('Picture');
+        this.id = Util._uniqueId("Picture");
+        this.pictureId = Util.uniqueId("Picture");
         this.fill = {};
         this.mediaData = null;
     }
@@ -22,7 +22,7 @@ var Picture = (function () {
         Util.defaults(this.fill, config);
     };
     Picture.prototype.getMediaType = function () {
-        return 'image';
+        return "image";
     };
     Picture.prototype.getMediaData = function () {
         return this.mediaData;
@@ -31,38 +31,38 @@ var Picture = (function () {
         this.mediaData.rId = rId;
     };
     Picture.prototype.toXML = function (xmlDoc) {
-        var pictureNode = Util.createElement(xmlDoc, 'xdr:pic');
-        var nonVisibleProperties = Util.createElement(xmlDoc, 'xdr:nvPicPr');
-        var nameProperties = Util.createElement(xmlDoc, 'xdr:cNvPr', [
-            ['id', this.pictureId],
-            ['name', this.mediaData.fileName],
-            ['descr', this.description || ""]
+        var pictureNode = Util.createElement(xmlDoc, "xdr:pic");
+        var nonVisibleProperties = Util.createElement(xmlDoc, "xdr:nvPicPr");
+        var nameProperties = Util.createElement(xmlDoc, "xdr:cNvPr", [
+            ["id", this.pictureId],
+            ["name", this.mediaData.fileName],
+            ["descr", this.description || ""]
         ]);
         nonVisibleProperties.appendChild(nameProperties);
-        var nvPicProperties = Util.createElement(xmlDoc, 'xdr:cNvPicPr');
-        nvPicProperties.appendChild(Util.createElement(xmlDoc, 'a:picLocks', [
-            ['noChangeAspect', '1'],
-            ['noChangeArrowheads', '1']
+        var nvPicProperties = Util.createElement(xmlDoc, "xdr:cNvPicPr");
+        nvPicProperties.appendChild(Util.createElement(xmlDoc, "a:picLocks", [
+            ["noChangeAspect", '1'],
+            ["noChangeArrowheads", '1']
         ]));
         nonVisibleProperties.appendChild(nvPicProperties);
         pictureNode.appendChild(nonVisibleProperties);
-        var pictureFill = Util.createElement(xmlDoc, 'xdr:blipFill');
-        pictureFill.appendChild(Util.createElement(xmlDoc, 'a:blip', [
-            ['xmlns:r', Util.schemas.relationships],
-            ['r:embed', this.mediaData.rId]
+        var pictureFill = Util.createElement(xmlDoc, "xdr:blipFill");
+        pictureFill.appendChild(Util.createElement(xmlDoc, "a:blip", [
+            ["xmlns:r", Util.schemas.relationships],
+            ["r:embed", this.mediaData.rId]
         ]));
-        pictureFill.appendChild(Util.createElement(xmlDoc, 'a:srcRect'));
-        var stretch = Util.createElement(xmlDoc, 'a:stretch');
-        stretch.appendChild(Util.createElement(xmlDoc, 'a:fillRect'));
+        pictureFill.appendChild(Util.createElement(xmlDoc, "a:srcRect"));
+        var stretch = Util.createElement(xmlDoc, "a:stretch");
+        stretch.appendChild(Util.createElement(xmlDoc, "a:fillRect"));
         pictureFill.appendChild(stretch);
         pictureNode.appendChild(pictureFill);
-        var shapeProperties = Util.createElement(xmlDoc, 'xdr:spPr', [
-            ['bwMode', 'auto']
+        var shapeProperties = Util.createElement(xmlDoc, "xdr:spPr", [
+            ["bwMode", "auto"]
         ]);
-        var transform2d = Util.createElement(xmlDoc, 'a:xfrm');
+        var transform2d = Util.createElement(xmlDoc, "a:xfrm");
         shapeProperties.appendChild(transform2d);
-        var presetGeometry = Util.createElement(xmlDoc, 'a:prstGeom', [
-            ['prst', 'rect']
+        var presetGeometry = Util.createElement(xmlDoc, "a:prstGeom", [
+            ["prst", "rect"]
         ]);
         shapeProperties.appendChild(presetGeometry);
         pictureNode.appendChild(shapeProperties);
@@ -88,7 +88,9 @@ var Picture = (function () {
         return this.anchor.toXML(xmlDoc, pictureNode);
     };
     Picture.Cctor = (function () {
-        Picture["prototype"] = new Drawing();
+        var thisProto = Picture.prototype;
+        Picture.prototype = new Drawing();
+        Object.assign(Picture.prototype, thisProto);
     }());
     return Picture;
 }());

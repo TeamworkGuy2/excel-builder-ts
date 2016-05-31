@@ -40,16 +40,16 @@ class TwoCellAnchor {
 
 
     public toXML(xmlDoc: XMLDocument, content: Node) {
-        var root = Util.createElement(xmlDoc, 'xdr:twoCellAnchor');
+        var root = Util.createElement(xmlDoc, "xdr:twoCellAnchor");
 
-        var from = Util.createElement(xmlDoc, 'xdr:from');
-        var fromCol = Util.createElement(xmlDoc, 'xdr:col');
+        var from = Util.createElement(xmlDoc, "xdr:from");
+        var fromCol = Util.createElement(xmlDoc, "xdr:col");
         fromCol.appendChild(xmlDoc.createTextNode(<any>this.from.x));
-        var fromColOff = Util.createElement(xmlDoc, 'xdr:colOff');
+        var fromColOff = Util.createElement(xmlDoc, "xdr:colOff");
         fromColOff.appendChild(xmlDoc.createTextNode(<any>this.from.xOff));
-        var fromRow = Util.createElement(xmlDoc, 'xdr:row');
+        var fromRow = Util.createElement(xmlDoc, "xdr:row");
         fromRow.appendChild(xmlDoc.createTextNode(<any>this.from.y));
-        var fromRowOff = Util.createElement(xmlDoc, 'xdr:rowOff');
+        var fromRowOff = Util.createElement(xmlDoc, "xdr:rowOff");
         fromRowOff.appendChild(xmlDoc.createTextNode(<any>this.from.yOff));
 
         from.appendChild(fromCol);
@@ -57,14 +57,14 @@ class TwoCellAnchor {
         from.appendChild(fromRow);
         from.appendChild(fromRowOff);
 
-        var to = Util.createElement(xmlDoc, 'xdr:to');
-        var toCol = Util.createElement(xmlDoc, 'xdr:col');
+        var to = Util.createElement(xmlDoc, "xdr:to");
+        var toCol = Util.createElement(xmlDoc, "xdr:col");
         toCol.appendChild(xmlDoc.createTextNode(<any>this.to.x));
-        var toColOff = Util.createElement(xmlDoc, 'xdr:colOff');
+        var toColOff = Util.createElement(xmlDoc, "xdr:colOff");
         toColOff.appendChild(xmlDoc.createTextNode(<any>this.from.xOff));
-        var toRow = Util.createElement(xmlDoc, 'xdr:row');
+        var toRow = Util.createElement(xmlDoc, "xdr:row");
         toRow.appendChild(xmlDoc.createTextNode(<any>this.to.y));
-        var toRowOff = Util.createElement(xmlDoc, 'xdr:rowOff');
+        var toRowOff = Util.createElement(xmlDoc, "xdr:rowOff");
         toRowOff.appendChild(xmlDoc.createTextNode(<any>this.from.yOff));
 
         to.appendChild(toCol);
@@ -78,7 +78,7 @@ class TwoCellAnchor {
 
         root.appendChild(content);
 
-        root.appendChild(Util.createElement(xmlDoc, 'xdr:clientData'));
+        root.appendChild(Util.createElement(xmlDoc, "xdr:clientData"));
         return root;
     }
 

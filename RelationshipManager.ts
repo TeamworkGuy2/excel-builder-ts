@@ -7,7 +7,7 @@ import Paths = require("./Paths");
 class RelationshipManager {
 
     private Cctor = (function () {
-        Util._uniqueId('rId'); //priming
+        Util._uniqueId("rId"); //priming
     }());
 
 
@@ -37,7 +37,7 @@ class RelationshipManager {
 
     public addRelation(object: { id: string; schema?: string; }, type: string) {
         var newRelation = this.relations[object.id] = {
-            id: Util._uniqueId('rId'),
+            id: Util._uniqueId("rId"),
             schema: Util.schemas[type]
         };
         return newRelation.id;
@@ -50,16 +50,16 @@ class RelationshipManager {
 
 
     public toXML() {
-        var doc = Util.createXmlDoc(Util.schemas.relationshipPackage, 'Relationships');
+        var doc = Util.createXmlDoc(Util.schemas.relationshipPackage, "Relationships");
         var relationships = doc.documentElement;
 
         var rels = this.relations;
         Object.keys(rels).forEach((id) => {
             var data = rels[id];
-            var relationship = Util.createElement(doc, 'Relationship', [
-                ['Id', data.id],
-                ['Type', data.schema],
-                ['Target', Paths[id]]
+            var relationship = Util.createElement(doc, "Relationship", [
+                ["Id", data.id],
+                ["Type", data.schema],
+                ["Target", Paths[id]]
             ]);
             relationships.appendChild(relationship);
         });

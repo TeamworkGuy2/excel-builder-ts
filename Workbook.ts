@@ -13,21 +13,21 @@ import XmlDom = require("./XmlDom");
  * @return a base64 encoded string with no initial 'data:...,' marker, just a base64 string of binary data
  */
 function getXlsxPrinterSettings1binBase64() {
-    return 'UABEAEYAQwByAGUAYQB0AG8AcgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEAAbcAFwDU++A' +
-        'AQEAAQDqCm8IQgABAA8AWAICAAEAWAIDAAEATABlAHQAdABlAHIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAgAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBSSVbi' +
-        'MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
-        'AAAAAAAAAAAYAAAAAAAQJxAnECcAABAnAAAAAAAAAACIAFwDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAABAAXEsD' +
-        'AGhDBAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAA57FLTAMAAAAFAAoA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAACIAAAAU01USgAAAAAQAHgAAAAAAAAAAAAAAAAAAAAA' +
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+    return "UABEAEYAQwByAGUAYQB0AG8AcgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEAAbcAFwDU++A" +
+        "AQEAAQDqCm8IQgABAA8AWAICAAEAWAIDAAEATABlAHQAdABlAHIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAgAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBSSVbi" +
+        "MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+        "AAAAAAAAAAAYAAAAAAAQJxAnECcAABAnAAAAAAAAAACIAFwDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAABAAXEsD" +
+        "AGhDBAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAA57FLTAMAAAAFAAoA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAACIAAAAU01USgAAAAAQAHgAAAAAAAAAAAAAAAAAAAAA" +
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 }
 // custom-code-end
 
@@ -64,19 +64,19 @@ class Workbook {
 
 
     public initialize(config?: any) {
-        this.id = Util._uniqueId('Workbook');
+        this.id = Util._uniqueId("Workbook");
         this.styleSheet = new StyleSheet();
         this.sharedStrings = new SharedStrings();
         this.relations = new RelationshipManager();
-        this.relations.addRelation(this.styleSheet, 'stylesheet');
-        this.relations.addRelation(this.sharedStrings, 'sharedStrings');
+        this.relations.addRelation(this.styleSheet, "stylesheet");
+        this.relations.addRelation(this.sharedStrings, "sharedStrings");
     }
 
 
     public createWorksheet(config?: { name?: string; columns: Worksheet.Column[]; }) {
         config = config || <any>{};
         if (config.name == null) {
-            config.name = 'Sheet '.concat(<any>this.worksheets.length + 1);
+            config.name = "Sheet ".concat(<any>this.worksheets.length + 1);
         }
         return new Worksheet(<typeof config & { name: string }>config);
     }
@@ -97,19 +97,19 @@ class Workbook {
     }
 
 
-    public addMedia(type: any, fileName: string, fileData: any, contentType: string) {
+    public addMedia(type: any, fileName: string, fileData: any, contentType?: string) {
         var fileNamePieces = fileName.split('.');
         var extension = fileNamePieces[fileNamePieces.length - 1];
         if (!contentType) {
             switch (extension.toLowerCase()) {
-                case 'jpeg':
-                case 'jpg':
+                case "jpeg":
+                case "jpg":
                     contentType = "image/jpeg";
                     break;
-                case 'png':
+                case "png":
                     contentType = "image/png";
                     break;
-                case 'gif':
+                case "gif":
                     contentType = "image/gif";
                     break;
                 default:
@@ -131,23 +131,23 @@ class Workbook {
 
 
     public addWorksheet(worksheet: Worksheet) {
-        this.relations.addRelation(worksheet, 'worksheet');
+        this.relations.addRelation(worksheet, "worksheet");
         worksheet.setSharedStringCollection(this.sharedStrings);
         this.worksheets.push(worksheet);
     }
 
 
     public createContentTypes() {
-        var doc = Util.createXmlDoc(Util.schemas.contentTypes, 'Types');
+        var doc = Util.createXmlDoc(Util.schemas.contentTypes, "Types");
         var types = doc.documentElement;
 
-        types.appendChild(Util.createElement(doc, 'Default', [
-            ['Extension', "rels"],
-            ['ContentType', "application/vnd.openxmlformats-package.relationships+xml"]
+        types.appendChild(Util.createElement(doc, "Default", [
+            ["Extension", "rels"],
+            ["ContentType", "application/vnd.openxmlformats-package.relationships+xml"]
         ]));
-        types.appendChild(Util.createElement(doc, 'Default', [
-            ['Extension', "xml"],
-            ['ContentType', "application/xml"]
+        types.appendChild(Util.createElement(doc, "Default", [
+            ["Extension", "xml"],
+            ["ContentType", "application/xml"]
         ]));
 
         var extensions: { [id: string]: string } = {};
@@ -155,42 +155,42 @@ class Workbook {
             extensions[this.media[filename].extension] = this.media[filename].contentType;
         }
         for (var extension in extensions) {
-            types.appendChild(Util.createElement(doc, 'Default', [
-                ['Extension', extension],
-                ['ContentType', extensions[extension]]
+            types.appendChild(Util.createElement(doc, "Default", [
+                ["Extension", extension],
+                ["ContentType", extensions[extension]]
             ]));
         }
 
-        types.appendChild(Util.createElement(doc, 'Override', [
-            ['PartName', "/xl/workbook.xml"],
-            ['ContentType', "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"]
+        types.appendChild(Util.createElement(doc, "Override", [
+            ["PartName", "/xl/workbook.xml"],
+            ["ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"]
         ]));
-        types.appendChild(Util.createElement(doc, 'Override', [
-            ['PartName', "/xl/sharedStrings.xml"],
-            ['ContentType', "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"]
+        types.appendChild(Util.createElement(doc, "Override", [
+            ["PartName", "/xl/sharedStrings.xml"],
+            ["ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"]
         ]));
-        types.appendChild(Util.createElement(doc, 'Override', [
-            ['PartName', "/xl/styles.xml"],
-            ['ContentType', "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"]
+        types.appendChild(Util.createElement(doc, "Override", [
+            ["PartName", "/xl/styles.xml"],
+            ["ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"]
         ]));
 
         for (var i = 0, l = this.worksheets.length; i < l; i++) {
-            types.appendChild(Util.createElement(doc, 'Override', [
-                ['PartName', "/xl/worksheets/sheet" + (i + 1) + ".xml"],
-                ['ContentType', "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"]
+            types.appendChild(Util.createElement(doc, "Override", [
+                ["PartName", "/xl/worksheets/sheet" + (i + 1) + ".xml"],
+                ["ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"]
             ]));
         }
         for (var i = 0, l = this.tables.length; i < l; i++) {
-            types.appendChild(Util.createElement(doc, 'Override', [
-                ['PartName', "/xl/tables/table" + (i + 1) + ".xml"],
-                ['ContentType', "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"]
+            types.appendChild(Util.createElement(doc, "Override", [
+                ["PartName", "/xl/tables/table" + (i + 1) + ".xml"],
+                ["ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"]
             ]));
         }
 
         for (var i = 0, l = this.drawings.length; i < l; i++) {
-            types.appendChild(Util.createElement(doc, 'Override', [
-                ['PartName', '/xl/drawings/drawing' + (i + 1) + '.xml'],
-                ['ContentType', 'application/vnd.openxmlformats-officedocument.drawing+xml']
+            types.appendChild(Util.createElement(doc, "Override", [
+                ["PartName", "/xl/drawings/drawing" + (i + 1) + ".xml"],
+                ["ContentType", "application/vnd.openxmlformats-officedocument.drawing+xml"]
             ]));
         }
 
@@ -199,16 +199,16 @@ class Workbook {
 
 
     public toXML() {
-        var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, 'workbook');
+        var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, "workbook");
         var wb = doc.documentElement;
-        wb.setAttribute('xmlns:r', Util.schemas.relationships);
+        wb.setAttribute("xmlns:r", Util.schemas.relationships);
 
-        var sheets = Util.createElement(doc, 'sheets');
+        var sheets = Util.createElement(doc, "sheets");
         for (var i = 0, l = this.worksheets.length; i < l; i++) {
-            var sheet = doc.createElement('sheet');
-            sheet.setAttribute('name', this.worksheets[i].name);
-            sheet.setAttribute('sheetId', i + 1);
-            sheet.setAttribute('r:id', this.relations.getRelationshipId(this.worksheets[i]))
+            var sheet = doc.createElement("sheet");
+            sheet.setAttribute("name", this.worksheets[i].name);
+            sheet.setAttribute("sheetId", i + 1);
+            sheet.setAttribute("r:id", this.relations.getRelationshipId(this.worksheets[i]))
             sheets.appendChild(sheet);
         }
         wb.appendChild(sheets);
@@ -217,37 +217,37 @@ class Workbook {
 
 
     public createWorkbookRelationship() {
-        var doc = Util.createXmlDoc(Util.schemas.relationshipPackage, 'Relationships');
+        var doc = Util.createXmlDoc(Util.schemas.relationshipPackage, "Relationships");
         var relationships = doc.documentElement;
-        relationships.appendChild(Util.createElement(doc, 'Relationship', [
-            ['Id', 'rId1'],
-            ['Type', Util.schemas.officeDocument],
-            ['Target', 'xl/workbook.xml']
+        relationships.appendChild(Util.createElement(doc, "Relationship", [
+            ["Id", "rId1"],
+            ["Type", Util.schemas.officeDocument],
+            ["Target", "xl/workbook.xml"]
         ]));
         return doc;
     }
 
 
     public _generateCorePaths(files: { [path: string]: any }) {
-        Paths[this.styleSheet.id] = 'styles.xml';
-        Paths[this.sharedStrings.id] = 'sharedStrings.xml';
-        Paths[this.id] = '/xl/workbook.xml';
+        Paths[this.styleSheet.id] = "styles.xml";
+        Paths[this.sharedStrings.id] = "sharedStrings.xml";
+        Paths[this.id] = "/xl/workbook.xml";
 
         for (var i = 0, l = this.tables.length; i < l; i++) {
-            files['/xl/tables/table' + (i + 1) + '.xml'] = this.tables[i].toXML();
-            Paths[this.tables[i].id] = '/xl/tables/table' + (i + 1) + '.xml';
+            files["/xl/tables/table" + (i + 1) + ".xml"] = this.tables[i].toXML();
+            Paths[this.tables[i].id] = "/xl/tables/table" + (i + 1) + ".xml";
         }
 
         for (var fileName in this.media) {
             var media = this.media[fileName];
-            files['/xl/media/' + fileName] = media.data;
-            Paths[fileName] = '/xl/media/' + fileName;
+            files["/xl/media/" + fileName] = media.data;
+            Paths[fileName] = "/xl/media/" + fileName;
         }
 
         for (var i = 0, l = this.drawings.length; i < l; i++) {
-            files['/xl/drawings/drawing' + (i + 1) + '.xml'] = this.drawings[i].toXML();
-            Paths[this.drawings[i].id] = '/xl/drawings/drawing' + (i + 1) + '.xml';
-            files['/xl/drawings/_rels/drawing' + (i + 1) + '.xml.rels'] = this.drawings[i].relations.toXML();
+            files["/xl/drawings/drawing" + (i + 1) + ".xml"] = this.drawings[i].toXML();
+            Paths[this.drawings[i].id] = "/xl/drawings/drawing" + (i + 1) + ".xml";
+            files["/xl/drawings/_rels/drawing" + (i + 1) + ".xml.rels"] = this.drawings[i].relations.toXML();
         }
     }
 
@@ -256,26 +256,26 @@ class Workbook {
         // custom-code 2014-6-27
         var contentTypes = this.createContentTypes();
         // adds reference for xl/printerSettings/printerSettings1.bin
-        if (files['/xl/printerSettings/printerSettings1.bin']) {
-            contentTypes.documentElement.appendChild(Util.createElement(contentTypes, 'Default', [
-                ['Extension', "bin"],
-                ['ContentType', "application/vnd.openxmlformats-officedocument.spreadsheetml.printerSettings"]
+        if (files["/xl/printerSettings/printerSettings1.bin"]) {
+            contentTypes.documentElement.appendChild(Util.createElement(contentTypes, "Default", [
+                ["Extension", "bin"],
+                ["ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.printerSettings"]
             ]));
         }
         // custom-code-end
 
         Object.assign(files, {
-            '/[Content_Types].xml': contentTypes,
-            '/_rels/.rels': this.createWorkbookRelationship(),
-            '/xl/styles.xml': this.styleSheet.toXML(),
-            '/xl/workbook.xml': this.toXML(),
-            '/xl/sharedStrings.xml': this.sharedStrings.toXML(),
-            '/xl/_rels/workbook.xml.rels': this.relations.toXML()
+            "/[Content_Types].xml": contentTypes,
+            "/_rels/.rels": this.createWorkbookRelationship(),
+            "/xl/styles.xml": this.styleSheet.toXML(),
+            "/xl/workbook.xml": this.toXML(),
+            "/xl/sharedStrings.xml": this.sharedStrings.toXML(),
+            "/xl/_rels/workbook.xml.rels": this.relations.toXML()
         });
 
         Object.keys(files).forEach((key) => {
             var value = files[key];
-            if (key.indexOf('.xml') != -1 || key.indexOf('.rels') != -1) {
+            if (key.indexOf(".xml") != -1 || key.indexOf(".rels") != -1) {
                 var resStr = files[key] = (<{ xml: string }>value).xml || new XMLSerializer().serializeToString(<any><XmlDom>value);
                 var content = resStr.replace(/xmlns=""/g, '');
                 content = content.replace(/NS[\d]+:/g, '');
@@ -290,7 +290,7 @@ class Workbook {
         var requireJsPath = options.requireJsPath;
         var self = this;
         if (!options.requireJsPath) {
-            requireJsPath = document.getElementById('requirejs') ? document.getElementById('requirejs')["src"] : '';
+            requireJsPath = document.getElementById("requirejs") ? document.getElementById("requirejs")["src"] : '';
         }
         if (!requireJsPath) {
             throw "Please add 'requirejs' to the script that includes requirejs, or specify the path as an argument";
@@ -325,7 +325,7 @@ class Workbook {
             if (--stringsCollectedCount === 0) {
                 for (var i = 0; i < workers.length; i++) {
                     workers[i].postMessage({
-                        instruction: 'export',
+                        instruction: "export",
                         sharedStrings: self.sharedStrings.exportData()
                     });
                 }
@@ -347,9 +347,9 @@ class Workbook {
                             stringsCollected();
                         },
                         finished: function (data) {
-                            files['/xl/worksheets/sheet' + (worksheetIndex + 1) + '.xml'] = { xml: data };
-                            Paths[self.worksheets[worksheetIndex].id] = 'worksheets/sheet' + (worksheetIndex + 1) + '.xml';
-                            files['/xl/worksheets/_rels/sheet' + (worksheetIndex + 1) + '.xml.rels'] = self.worksheets[worksheetIndex].relations.toXML();
+                            files["/xl/worksheets/sheet" + (worksheetIndex + 1) + ".xml"] = { xml: data };
+                            Paths[self.worksheets[worksheetIndex].id] = "worksheets/sheet" + (worksheetIndex + 1) + ".xml";
+                            files["/xl/worksheets/_rels/sheet" + (worksheetIndex + 1) + ".xml.rels"] = self.worksheets[worksheetIndex].relations.toXML();
                             done();
                         }
                     };
@@ -364,13 +364,13 @@ class Workbook {
     public _createWorker(requireJsPath: string, worksheetIndex: number, callbacks: { error(err: ErrorEvent): any; stringsCollected(): void; finished(data: any): void; }, worksheetExportWorkerPath: string) {
         var worker = new Worker(worksheetExportWorkerPath); //require.toUrl('./WorksheetExportWorker.js')
         var self = this;
-        worker.addEventListener('error', callbacks.error);
-        worker.addEventListener('message', <any>function (event: MessageEvent, data: any) {
+        worker.addEventListener("error", callbacks.error);
+        worker.addEventListener("message", <any>function (event: MessageEvent, data: any) {
             //                console.log("Called back by the worker!\n", event.data);
             switch (event.data.status) {
                 case "ready":
                     worker.postMessage({
-                        instruction: 'start',
+                        instruction: "start",
                         data: self.worksheets[worksheetIndex].exportData()
                     });
                     break;
@@ -386,7 +386,7 @@ class Workbook {
             }
         }, false);
         worker.postMessage({
-            instruction: 'setup',
+            instruction: "setup",
             requireJsPath,
         });
         return worker;
@@ -402,18 +402,18 @@ class Workbook {
         // custom-code-end
 
         for (var i = 0, l = this.worksheets.length; i < l; i++) {
-            files['/xl/worksheets/sheet' + (i + 1) + '.xml'] = this.worksheets[i].toXML();
-            Paths[this.worksheets[i].id] = 'worksheets/sheet' + (i + 1) + '.xml';
+            files["/xl/worksheets/sheet" + (i + 1) + ".xml"] = this.worksheets[i].toXML();
+            Paths[this.worksheets[i].id] = "worksheets/sheet" + (i + 1) + ".xml";
             // custom-code 2014-6-27
             if (this.worksheets[i]._printerSettings) {
                 //anyPrintOptions = true;
                 //Paths[this.worksheets[i]._printerSettings.id] = '../printerSettings/printerSettings1.bin';
             }
             // custom-code-end
-            files['/xl/worksheets/_rels/sheet' + (i + 1) + '.xml.rels'] = this.worksheets[i].relations.toXML();
+            files["/xl/worksheets/_rels/sheet" + (i + 1) + ".xml.rels"] = this.worksheets[i].relations.toXML();
         }
         // custom-code 2014-6-27
-        if (anyPrintOptions) { files['/xl/printerSettings/printerSettings1.bin'] = getXlsxPrinterSettings1binBase64(); }
+        if (anyPrintOptions) { files["/xl/printerSettings/printerSettings1.bin"] = getXlsxPrinterSettings1binBase64(); }
         // custom-code-end
 
         this._prepareFilesForPackaging(files);
@@ -427,8 +427,8 @@ module Workbook {
 
     export interface Drawing {
         id: string;
-        relations: { toXML(): string; };
-        toXML(): string;
+        relations: { toXML(): XmlDom | string; };
+        toXML(): XmlDom | string;
     }
 
 

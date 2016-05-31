@@ -7,7 +7,7 @@ class XmlDom {
 
     constructor(ns: string, rootNodeName: string, documentType: any) {
         this.documentElement = this.createElement(rootNodeName);
-        this.documentElement.setAttribute('xmlns', ns);
+        this.documentElement.setAttribute("xmlns", ns);
     }
 
 

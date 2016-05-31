@@ -14,7 +14,7 @@ class Drawings {
     constructor() {
         this.drawings = [];
         this.relations = new RelationshipManager();
-        this.id = Util._uniqueId('Drawings');
+        this.id = Util._uniqueId("Drawings");
     }
 
 
@@ -23,7 +23,7 @@ class Drawings {
      * 
      * @param {Drawing} drawing
      */
-    public addDrawing(drawing) {
+    public addDrawing(drawing: Drawings.Drawing) {
         this.drawings.push(drawing);
     }
 
@@ -34,10 +34,10 @@ class Drawings {
 
 
     public toXML() {
-        var doc = Util.createXmlDoc(Util.schemas.spreadsheetDrawing, 'xdr:wsDr');
+        var doc = Util.createXmlDoc(Util.schemas.spreadsheetDrawing, "xdr:wsDr");
         var drawingsElem = doc.documentElement;
         //drawings.setAttribute('xmlns:xdr', util.schemas.spreadsheetDrawing);
-        drawingsElem.setAttribute('xmlns:a', Util.schemas.drawing);
+        drawingsElem.setAttribute("xmlns:a", Util.schemas.drawing);
 
         var existingRelationships = {};
 

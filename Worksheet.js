@@ -41,7 +41,7 @@ var Worksheet = (function () {
     Worksheet.prototype.initialize = function (config) {
         config = config || {};
         this.name = config.name;
-        this.id = Util._uniqueId('Worksheet');
+        this.id = Util._uniqueId("Worksheet");
         this._timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
         if (config.columns) {
             this.setColumns(config.columns);
@@ -78,11 +78,11 @@ var Worksheet = (function () {
     };
     Worksheet.prototype.addTable = function (table) {
         this._tables.push(table);
-        this.relations.addRelation(table, 'table');
+        this.relations.addRelation(table, "table");
     };
     Worksheet.prototype.addDrawings = function (table) {
         this._drawings.push(table);
-        this.relations.addRelation(table, 'drawingRelationship');
+        this.relations.addRelation(table, "drawingRelationship");
     };
     // not-original 2015-5-1
     Worksheet.prototype.addPagePrintSetup = function (pageSetup, pageMargins) {
@@ -141,7 +141,7 @@ var Worksheet = (function () {
         if (typeof data === "string") {
             return '&"-,Regular"'.concat(data);
         }
-        if (typeof data === "[object Object]" && !Array.isArray(data)) {
+        if (typeof data === "object" && !Array.isArray(data)) {
             var string = "";
             if (data.font || data.bold) {
                 var weighting = data.bold ? "Bold" : "Regular";
@@ -174,7 +174,7 @@ var Worksheet = (function () {
      * @returns {XML Node}
      */
     Worksheet.prototype.exportHeader = function (doc) {
-        var oddHeader = doc.createElement('oddHeader');
+        var oddHeader = doc.createElement("oddHeader");
         oddHeader.appendChild(doc.createTextNode(this.compilePageDetailPackage(this._headers)));
         return oddHeader;
     };
@@ -185,7 +185,7 @@ var Worksheet = (function () {
      * @returns {XML Node}
      */
     Worksheet.prototype.exportFooter = function (doc) {
-        var oddFooter = doc.createElement('oddFooter');
+        var oddFooter = doc.createElement("oddFooter");
         oddFooter.appendChild(doc.createTextNode(this.compilePageDetailPackage(this._footers)));
         return oddFooter;
     };
@@ -198,17 +198,17 @@ var Worksheet = (function () {
      * @returns
      */
     Worksheet.prototype._buildCache = function (doc) {
-        var numberNode = doc.createElement('c');
-        var value = doc.createElement('v');
+        var numberNode = doc.createElement("c");
+        var value = doc.createElement("v");
         value.appendChild(doc.createTextNode("--temp--"));
         numberNode.appendChild(value);
-        var formulaNode = doc.createElement('c');
-        var formulaValue = doc.createElement('f');
+        var formulaNode = doc.createElement("c");
+        var formulaValue = doc.createElement("f");
         formulaValue.appendChild(doc.createTextNode("--temp--"));
         formulaNode.appendChild(formulaValue);
-        var stringNode = doc.createElement('c');
-        stringNode.setAttribute('t', 's');
-        var stringValue = doc.createElement('v');
+        var stringNode = doc.createElement("c");
+        stringNode.setAttribute("t", "s");
+        var stringValue = doc.createElement("v");
         stringValue.appendChild(doc.createTextNode("--temp--"));
         stringNode.appendChild(stringValue);
         return {
@@ -233,17 +233,17 @@ var Worksheet = (function () {
             maxX = cellCount > maxX ? cellCount : maxX;
             for (var c = 0; c < cellCount; c++) {
                 var cellValue = dataRow[c];
-                if (typeof dataRow[c] == 'object') {
+                if (typeof dataRow[c] == "object") {
                     cellValue = dataRow[c].value;
                 }
                 var metadata = dataRow[c].metadata || {};
                 if (!metadata.type) {
-                    if (typeof cellValue == 'number') {
-                        metadata.type = 'number';
+                    if (typeof cellValue == "number") {
+                        metadata.type = "number";
                     }
                 }
                 if (metadata.type == "text" || !metadata.type) {
-                    if (typeof strings[cellValue] == 'undefined') {
+                    if (typeof strings[cellValue] == "undefined") {
                         strings[cellValue] = true;
                     }
                 }
@@ -258,36 +258,38 @@ var Worksheet = (function () {
         var customCellAttributes = this.customCellAttributes || [];
         var customRowAttributes = this.customRowAttributes || [];
         // custom-code-end
-        var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, 'worksheet');
+        var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, "worksheet");
         var worksheet = doc.documentElement;
-        worksheet.setAttribute('xmlns:r', Util.schemas.relationships);
-        worksheet.setAttribute('xmlns:mc', Util.schemas.markupCompat);
+        worksheet.setAttribute("xmlns:r", Util.schemas.relationships);
+        worksheet.setAttribute("xmlns:mc", Util.schemas.markupCompat);
         var maxX = 0;
-        var sheetData = Util.createElement(doc, 'sheetData');
+        var sheetData = Util.createElement(doc, "sheetData");
         var cellCache = this._buildCache(doc);
+        var sharedStrs = this.sharedStrings;
         for (var row = 0, l = data.length; row < l; row++) {
             var dataRow = data[row];
             var cellCount = dataRow.length;
             maxX = cellCount > maxX ? cellCount : maxX;
-            var rowNode = doc.createElement('row');
+            var rowNode = doc.createElement("row");
             for (var c = 0; c < cellCount; c++) {
                 columns[c] = columns[c] || {};
                 var cellValue = dataRow[c];
-                if (dataRow[c] != null && typeof dataRow[c] == 'object') {
-                    cellValue = dataRow[c].value;
+                if (cellValue != null && typeof cellValue == "object") {
+                    cellValue = cellValue.value;
                 }
                 //fix undefined or null value
-                var cell, metadata = dataRow[c] ? (dataRow[c].metadata || {}) : {};
+                var metadata = dataRow[c] ? (dataRow[c].metadata || {}) : {};
                 if (!metadata.type) {
-                    if (typeof cellValue == 'number') {
-                        metadata.type = 'number';
+                    if (typeof cellValue == "number") {
+                        metadata.type = "number";
                     }
                     // custom-code 2014-6-30
                     // Allows for empty cells in switch statement below
-                    if (cellValue === null || typeof cellValue === undefined) {
+                    if (cellValue == null) {
                         metadata.type = "empty";
                     }
                 }
+                var cell;
                 switch (metadata.type) {
                     case "number":
                         cell = cellCache.number.cloneNode(true);
@@ -309,25 +311,19 @@ var Worksheet = (function () {
                     // custom-code-end
                     case "text":
                     default:
-                        var id;
-                        if (typeof this.sharedStrings.strings[cellValue] != 'undefined') {
-                            id = this.sharedStrings.strings[cellValue];
-                        }
-                        else {
-                            id = this.sharedStrings.addString(cellValue);
-                        }
+                        var id = sharedStrs.strings[cellValue] || sharedStrs.addString(cellValue);
                         cell = cellCache.string.cloneNode(true);
                         cell.firstChild.firstChild.nodeValue = id;
                         break;
                 }
                 ;
                 if (metadata.style) {
-                    cell.setAttribute('s', metadata.style);
+                    cell.setAttribute("s", metadata.style);
                 }
-                cell.setAttribute('r', Util.positionToLetterRef(c + 1, row + 1));
+                cell.setAttribute("r", Util.positionToLetterRef(c + 1, row + 1));
                 // custom-code 2014-6-27
                 // add any additional custom attributes to this cell's XML element
-                if (row < customCellAttributes.length && customCellAttributes[row] !== null && c < customCellAttributes[row].length) {
+                if (row < customCellAttributes.length && customCellAttributes[row] != null && c < customCellAttributes[row].length) {
                     var attribs = customCellAttributes[row][c];
                     for (var attrib in attribs) {
                         cell.setAttribute(attrib, attribs[attrib]);
@@ -336,7 +332,7 @@ var Worksheet = (function () {
                 // custom-code-end
                 rowNode.appendChild(cell);
             }
-            rowNode.setAttribute('r', row + 1);
+            rowNode.setAttribute("r", row + 1);
             // custom-code 2014-6-27
             // add any additional custom attributes to this row's XML element
             if (row < customRowAttributes.length) {
@@ -348,23 +344,19 @@ var Worksheet = (function () {
             // custom-code-end
             sheetData.appendChild(rowNode);
         }
-        if (maxX !== 0) {
-            worksheet.appendChild(Util.createElement(doc, 'dimension', [
-                ['ref', Util.positionToLetterRef(1, 1) + ':' + Util.positionToLetterRef(maxX, data.length)]
-            ]));
-        }
-        else {
-            worksheet.appendChild(Util.createElement(doc, 'dimension', [
-                ['ref', Util.positionToLetterRef(1, 1)]
-            ]));
-        }
+        var cellOrRangeRef = (maxX !== 0
+            ? Util.positionToLetterRef(1, 1) + ':' + Util.positionToLetterRef(maxX, data.length)
+            : Util.positionToLetterRef(1, 1));
+        worksheet.appendChild(Util.createElement(doc, "dimension", [
+            ["ref", cellOrRangeRef]
+        ]));
         if (this.columns.length) {
             worksheet.appendChild(this.exportColumns(doc));
         }
         worksheet.appendChild(sheetData);
         this.exportPageSettings(doc, worksheet);
         if (this._headers.length > 0 || this._footers.length > 0) {
-            var headerFooter = doc.createElement('headerFooter');
+            var headerFooter = doc.createElement("headerFooter");
             if (this._headers.length > 0) {
                 headerFooter.appendChild(this.exportHeader(doc));
             }
@@ -374,20 +366,20 @@ var Worksheet = (function () {
             worksheet.appendChild(headerFooter);
         }
         if (this._tables.length > 0) {
-            var tables = doc.createElement('tableParts');
-            tables.setAttribute('count', this._tables.length);
+            var tables = doc.createElement("tableParts");
+            tables.setAttribute("count", this._tables.length);
             for (var i = 0, l = this._tables.length; i < l; i++) {
-                var table = doc.createElement('tablePart');
-                table.setAttribute('r:id', this.relations.getRelationshipId(this._tables[i]));
+                var table = doc.createElement("tablePart");
+                table.setAttribute("r:id", this.relations.getRelationshipId(this._tables[i]));
                 tables.appendChild(table);
             }
             worksheet.appendChild(tables);
         }
         if (this.mergedCells.length > 0) {
-            var mergeCells = doc.createElement('mergeCells');
+            var mergeCells = doc.createElement("mergeCells");
             for (var i = 0, l = this.mergedCells.length; i < l; i++) {
-                var mergeCell = doc.createElement('mergeCell');
-                mergeCell.setAttribute('ref', this.mergedCells[i][0] + ':' + this.mergedCells[i][1]);
+                var mergeCell = doc.createElement("mergeCell");
+                mergeCell.setAttribute("ref", this.mergedCells[i][0] + ':' + this.mergedCells[i][1]);
                 mergeCells.appendChild(mergeCell);
             }
             // custom-code 2014-7-2
@@ -415,8 +407,8 @@ var Worksheet = (function () {
         }
         // custom-code-end
         for (var i = 0, l = this._drawings.length; i < l; i++) {
-            var drawing = doc.createElement('drawing');
-            drawing.setAttribute('r:id', this.relations.getRelationshipId(this._drawings[i]));
+            var drawing = doc.createElement("drawing");
+            drawing.setAttribute("r:id", this.relations.getRelationshipId(this._drawings[i]));
             worksheet.appendChild(drawing);
         }
         return doc;
@@ -426,27 +418,27 @@ var Worksheet = (function () {
      * @returns {XML Node}
      */
     Worksheet.prototype.exportColumns = function (doc) {
-        var cols = Util.createElement(doc, 'cols');
+        var cols = Util.createElement(doc, "cols");
         for (var i = 0, l = this.columns.length; i < l; i++) {
             var cd = this.columns[i];
-            var col = Util.createElement(doc, 'col', [
-                ['min', cd.min || i + 1],
-                ['max', cd.max || i + 1]
+            var col = Util.createElement(doc, "col", [
+                ["min", cd.min || i + 1],
+                ["max", cd.max || i + 1]
             ]);
             if (cd.hidden) {
-                col.setAttribute('hidden', 1);
+                col.setAttribute("hidden", 1);
             }
             if (cd.bestFit) {
-                col.setAttribute('bestFit', 1);
+                col.setAttribute("bestFit", 1);
             }
             if (cd.customWidth || cd.width) {
-                col.setAttribute('customWidth', 1);
+                col.setAttribute("customWidth", 1);
             }
             if (cd.width) {
-                col.setAttribute('width', cd.width);
+                col.setAttribute("width", cd.width);
             }
             else {
-                col.setAttribute('width', 9.140625);
+                col.setAttribute("width", 9.140625);
             }
             cols.appendChild(col);
         }
@@ -462,7 +454,7 @@ var Worksheet = (function () {
     Worksheet.prototype.exportPageSettings = function (doc, worksheet) {
         if (this._orientation) {
             worksheet.appendChild(Util.createElement(doc, "pageSetup", [
-                ['orientation', this._orientation]
+                ["orientation", this._orientation]
             ]));
         }
     };

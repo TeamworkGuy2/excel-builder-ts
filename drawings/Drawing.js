@@ -12,10 +12,10 @@ var Drawing = (function () {
      * @constructor
      */
     function Drawing() {
-        this.id = Util._uniqueId('Drawing');
+        this.id = Util._uniqueId("Drawing");
     }
     /**
-     * @param {String} type Can be 'absoluteAnchor', 'oneCellAnchor', or 'twoCellAnchor'.
+     * @param {string} type can be "absoluteAnchor", "oneCellAnchor", or "twoCellAnchor".
      * @param {Object} config Shorthand - pass the created anchor coords that can normally be used to construct it.
      * @returns {Anchor}
      */
@@ -23,13 +23,13 @@ var Drawing = (function () {
         config = config || {};
         config.drawing = this;
         switch (type) {
-            case 'absoluteAnchor':
+            case "absoluteAnchor":
                 this.anchor = new AbsoluteAnchor(config);
                 break;
-            case 'oneCellAnchor':
+            case "oneCellAnchor":
                 this.anchor = new OneCellAnchor(config);
                 break;
-            case 'twoCellAnchor':
+            case "twoCellAnchor":
                 this.anchor = new TwoCellAnchor(config);
                 break;
         }

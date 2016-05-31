@@ -8,7 +8,7 @@ var Drawings = (function () {
     function Drawings() {
         this.drawings = [];
         this.relations = new RelationshipManager();
-        this.id = Util._uniqueId('Drawings');
+        this.id = Util._uniqueId("Drawings");
     }
     /**
      * Adds a drawing (more likely a subclass of a Drawing) to the 'Drawings' for a particular worksheet.
@@ -22,10 +22,10 @@ var Drawings = (function () {
         return this.drawings.length;
     };
     Drawings.prototype.toXML = function () {
-        var doc = Util.createXmlDoc(Util.schemas.spreadsheetDrawing, 'xdr:wsDr');
+        var doc = Util.createXmlDoc(Util.schemas.spreadsheetDrawing, "xdr:wsDr");
         var drawingsElem = doc.documentElement;
         //drawings.setAttribute('xmlns:xdr', util.schemas.spreadsheetDrawing);
-        drawingsElem.setAttribute('xmlns:a', Util.schemas.drawing);
+        drawingsElem.setAttribute("xmlns:a", Util.schemas.drawing);
         var existingRelationships = {};
         for (var i = 0, l = this.drawings.length; i < l; i++) {
             var rId = this.relations.getRelationshipId(this.drawings[i].getMediaData());

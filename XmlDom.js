@@ -2,7 +2,7 @@
 var XmlDom = (function () {
     function XmlDom(ns, rootNodeName, documentType) {
         this.documentElement = this.createElement(rootNodeName);
-        this.documentElement.setAttribute('xmlns', ns);
+        this.documentElement.setAttribute("xmlns", ns);
     }
     XmlDom.prototype.createElement = function (name) {
         return new XmlDom.XMLNode({ nodeName: name });

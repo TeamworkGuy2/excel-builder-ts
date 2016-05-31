@@ -38,17 +38,17 @@ var AbsoluteAnchor = (function () {
         this.height = height;
     };
     AbsoluteAnchor.prototype.toXML = function (xmlDoc, content) {
-        var root = Util.createElement(xmlDoc, 'xdr:absoluteAnchor');
-        var pos = Util.createElement(xmlDoc, 'xdr:pos');
-        pos.setAttribute('x', this.x);
-        pos.setAttribute('y', this.y);
+        var root = Util.createElement(xmlDoc, "xdr:absoluteAnchor");
+        var pos = Util.createElement(xmlDoc, "xdr:pos");
+        pos.setAttribute("x", this.x);
+        pos.setAttribute("y", this.y);
         root.appendChild(pos);
-        var dimensions = Util.createElement(xmlDoc, 'xdr:ext');
-        dimensions.setAttribute('cx', this.width);
-        dimensions.setAttribute('cy', this.height);
+        var dimensions = Util.createElement(xmlDoc, "xdr:ext");
+        dimensions.setAttribute("cx", this.width);
+        dimensions.setAttribute("cy", this.height);
         root.appendChild(dimensions);
         root.appendChild(content);
-        root.appendChild(Util.createElement(xmlDoc, 'xdr:clientData'));
+        root.appendChild(Util.createElement(xmlDoc, "xdr:clientData"));
         return root;
     };
     return AbsoluteAnchor;

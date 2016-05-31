@@ -39,7 +39,7 @@ var Table = (function () {
         this.displayName = Util._uniqueId("Table");
         this.name = this.displayName;
         this.id = this.name;
-        this.tableId = this.id.replace('Table', '');
+        this.tableId = this.id.replace("Table", '');
         if (config != null) {
             Object.assign(this, config);
         }
@@ -91,23 +91,23 @@ var Table = (function () {
         this.sortState = state;
     };
     Table.prototype.toXML = function () {
-        var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, 'table');
+        var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, "table");
         var table = doc.documentElement;
-        table.setAttribute('id', this.tableId);
-        table.setAttribute('name', this.name);
-        table.setAttribute('displayName', this.displayName);
+        table.setAttribute("id", this.tableId);
+        table.setAttribute("name", this.name);
+        table.setAttribute("displayName", this.displayName);
         var s = this.ref[0];
         var e = this.ref[1];
-        table.setAttribute('ref', Util.positionToLetterRef(s[0], s[1]) + ":" + Util.positionToLetterRef(e[0], e[1]));
+        table.setAttribute("ref", Util.positionToLetterRef(s[0], s[1]) + ":" + Util.positionToLetterRef(e[0], e[1]));
         /** TOTALS **/
-        table.setAttribute('totalsRowCount', this.totalsRowCount);
+        table.setAttribute("totalsRowCount", this.totalsRowCount);
         /** HEADER **/
-        table.setAttribute('headerRowCount', this.headerRowCount);
+        table.setAttribute("headerRowCount", this.headerRowCount);
         if (this.headerRowDxfId) {
-            table.setAttribute('headerRowDxfId', this.headerRowDxfId);
+            table.setAttribute("headerRowDxfId", this.headerRowDxfId);
         }
         if (this.headerRowBorderDxfId) {
-            table.setAttribute('headerRowBorderDxfId', this.headerRowBorderDxfId);
+            table.setAttribute("headerRowBorderDxfId", this.headerRowBorderDxfId);
         }
         if (!this.ref) {
             throw "Needs at least a reference range";
@@ -121,39 +121,39 @@ var Table = (function () {
         return table;
     };
     Table.prototype.exportTableColumns = function (doc) {
-        var tableColumns = doc.createElement('tableColumns');
-        tableColumns.setAttribute('count', this.tableColumns.length);
+        var tableColumns = doc.createElement("tableColumns");
+        tableColumns.setAttribute("count", this.tableColumns.length);
         var tcs = this.tableColumns;
         for (var i = 0, l = tcs.length; i < l; i++) {
             var tc = tcs[i];
-            var tableColumn = doc.createElement('tableColumn');
-            tableColumn.setAttribute('id', i + 1);
-            tableColumn.setAttribute('name', tc.name);
+            var tableColumn = doc.createElement("tableColumn");
+            tableColumn.setAttribute("id", i + 1);
+            tableColumn.setAttribute("name", tc.name);
             tableColumns.appendChild(tableColumn);
             if (tc.totalsRowFunction) {
-                tableColumn.setAttribute('totalsRowFunction', tc.totalsRowFunction);
+                tableColumn.setAttribute("totalsRowFunction", tc.totalsRowFunction);
             }
             if (tc.totalsRowLabel) {
-                tableColumn.setAttribute('totalsRowLabel', tc.totalsRowLabel);
+                tableColumn.setAttribute("totalsRowLabel", tc.totalsRowLabel);
             }
         }
         return tableColumns;
     };
     Table.prototype.exportAutoFilter = function (doc) {
-        var autoFilter = doc.createElement('autoFilter');
+        var autoFilter = doc.createElement("autoFilter");
         var s = this.autoFilter[0];
         var e = this.autoFilter[1];
-        autoFilter.setAttribute('ref', Util.positionToLetterRef(s[0], s[1]) + ":" + Util.positionToLetterRef(e[0], e[1] - this.totalsRowCount));
+        autoFilter.setAttribute("ref", Util.positionToLetterRef(s[0], s[1]) + ":" + Util.positionToLetterRef(e[0], e[1] - this.totalsRowCount));
         return autoFilter;
     };
     Table.prototype.exportTableStyleInfo = function (doc) {
         var ts = this.styleInfo;
-        var tableStyle = doc.createElement('tableStyleInfo');
-        tableStyle.setAttribute('name', ts.themeStyle);
-        tableStyle.setAttribute('showFirstColumn', ts.showFirstColumn ? "1" : "0");
-        tableStyle.setAttribute('showLastColumn', ts.showLastColumn ? "1" : "0");
-        tableStyle.setAttribute('showColumnStripes', ts.showColumnStripes ? "1" : "0");
-        tableStyle.setAttribute('showRowStripes', ts.showRowStripes ? "1" : "0");
+        var tableStyle = doc.createElement("tableStyleInfo");
+        tableStyle.setAttribute("name", ts.themeStyle);
+        tableStyle.setAttribute("showFirstColumn", ts.showFirstColumn ? "1" : "0");
+        tableStyle.setAttribute("showLastColumn", ts.showLastColumn ? "1" : "0");
+        tableStyle.setAttribute("showColumnStripes", ts.showColumnStripes ? "1" : "0");
+        tableStyle.setAttribute("showRowStripes", ts.showRowStripes ? "1" : "0");
         return tableStyle;
     };
     Table.prototype.addAutoFilter = function (startRef, endRef) {

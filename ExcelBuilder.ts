@@ -23,19 +23,19 @@ class ExcelBuilder {
     /** Turns a workbook into a downloadable file. 
      * @param {Excel/Workbook} workbook The workbook that is being converted
      * @param {Object} options
-     * @param {Boolean} options.base64 Whether to 'return' the generated file as a base64 string
+     * @param {boolean} options.base64 Whether to 'return' the generated file as a base64 string
      * @param {Function} options.success The callback function to run after workbook creation is successful.
      * @param {Function} options.error The callback function to run if there is an error creating the workbook.
-     * @param {String} options.requireJsPath (Optional) The path to requirejs. Will use the id 'requirejs' to look up the script if not specified.
+     * @param {string} options.requireJsPath (Optional) The path to requirejs. Will use the id 'requirejs' to look up the script if not specified.
      */
-    public createFileAsync(workbook: Workbook, options: { base64: boolean; error: () => void; requireJsPath?: string; success: (data: any) => void; }, jszipPath: string, zipWorkerPath: string, worksheetExportWorkerPath: string) {
+    static createFileAsync(workbook: Workbook, options: { base64: boolean; error: () => void; requireJsPath?: string; success: (data: any) => void; }, jszipPath: string, zipWorkerPath: string, worksheetExportWorkerPath: string) {
 
         workbook.generateFilesAsync({
             requireJsPath: options.requireJsPath,
             success: function (files) {
                 var worker = new Worker(zipWorkerPath); //require.toUrl('./Excel/ZipWorker.js')
-                worker.addEventListener('message', <any>function (event, data) {
-                    if (event.data.status == 'done') {
+                worker.addEventListener("message", <any>function (event: MessageEvent) {
+                    if (event.data.status == "done") {
                         options.success(event.data.data);
                     }
                 });
@@ -53,16 +53,17 @@ class ExcelBuilder {
 
 
     /** Turns a workbook into a downloadable file.
+     * @param {JSZip} jszip A JSZip equivalent library to use to generate/zip the excel file
      * @param {Excel/Workbook} workbook The workbook that is being converted
      * @param {Object} options - options to modify how the excel doc is created. Only accepts a base64 boolean at the moment.
      */
-    public createFile(jszip: typeof JSZip, workbook: Workbook, options?: { base64?: boolean; }) {
+    static createFile(jszip: typeof JSZip, workbook: Workbook, options?: { base64?: boolean; }) {
         var zip = new jszip();
         var files = workbook.generateFiles();
         Object.keys(files).forEach(function (path) {
             var content = files[path];
             path = path.substr(1);
-            if (path.indexOf('.xml') !== -1 || path.indexOf('.rel') !== -1) {
+            if (path.indexOf(".xml") !== -1 || path.indexOf(".rel") !== -1) {
                 zip.file(path, content, { base64: false });
             } else {
                 zip.file(path, content, { base64: true, binary: true });

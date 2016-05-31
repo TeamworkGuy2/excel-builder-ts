@@ -7,7 +7,7 @@ var SharedStrings = (function () {
     function SharedStrings() {
         this.strings = {};
         this.stringArray = [];
-        this.id = Util._uniqueId('SharedStrings');
+        this.id = Util._uniqueId("SharedStrings");
     }
     /** Adds a string to the shared string file, and returns the ID of the
      * string which can be used to reference it in worksheets.
@@ -24,15 +24,15 @@ var SharedStrings = (function () {
         return this.strings;
     };
     SharedStrings.prototype.toXML = function () {
-        var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, 'sst');
+        var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, "sst");
         var sharedStringTable = doc.documentElement;
         this.stringArray.reverse();
         var l = this.stringArray.length;
-        sharedStringTable.setAttribute('count', l);
-        sharedStringTable.setAttribute('uniqueCount', l);
-        var template = doc.createElement('si');
-        var templateValue = doc.createElement('t');
-        templateValue.appendChild(doc.createTextNode('--placeholder--'));
+        sharedStringTable.setAttribute("count", l);
+        sharedStringTable.setAttribute("uniqueCount", l);
+        var template = doc.createElement("si");
+        var templateValue = doc.createElement("t");
+        templateValue.appendChild(doc.createTextNode("--placeholder--"));
         template.appendChild(templateValue);
         var strings = this.stringArray;
         while (l--) {

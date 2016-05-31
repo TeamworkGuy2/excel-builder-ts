@@ -5,7 +5,7 @@ var Util = require("./Util");
  */
 var StyleSheet = (function () {
     function StyleSheet(config) {
-        this.id = Util._uniqueId('StyleSheet');
+        this.id = Util._uniqueId("StyleSheet");
         this.cellStyles = [{
                 name: "Normal",
                 xfId: "0",
@@ -29,10 +29,10 @@ var StyleSheet = (function () {
         this.fonts = [{}];
         this.numberFormatters = [];
         this.fills = [{}, {
-                type: 'pattern',
-                patternType: 'gray125',
-                fgColor: 'FF333333',
-                bgColor: 'FF333333'
+                type: "pattern",
+                patternType: "gray125",
+                fgColor: "FF333333",
+                bgColor: "FF333333"
             }];
         this.borders = [{
                 top: {},
@@ -50,7 +50,7 @@ var StyleSheet = (function () {
             numFmtId: undefined,
         };
         switch (type) {
-            case 'date':
+            case "date":
                 style.numFmtId = 14;
                 break;
         }
@@ -87,7 +87,7 @@ var StyleSheet = (function () {
             fillId: undefined,
             alignment: undefined,
         };
-        if (typeof styleInstructions.font === "[object Object]") {
+        if (isObj(styleInstructions.font)) {
             style.fontId = this.createFontStyle(styleInstructions.font).id;
         }
         else if (styleInstructions.font) {
@@ -96,7 +96,7 @@ var StyleSheet = (function () {
             }
             style.fontId = styleInstructions.font;
         }
-        if (styleInstructions.format && typeof styleInstructions.format === "string") {
+        if (isStr(styleInstructions.format)) {
             style.numFmtId = this.createNumberFormatter(styleInstructions.format).id;
         }
         else if (styleInstructions.format) {
@@ -105,7 +105,7 @@ var StyleSheet = (function () {
             }
             style.numFmtId = styleInstructions.format;
         }
-        if (typeof styleInstructions.border === "[object Object]") {
+        if (isObj(styleInstructions.border)) {
             style.borderId = this.createBorderFormatter(styleInstructions.border).id;
         }
         else if (styleInstructions.border) {
@@ -114,7 +114,7 @@ var StyleSheet = (function () {
             }
             style.borderId = styleInstructions.border;
         }
-        if (typeof styleInstructions.fill === "[object Object]") {
+        if (isObj(styleInstructions.fill)) {
             style.fillId = this.createFill(styleInstructions.fill).id;
         }
         else if (styleInstructions.fill) {
@@ -123,16 +123,16 @@ var StyleSheet = (function () {
             }
             style.fillId = styleInstructions.fill;
         }
-        if (typeof styleInstructions.alignment === "[object Object]") {
+        if (isObj(styleInstructions.alignment)) {
             style.alignment = Util.pick(styleInstructions.alignment, [
-                'horizontal',
-                'justifyLastLine',
-                'readingOrder',
-                'relativeIndent',
-                'shrinkToFit',
-                'textRotation',
-                'vertical',
-                'wrapText'
+                "horizontal",
+                "justifyLastLine",
+                "readingOrder",
+                "relativeIndent",
+                "shrinkToFit",
+                "textRotation",
+                "vertical",
+                "wrapText"
             ]);
         }
         this.masterCellFormats.push(style);
@@ -148,10 +148,10 @@ var StyleSheet = (function () {
             font: undefined,
             numFmt: undefined,
         };
-        if (styleInstructions.font && typeof styleInstructions.font === "[object Object]") {
+        if (isObj(styleInstructions.font)) {
             style.font = styleInstructions.font;
         }
-        if (typeof styleInstructions.border === "[object Object]") {
+        if (isObj(styleInstructions.border)) {
             style.border = Util.defaults(styleInstructions.border, {
                 top: {},
                 left: {},
@@ -160,13 +160,13 @@ var StyleSheet = (function () {
                 diagonal: {}
             });
         }
-        if (typeof styleInstructions.fill === "[object Object]") {
+        if (isObj(styleInstructions.fill)) {
             style.fill = styleInstructions.fill;
         }
-        if (typeof styleInstructions.alignment === "[object Object]") {
+        if (isObj(styleInstructions.alignment)) {
             style.alignment = styleInstructions.alignment;
         }
-        if (styleInstructions.format && typeof styleInstructions.format === "string") {
+        if (isStr(styleInstructions.format)) {
             style.numFmt = styleInstructions.format;
         }
         this.differentialStyles[id] = style;
@@ -200,7 +200,7 @@ var StyleSheet = (function () {
      * }
      */
     StyleSheet.prototype.createBorderFormatter = function (border) {
-        Util.defaults(border, {
+        var res = Util.defaults(border, {
             top: {},
             left: {},
             right: {},
@@ -208,8 +208,8 @@ var StyleSheet = (function () {
             diagonal: {},
             id: this.borders.length
         });
-        this.borders.push(border);
-        return border;
+        this.borders.push(res);
+        return res;
     };
     /**
      * Supported font styles:
@@ -249,13 +249,13 @@ var StyleSheet = (function () {
             fontStyle.italic = true;
         }
         if (instructions.superscript) {
-            fontStyle.vertAlign = 'superscript';
+            fontStyle.vertAlign = "superscript";
         }
         if (instructions.subscript) {
-            fontStyle.vertAlign = 'subscript';
+            fontStyle.vertAlign = "subscript";
         }
         if (instructions.underline) {
-            if (['double', 'singleAccounting', 'doubleAccounting'].indexOf(instructions.underline) != -1) {
+            if (["double", "singleAccounting", "doubleAccounting"].indexOf(instructions.underline) != -1) {
                 fontStyle.underline = instructions.underline;
             }
             else {
@@ -284,54 +284,56 @@ var StyleSheet = (function () {
         return fontStyle;
     };
     StyleSheet.prototype.exportBorders = function (doc) {
-        var borders = doc.createElement('borders');
-        borders.setAttribute('count', this.borders.length);
+        var borders = doc.createElement("borders");
+        borders.setAttribute("count", this.borders.length);
         for (var i = 0, l = this.borders.length; i < l; i++) {
             borders.appendChild(this.exportBorder(doc, this.borders[i]));
         }
         return borders;
     };
     StyleSheet.prototype.exportBorder = function (doc, data) {
-        var border = doc.createElement('border');
+        var border = doc.createElement("border");
         var self = this;
-        var borderGenerator = function (name) {
+        function borderGenerator(name) {
             var b = doc.createElement(name);
             border.appendChild(b);
             if (data[name].style) {
-                b.setAttribute('style', data[name].style);
+                b.setAttribute("style", data[name].style);
             }
             if (data[name].color) {
                 b.appendChild(self.exportColor(doc, data[name].color));
             }
             return b;
-        };
-        border.appendChild(borderGenerator('left'));
-        border.appendChild(borderGenerator('right'));
-        border.appendChild(borderGenerator('top'));
-        border.appendChild(borderGenerator('bottom'));
-        border.appendChild(borderGenerator('diagonal'));
+        }
+        ;
+        border.appendChild(borderGenerator("left"));
+        border.appendChild(borderGenerator("right"));
+        border.appendChild(borderGenerator("top"));
+        border.appendChild(borderGenerator("bottom"));
+        border.appendChild(borderGenerator("diagonal"));
         return border;
     };
     StyleSheet.prototype.exportColor = function (doc, color) {
-        var colorEl = doc.createElement('color');
-        if (typeof color === "string") {
-            colorEl.setAttribute('rgb', color);
-            return colorEl;
+        var colorEl = doc.createElement("color");
+        if (isStr(color)) {
+            colorEl.setAttribute("rgb", color);
         }
-        if (color.tint != null) {
-            colorEl.setAttribute('tint', color.tint);
-        }
-        if (color.auto != null) {
-            colorEl.setAttribute('auto', !!color.auto);
-        }
-        if (color.theme != null) {
-            colorEl.setAttribute('theme', color.theme);
+        else {
+            if (color.tint != null) {
+                colorEl.setAttribute("tint", color.tint);
+            }
+            if (color.auto != null) {
+                colorEl.setAttribute("auto", !!color.auto);
+            }
+            if (color.theme != null) {
+                colorEl.setAttribute("theme", color.theme);
+            }
         }
         return colorEl;
     };
     StyleSheet.prototype.exportMasterCellFormats = function (doc) {
-        var cellFormats = Util.createElement(doc, 'cellXfs', [
-            ['count', this.masterCellFormats.length]
+        var cellFormats = Util.createElement(doc, "cellXfs", [
+            ["count", this.masterCellFormats.length]
         ]);
         for (var i = 0, l = this.masterCellFormats.length; i < l; i++) {
             var mformat = this.masterCellFormats[i];
@@ -340,8 +342,8 @@ var StyleSheet = (function () {
         return cellFormats;
     };
     StyleSheet.prototype.exportMasterCellStyles = function (doc) {
-        var records = Util.createElement(doc, 'cellStyleXfs', [
-            ['count', this.masterCellStyles.length]
+        var records = Util.createElement(doc, "cellStyleXfs", [
+            ["count", this.masterCellStyles.length]
         ]);
         for (var i = 0, l = this.masterCellStyles.length; i < l; i++) {
             var mstyle = this.masterCellStyles[i];
@@ -350,9 +352,9 @@ var StyleSheet = (function () {
         return records;
     };
     StyleSheet.prototype.exportCellFormatElement = function (doc, styleInstructions) {
-        var xf = doc.createElement('xf'), i = 0, l;
-        var allowed = ['applyAlignment', 'applyBorder', 'applyFill', 'applyFont', 'applyNumberFormat',
-            'applyProtection', 'borderId', 'fillId', 'fontId', 'numFmtId', 'pivotButton', 'quotePrefix', 'xfId'];
+        var xf = doc.createElement("xf"), i = 0;
+        var allowed = ["applyAlignment", "applyBorder", "applyFill", "applyFont", "applyNumberFormat",
+            "applyProtection", "borderId", "fillId", "fontId", "numFmtId", "pivotButton", "quotePrefix", "xfId"];
         var attributes = Object.keys(styleInstructions).filter(function (key) { return allowed.indexOf(key) != -1; });
         if (styleInstructions.alignment) {
             var alignmentData = styleInstructions.alignment;
@@ -363,21 +365,21 @@ var StyleSheet = (function () {
             xf.setAttribute(attributes[a], styleInstructions[attributes[a]]);
         }
         if (styleInstructions.fillId) {
-            xf.setAttribute('applyFill', '1');
+            xf.setAttribute("applyFill", '1');
         }
         return xf;
     };
     StyleSheet.prototype.exportAlignment = function (doc, alignmentData) {
-        var alignment = doc.createElement('alignment');
+        var alignment = doc.createElement("alignment");
         var keys = Object.keys(alignmentData);
-        for (var i = 0, l = keys.length; i < l; i++) {
+        for (var i = 0, len = keys.length; i < len; i++) {
             alignment.setAttribute(keys[i], alignmentData[keys[i]]);
         }
         return alignment;
     };
     StyleSheet.prototype.exportFonts = function (doc) {
-        var fonts = doc.createElement('fonts');
-        fonts.setAttribute('count', this.fonts.length);
+        var fonts = doc.createElement("fonts");
+        fonts.setAttribute("count", this.fonts.length);
         for (var i = 0, l = this.fonts.length; i < l; i++) {
             var fd = this.fonts[i];
             fonts.appendChild(this.exportFont(doc, fd));
@@ -385,43 +387,43 @@ var StyleSheet = (function () {
         return fonts;
     };
     StyleSheet.prototype.exportFont = function (doc, fd) {
-        var font = doc.createElement('font');
+        var font = doc.createElement("font");
         if (fd.size) {
-            var size = doc.createElement('sz');
-            size.setAttribute('val', fd.size);
+            var size = doc.createElement("sz");
+            size.setAttribute("val", fd.size);
             font.appendChild(size);
         }
         if (fd.fontName) {
-            var fontName = doc.createElement('name');
-            fontName.setAttribute('val', fd.name);
+            var fontName = doc.createElement("name");
+            fontName.setAttribute("val", fd.fontName);
             font.appendChild(fontName);
         }
         if (fd.bold) {
-            font.appendChild(doc.createElement('b'));
+            font.appendChild(doc.createElement("b"));
         }
         if (fd.italic) {
-            font.appendChild(doc.createElement('i'));
+            font.appendChild(doc.createElement("i"));
         }
         if (fd.vertAlign) {
-            var vertAlign = doc.createElement('vertAlign');
-            vertAlign.setAttribute('val', fd.vertAlign);
+            var vertAlign = doc.createElement("vertAlign");
+            vertAlign.setAttribute("val", fd.vertAlign);
             font.appendChild(vertAlign);
         }
         if (fd.underline) {
-            var u = doc.createElement('u');
+            var u = doc.createElement("u");
             if (fd.underline !== true) {
-                u.setAttribute('val', fd.underline);
+                u.setAttribute("val", fd.underline);
             }
             font.appendChild(u);
         }
         if (fd.strike) {
-            font.appendChild(doc.createElement('strike'));
+            font.appendChild(doc.createElement("strike"));
         }
         if (fd.shadow) {
-            font.appendChild(doc.createElement('shadow'));
+            font.appendChild(doc.createElement("shadow"));
         }
         if (fd.outline) {
-            font.appendChild(doc.createElement('outline'));
+            font.appendChild(doc.createElement("outline"));
         }
         if (fd.color) {
             font.appendChild(this.exportColor(doc, fd.color));
@@ -429,8 +431,8 @@ var StyleSheet = (function () {
         return font;
     };
     StyleSheet.prototype.exportFills = function (doc) {
-        var fills = doc.createElement('fills');
-        fills.setAttribute('count', this.fills.length);
+        var fills = doc.createElement("fills");
+        fills.setAttribute("count", this.fills.length);
         for (var i = 0, l = this.fills.length; i < l; i++) {
             var fd = this.fills[i];
             fills.appendChild(this.exportFill(doc, fd));
@@ -439,45 +441,45 @@ var StyleSheet = (function () {
     };
     StyleSheet.prototype.exportFill = function (doc, fd) {
         var fillDef;
-        var fill = doc.createElement('fill');
-        if (fd.type == 'pattern') {
+        var fill = doc.createElement("fill");
+        if (fd.type == "pattern") {
             fillDef = this.exportPatternFill(doc, fd);
             fill.appendChild(fillDef);
         }
-        else if (fd.type == 'gradient') {
+        else if (fd.type == "gradient") {
             fillDef = this.exportGradientFill(doc, fd);
             fill.appendChild(fillDef);
         }
         return fill;
     };
     StyleSheet.prototype.exportGradientFill = function (doc, data) {
-        var fillDef = doc.createElement('gradientFill');
+        var fillDef = doc.createElement("gradientFill");
         if (data.degree) {
-            fillDef.setAttribute('degree', data.degree);
+            fillDef.setAttribute("degree", data.degree);
         }
         else if (data.left) {
-            fillDef.setAttribute('left', data.left);
-            fillDef.setAttribute('right', data.right);
-            fillDef.setAttribute('top', data.top);
-            fillDef.setAttribute('bottom', data.bottom);
+            fillDef.setAttribute("left", data.left);
+            fillDef.setAttribute("right", data.right);
+            fillDef.setAttribute("top", data.top);
+            fillDef.setAttribute("bottom", data.bottom);
         }
-        var start = doc.createElement('stop');
-        start.setAttribute('position', data.start.pureAt || 0);
-        var startColor = doc.createElement('color');
-        if (typeof data.start == 'string' || data.start.color) {
-            startColor.setAttribute('rgb', data.start.color || data.start);
+        var start = doc.createElement("stop");
+        start.setAttribute("position", data.start.pureAt || 0);
+        var startColor = doc.createElement("color");
+        if (isStr(data.start) || data.start.color) {
+            startColor.setAttribute("rgb", data.start.color || data.start);
         }
         else if (typeof data.start.theme) {
-            startColor.setAttribute('theme', data.start.theme);
+            startColor.setAttribute("theme", data.start.theme);
         }
-        var end = doc.createElement('stop');
-        var endColor = doc.createElement('color');
-        end.setAttribute('position', data.end.pureAt || 1);
-        if (typeof data.start == 'string' || data.end.color) {
-            endColor.setAttribute('rgb', data.end.color || data.end);
+        var end = doc.createElement("stop");
+        var endColor = doc.createElement("color");
+        end.setAttribute("position", data.end.pureAt || 1);
+        if (isStr(data.start) || data.end.color) {
+            endColor.setAttribute("rgb", data.end.color || data.end);
         }
         else if (typeof data.end.theme) {
-            endColor.setAttribute('theme', data.end.theme);
+            endColor.setAttribute("theme", data.end.theme);
         }
         start.appendChild(startColor);
         end.appendChild(endColor);
@@ -489,46 +491,42 @@ var StyleSheet = (function () {
      * Pattern types: http://www.schemacentral.com/sc/ooxml/t-ssml_ST_PatternType.html
      */
     StyleSheet.prototype.exportPatternFill = function (doc, data) {
-        var fillDef = Util.createElement(doc, 'patternFill', [
-            ['patternType', data.patternType]
+        var fillDef = Util.createElement(doc, "patternFill", [
+            ["patternType", data.patternType]
         ]);
-        if (!data.bgColor) {
-            data.bgColor = 'FFFFFFFF';
-        }
-        if (!data.fgColor) {
-            data.fgColor = 'FFFFFFFF';
-        }
-        var bgColor = doc.createElement('bgColor');
-        if (typeof data.bgColor === "string") {
-            bgColor.setAttribute('rgb', data.bgColor);
+        var bgColor = (!data.bgColor ? data.bgColor = "FFFFFFFF" : data.bgColor);
+        var fgColor = (!data.fgColor ? data.fgColor = "FFFFFFFF" : data.fgColor);
+        var bgColorElem = doc.createElement("bgColor");
+        if (isStr(bgColor)) {
+            bgColorElem.setAttribute("rgb", bgColor);
         }
         else {
-            if (data.bgColor.theme) {
-                bgColor.setAttribute('theme', data.bgColor.theme);
+            if (bgColor.theme) {
+                bgColorElem.setAttribute("theme", bgColor.theme);
             }
             else {
-                bgColor.setAttribute('rgb', data.bgColor.rbg);
+                bgColorElem.setAttribute("rgb", bgColor.rbg);
             }
         }
-        var fgColor = doc.createElement('fgColor');
-        if (typeof data.fgColor === "string") {
-            fgColor.setAttribute('rgb', data.fgColor);
+        var fgColorElem = doc.createElement("fgColor");
+        if (isStr(fgColor)) {
+            fgColorElem.setAttribute("rgb", fgColor);
         }
         else {
-            if (data.fgColor.theme) {
-                fgColor.setAttribute('theme', data.fgColor.theme);
+            if (fgColor.theme) {
+                fgColorElem.setAttribute("theme", fgColor.theme);
             }
             else {
-                fgColor.setAttribute('rgb', data.fgColor.rbg);
+                fgColorElem.setAttribute("rgb", fgColor.rbg);
             }
         }
-        fillDef.appendChild(fgColor);
-        fillDef.appendChild(bgColor);
+        fillDef.appendChild(fgColorElem);
+        fillDef.appendChild(bgColorElem);
         return fillDef;
     };
     StyleSheet.prototype.exportNumberFormatters = function (doc) {
-        var formatters = doc.createElement('numFmts');
-        formatters.setAttribute('count', this.numberFormatters.length);
+        var formatters = doc.createElement("numFmts");
+        formatters.setAttribute("count", this.numberFormatters.length);
         for (var i = 0, l = this.numberFormatters.length; i < l; i++) {
             var fd = this.numberFormatters[i];
             formatters.appendChild(this.exportNumberFormatter(doc, fd));
@@ -536,18 +534,18 @@ var StyleSheet = (function () {
         return formatters;
     };
     StyleSheet.prototype.exportNumberFormatter = function (doc, fd) {
-        var numFmt = doc.createElement('numFmt');
-        numFmt.setAttribute('numFmtId', fd.id);
-        numFmt.setAttribute('formatCode', fd.formatCode);
+        var numFmt = doc.createElement("numFmt");
+        numFmt.setAttribute("numFmtId", fd.id);
+        numFmt.setAttribute("formatCode", fd.formatCode);
         return numFmt;
     };
     StyleSheet.prototype.exportCellStyles = function (doc) {
-        var cellStylesElem = doc.createElement('cellStyles');
-        cellStylesElem.setAttribute('count', this.cellStyles.length);
+        var cellStylesElem = doc.createElement("cellStyles");
+        cellStylesElem.setAttribute("count", this.cellStyles.length);
         for (var i = 0, l = this.cellStyles.length; i < l; i++) {
             var style = this.cellStyles[i];
             delete style.id; //Remove internal id
-            var record = Util.createElement(doc, 'cellStyle');
+            var record = Util.createElement(doc, "cellStyle");
             cellStylesElem.appendChild(record);
             var attributes = Object.keys(style);
             var a = attributes.length;
@@ -558,8 +556,8 @@ var StyleSheet = (function () {
         return cellStylesElem;
     };
     StyleSheet.prototype.exportDifferentialStyles = function (doc) {
-        var dxfs = doc.createElement('dxfs');
-        dxfs.setAttribute('count', this.differentialStyles.length);
+        var dxfs = doc.createElement("dxfs");
+        dxfs.setAttribute("count", this.differentialStyles.length);
         for (var i = 0, l = this.differentialStyles.length; i < l; i++) {
             var style = this.differentialStyles[i];
             dxfs.appendChild(this.exportDFX(doc, style));
@@ -567,7 +565,7 @@ var StyleSheet = (function () {
         return dxfs;
     };
     StyleSheet.prototype.exportDFX = function (doc, style) {
-        var dxf = doc.createElement('dxf');
+        var dxf = doc.createElement("dxf");
         if (style.font) {
             dxf.appendChild(this.exportFont(doc, style.font));
         }
@@ -586,10 +584,10 @@ var StyleSheet = (function () {
         return dxf;
     };
     StyleSheet.prototype.exportTableStyles = function (doc) {
-        var tableStyles = doc.createElement('tableStyles');
-        tableStyles.setAttribute('count', this.tableStyles.length);
+        var tableStyles = doc.createElement("tableStyles");
+        tableStyles.setAttribute("count", this.tableStyles.length);
         if (this.defaultTableStyle) {
-            tableStyles.setAttribute('defaultTableStyle', this.defaultTableStyle);
+            tableStyles.setAttribute("defaultTableStyle", this.defaultTableStyle);
         }
         for (var i = 0, l = this.tableStyles.length; i < l; i++) {
             tableStyles.appendChild(this.exportTableStyle(doc, this.tableStyles[i]));
@@ -597,26 +595,26 @@ var StyleSheet = (function () {
         return tableStyles;
     };
     StyleSheet.prototype.exportTableStyle = function (doc, style) {
-        var tableStyle = doc.createElement('tableStyle');
-        tableStyle.setAttribute('name', style.name);
-        tableStyle.setAttribute('pivot', 0);
+        var tableStyle = doc.createElement("tableStyle");
+        tableStyle.setAttribute("name", style.name);
+        tableStyle.setAttribute("pivot", 0);
         var i = 0;
         Object.keys(style).forEach(function (key) {
             var value = style[key];
-            if (key == 'name') {
+            if (key == "name") {
                 return;
             }
             i++;
-            var styleEl = doc.createElement('tableStyleElement');
-            styleEl.setAttribute('type', key);
-            styleEl.setAttribute('dxfId', value);
+            var styleEl = doc.createElement("tableStyleElement");
+            styleEl.setAttribute("type", key);
+            styleEl.setAttribute("dxfId", value);
             tableStyle.appendChild(styleEl);
         });
-        tableStyle.setAttribute('count', i);
+        tableStyle.setAttribute("count", i);
         return tableStyle;
     };
     StyleSheet.prototype.toXML = function () {
-        var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, 'styleSheet');
+        var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, "styleSheet");
         var styleSheet = doc.documentElement;
         styleSheet.appendChild(this.exportNumberFormatters(doc));
         styleSheet.appendChild(this.exportFonts(doc));
@@ -633,4 +631,11 @@ var StyleSheet = (function () {
     };
     return StyleSheet;
 }());
+var toStrFunc = Object.prototype.toString;
+function isObj(obj) {
+    return obj && toStrFunc.call(obj) === "[object Object]";
+}
+function isStr(str) {
+    return str && toStrFunc.call(str) === "[object String]";
+}
 module.exports = StyleSheet;
