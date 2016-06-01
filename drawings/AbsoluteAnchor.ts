@@ -1,4 +1,5 @@
 import Util = require("../Util");
+import XmlDom = require("../XmlDom");
 
 class AbsoluteAnchor {
     x: number;
@@ -49,7 +50,7 @@ class AbsoluteAnchor {
     }
 
 
-    public toXML(xmlDoc: XMLDocument, content: Node) {
+    public toXML(xmlDoc: XmlDom, content: XmlDom.NodeBase) {
         var root = Util.createElement(xmlDoc, "xdr:absoluteAnchor");
         var pos = Util.createElement(xmlDoc, "xdr:pos");
         pos.setAttribute("x", <any>this.x);

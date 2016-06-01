@@ -1,4 +1,5 @@
 import Util = require("../Util");
+import XmlDom = require("../XmlDom");
 
 class TwoCellAnchor {
     from: Util.OffsetConfig;
@@ -39,7 +40,7 @@ class TwoCellAnchor {
     }
 
 
-    public toXML(xmlDoc: XMLDocument, content: Node) {
+    public toXML(xmlDoc: XmlDom, content: XmlDom.NodeBase) {
         var root = Util.createElement(xmlDoc, "xdr:twoCellAnchor");
 
         var from = Util.createElement(xmlDoc, "xdr:from");

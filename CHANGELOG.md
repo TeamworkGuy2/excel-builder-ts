@@ -4,7 +4,13 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.1.1](N/A) - 2016-05-31
+### [0.1.2](N/A) - 2016-06-01
+#### Changed
+* Corrected/added some type definitions
+
+
+--------
+### [0.1.1](https://github.com/TeamworkGuy2/excel-builder-ts/commit/c0d76ebed850b73aeb7eed4c52830f27e1df7bae) - 2016-05-31
 #### Changed
 * Switched all applicable strings from single to double quotes
 * Added some missing and best guess data types

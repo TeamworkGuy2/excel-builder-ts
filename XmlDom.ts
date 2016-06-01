@@ -41,14 +41,14 @@ module XmlDom {
 
 
     export interface NodeConfig {
-        type: "XML" | "TEXT";
         nodeValue?: string;
+        type: "XML" | "TEXT";
     }
 
 
     export interface NodeBase {
         nodeValue?: string;
-        toJSON(): NodeConfig;
+        toJSON?(): NodeConfig;
     }
 
 

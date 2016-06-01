@@ -1,19 +1,21 @@
 import Util = require("../Util");
+import XmlDom = require("../XmlDom");
 import Drawing = require("./Drawing");
+import Drawings = require("../Drawings");
 
 class Picture {
     static Cctor = (function () {
         var thisProto = Picture.prototype;
-        Picture.prototype = <any>new Drawing();
+        Picture.prototype = new (<any>Drawing)();
         Object.assign(Picture.prototype, thisProto);
     } ());
 
-    anchor: any;
+    anchor: Drawing.AnchorLike;
     description: string;
     fill: any;
     id: string;
     media: any;
-    mediaData: { rId: string; fileName: string; };
+    mediaData: { rId?: string; id: string; fileName: string; };
     pictureId: number;
 
 
@@ -26,7 +28,7 @@ class Picture {
     }
 
 
-    public setMedia(mediaRef: { rId: string; fileName: string; [id: string]: any }) {
+    public setMedia(mediaRef: { rId?: string; id: string; fileName: string; [id: string]: any }) {
         this.mediaData = mediaRef;
     }
 
@@ -51,7 +53,7 @@ class Picture {
     }
 
 
-    public getMediaData() {
+    public getMediaData(): { id: string; schema?: string; } {
         return this.mediaData;
     }
 
@@ -61,7 +63,7 @@ class Picture {
     }
 
 
-    public toXML(xmlDoc: XMLDocument) {
+    public toXML(xmlDoc: XmlDom): XmlDom.NodeBase {
         var pictureNode = Util.createElement(xmlDoc, "xdr:pic");
 
         var nonVisibleProperties = Util.createElement(xmlDoc, "xdr:nvPicPr");
@@ -128,4 +130,5 @@ class Picture {
 
 }
 
-export = <{ new (): Picture & Drawing }><any>Picture;
+interface PictureDrawing extends Picture, Drawing, Drawings.Drawing { }
+export = <{ new (): PictureDrawing }><any>Picture;

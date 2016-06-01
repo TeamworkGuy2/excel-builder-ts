@@ -1,4 +1,5 @@
 import Util = require("../Util");
+import XmlDom = require("../XmlDom");
 
 class OneCellAnchor {
     x: number;
@@ -49,7 +50,7 @@ class OneCellAnchor {
     }
 
 
-    public toXML(xmlDoc: XMLDocument, content: Node) {
+    public toXML(xmlDoc: XmlDom, content: XmlDom.NodeBase) {
         var root = Util.createElement(xmlDoc, "xdr:oneCellAnchor");
         var from = Util.createElement(xmlDoc, "xdr:from");
         var fromCol = Util.createElement(xmlDoc, "xdr:col");

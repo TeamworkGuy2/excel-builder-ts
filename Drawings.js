@@ -26,14 +26,14 @@ var Drawings = (function () {
         var drawingsElem = doc.documentElement;
         //drawings.setAttribute('xmlns:xdr', util.schemas.spreadsheetDrawing);
         drawingsElem.setAttribute("xmlns:a", Util.schemas.drawing);
-        var existingRelationships = {};
         for (var i = 0, l = this.drawings.length; i < l; i++) {
-            var rId = this.relations.getRelationshipId(this.drawings[i].getMediaData());
+            var drwI = this.drawings[i];
+            var rId = this.relations.getRelationshipId(drwI.getMediaData());
             if (!rId) {
-                rId = this.relations.addRelation(this.drawings[i].getMediaData(), this.drawings[i].getMediaType()); //chart
+                rId = this.relations.addRelation(drwI.getMediaData(), drwI.getMediaType()); //chart
             }
-            this.drawings[i].setRelationshipId(rId);
-            drawingsElem.appendChild(this.drawings[i].toXML(doc));
+            drwI.setRelationshipId(rId);
+            drawingsElem.appendChild(drwI.toXML(doc));
         }
         return doc;
     };
