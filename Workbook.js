@@ -63,6 +63,33 @@ var Workbook = (function () {
     Workbook.prototype.addDrawings = function (drawings) {
         this.drawings.push(drawings);
     };
+    /** Set number of rows to repeat for this sheet.
+     * @param {string} inSheet sheet name
+     * @param {int} inRowCount number of rows to repeat from the top
+     */
+    Workbook.prototype.setPrintTitleTop = function (inSheet, inRowCount) {
+        if (this.printTitles == null) {
+            this.printTitles = {};
+        }
+        if (this.printTitles[inSheet] == null) {
+            this.printTitles[inSheet] = {};
+        }
+        this.printTitles[inSheet].top = inRowCount;
+    };
+    /** Set number of rows to repeat for this sheet.
+     * @param {string} inSheet sheet name
+     * @param {int} inColumn number of columns to repeat from the left
+     */
+    Workbook.prototype.setPrintTitleLeft = function (inSheet, inColumn) {
+        if (this.printTitles == null) {
+            this.printTitles = {};
+        }
+        if (this.printTitles[inSheet] == null) {
+            this.printTitles[inSheet] = {};
+        }
+        //WARN: this does not handle AA, AB, etc.
+        this.printTitles[inSheet].left = String.fromCharCode(64 + inColumn);
+    };
     Workbook.prototype.addMedia = function (type, fileName, fileData, contentType) {
         var fileNamePieces = fileName.split('.');
         var extension = fileNamePieces[fileNamePieces.length - 1];
@@ -165,6 +192,31 @@ var Workbook = (function () {
             sheets.appendChild(sheet);
         }
         wb.appendChild(sheets);
+        // now to add repeating rows
+        var definedNames = Util.createElement(doc, "definedNames");
+        var ctr = 0;
+        for (var name in this.printTitles) {
+            if (!this.printTitles.hasOwnProperty(name)) {
+                continue;
+            }
+            var entry = this.printTitles[name];
+            var definedName = doc.createElement("definedName");
+            definedName.setAttribute("name", "_xlnm.Print_Titles");
+            definedName.setAttribute("localSheetId", ctr++);
+            var value = "";
+            if (entry.top) {
+                value += name + "!$1:$" + entry.top;
+                if (entry.left) {
+                    value += ",";
+                }
+            }
+            if (entry.left) {
+                value += name + "!$A:$" + entry.left;
+            }
+            definedName.appendChild(doc.createTextNode(value));
+            definedNames.appendChild(definedName);
+        }
+        wb.appendChild(definedNames);
         return doc;
     };
     Workbook.prototype.createWorkbookRelationship = function () {

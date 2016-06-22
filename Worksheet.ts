@@ -26,6 +26,8 @@ class Worksheet {
     _timezoneOffset: number;
     // The page orientation
     _orientation: string;
+    // the page margins
+    _margin: Worksheet.Margins;
 
     // custom-code 2014-6-27
     // A two dimensional array of objects with custom XML attributes to add this worksheet's cells
@@ -553,11 +555,47 @@ class Worksheet {
      * @returns {undefined}
      */
     public exportPageSettings(doc: XmlDom, worksheet: XmlDom.XMLNode) {
+        if (this._margin) {
+            var defaultVal = 0.7;
+            var left = this._margin.left ? this._margin.left : defaultVal;
+            var right = this._margin.right ? this._margin.right : defaultVal;
+            var top = this._margin.top ? this._margin.top : defaultVal;
+            var bottom = this._margin.bottom ? this._margin.bottom : defaultVal;
+            defaultVal = 0.3;
+            var header = this._margin.header ? this._margin.header : defaultVal;
+            var footer = this._margin.footer ? this._margin.footer : defaultVal;
+
+            worksheet.appendChild(Util.createElement(doc, "pageMargins", [
+                ["top", top],
+                ["bottom", bottom],
+                ["left", left],
+                ["right", right],
+                ["header", header],
+                ["footer", footer],
+            ]));
+        }
+
         if (this._orientation) {
             worksheet.appendChild(Util.createElement(doc, "pageSetup", [
                 ["orientation", this._orientation]
             ]));
         }
+    }
+
+
+    /** Set page details in inches.
+     * use this structure:
+     * {
+     *  top: 0.7,
+     *  bottom: 0.7,
+     *  left: 0.7,
+     *  right: 0.7,
+     *  header: 0.3,
+     *  footer: 0.3,
+     * }
+     */
+    public setPageMargin(input: Worksheet.Margins) {
+        this._margin = input;
     }
 
 
@@ -643,6 +681,16 @@ module Worksheet {
         phonetic: boolean;
         style: number;
         width: number;
+    }
+
+
+    export interface Margins {
+        top?: string | number;
+        bottom?: string | number;
+        left?: string | number;
+        right?: string | number;
+        header?: string | number;
+        footer?: string | number;
     }
 
 }

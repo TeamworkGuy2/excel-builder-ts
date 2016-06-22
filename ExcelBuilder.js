@@ -1,5 +1,5 @@
 /// <reference path="./excel-builder.d.ts" />
-/// <reference path="../definitions/lib/jszip.d.ts" />
+/// <reference path="../definitions/jszip/jszip.d.ts" />
 "use strict";
 var Workbook = require("./Workbook");
 /**

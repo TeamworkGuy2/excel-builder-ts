@@ -4,7 +4,13 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.1.2](N/A) - 2016-06-01
+### [0.1.3](N/A) - 2016-06-21
+#### Changed
+* Merged up to latest excel-builder.js commit from 2016-06-02 (https://github.com/stephenliberty/excel-builder.js/commit/86129145d6242d973a6ade31c1a9a2c80420b2f0)
+
+
+--------
+### [0.1.2](https://github.com/TeamworkGuy2/excel-builder-ts/commit/bf2bbb96b52e8a5dc6fb8156533abd74e9b05e59) - 2016-06-01
 #### Changed
 * Corrected/added some type definitions
 
