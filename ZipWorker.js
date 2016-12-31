@@ -10,10 +10,12 @@ onmessage = function (event) {
     postMessage({
         base64: !!event.data.base64
     }, undefined);
-    postMessage({
-        status: "done",
-        data: zip.generate({
-            base64: !!event.data.base64
-        })
-    }, undefined);
+    zip.generateAsync({
+        base64: !!event.data.base64
+    }).then(function (data) {
+        postMessage({
+            status: 'done',
+            data: data
+        }, undefined);
+    });
 };

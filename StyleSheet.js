@@ -475,7 +475,7 @@ var StyleSheet = (function () {
         var end = doc.createElement("stop");
         var endColor = doc.createElement("color");
         end.setAttribute("position", data.end.pureAt || 1);
-        if (isStr(data.start) || data.end.color) {
+        if (isStr(data.end) || data.end.color) {
             endColor.setAttribute("rgb", data.end.color || data.end);
         }
         else if (typeof data.end.theme) {

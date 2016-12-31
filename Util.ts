@@ -41,8 +41,8 @@ class Util {
 
     static defaults<T1, T2>(obj: T1, overrides: T2): T1 & T2 {
         for (var key in overrides) {
-            if (overrides.hasOwnProperty(key) && (obj[key] === undefined)) {
-                obj[key] = overrides[key];
+            if (overrides.hasOwnProperty(key) && (obj[<string>key] === undefined)) {
+                obj[<string>key] = overrides[key];
             }
         }
         return <any>obj;

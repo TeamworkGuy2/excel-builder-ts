@@ -110,28 +110,28 @@ var Util = (function () {
         Util.LETTER_REFS[x] = string;
         return string.concat(y);
     };
-    Util._idSpaces = {};
-    Util._id = 0;
-    Util.LETTER_REFS = {};
-    Util.schemas = {
-        "worksheet": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet",
-        "sharedStrings": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings",
-        "stylesheet": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles",
-        "relationships": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
-        "relationshipPackage": "http://schemas.openxmlformats.org/package/2006/relationships",
-        "contentTypes": "http://schemas.openxmlformats.org/package/2006/content-types",
-        "spreadsheetml": "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
-        "markupCompat": "http://schemas.openxmlformats.org/markup-compatibility/2006",
-        "x14ac": "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac",
-        "officeDocument": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument",
-        "package": "http://schemas.openxmlformats.org/package/2006/relationships",
-        "table": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table",
-        "spreadsheetDrawing": "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing",
-        "drawing": "http://schemas.openxmlformats.org/drawingml/2006/main",
-        "drawingRelationship": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing",
-        "image": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
-        "chart": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"
-    };
     return Util;
 }());
+Util._idSpaces = {};
+Util._id = 0;
+Util.LETTER_REFS = {};
+Util.schemas = {
+    "worksheet": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet",
+    "sharedStrings": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings",
+    "stylesheet": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles",
+    "relationships": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+    "relationshipPackage": "http://schemas.openxmlformats.org/package/2006/relationships",
+    "contentTypes": "http://schemas.openxmlformats.org/package/2006/content-types",
+    "spreadsheetml": "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
+    "markupCompat": "http://schemas.openxmlformats.org/markup-compatibility/2006",
+    "x14ac": "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac",
+    "officeDocument": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument",
+    "package": "http://schemas.openxmlformats.org/package/2006/relationships",
+    "table": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table",
+    "spreadsheetDrawing": "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing",
+    "drawing": "http://schemas.openxmlformats.org/drawingml/2006/main",
+    "drawingRelationship": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing",
+    "image": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
+    "chart": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"
+};
 module.exports = Util;

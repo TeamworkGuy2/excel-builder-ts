@@ -519,19 +519,19 @@ class StyleSheet {
             fillDef.setAttribute("bottom", data.bottom);
         }
         var start = doc.createElement("stop");
-        start.setAttribute("position", data.start.pureAt || 0);
+        start.setAttribute("position", (<any>data.start).pureAt || 0);
         var startColor = doc.createElement("color");
         if (isStr(data.start) || data.start.color) {
-            startColor.setAttribute("rgb", data.start.color || data.start);
+            startColor.setAttribute("rgb", (<any>data.start).color || data.start);
         } else if (typeof data.start.theme) {
             startColor.setAttribute("theme", data.start.theme);
         }
 
         var end = doc.createElement("stop");
         var endColor = doc.createElement("color");
-        end.setAttribute("position", data.end.pureAt || 1);
-        if (isStr(data.start) || data.end.color) {
-            endColor.setAttribute("rgb", data.end.color || data.end);
+        end.setAttribute("position", (<any>data.end).pureAt || 1);
+        if (isStr(data.end) || data.end.color) {
+            endColor.setAttribute("rgb", (<any>data.end).color || data.end);
         } else if (typeof data.end.theme) {
             endColor.setAttribute("theme", data.end.theme);
         }
@@ -740,8 +740,8 @@ module StyleSheet {
         right?;
         top?;
         bottom?;
-        start?: string & { pureAt?: number; color?; theme?; };
-        end?: string & { pureAt?: number; color?; theme?; };
+        start?: string | { pureAt?: number; color?; theme?; };
+        end?: string | { pureAt?: number; color?; theme?; };
     }
 
 }

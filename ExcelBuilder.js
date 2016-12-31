@@ -65,7 +65,7 @@ var ExcelBuilder = (function () {
                 zip.file(path, content, { base64: true, binary: true });
             }
         });
-        return zip.generate({
+        return zip.generateAsync({
             base64: (!options || options.base64 !== false)
         });
     };

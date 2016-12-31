@@ -15,7 +15,6 @@ var XmlDom = (function () {
     };
     return XmlDom;
 }());
-var XmlDom;
 (function (XmlDom) {
     var Node = (function () {
         function Node() {

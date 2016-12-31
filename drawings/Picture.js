@@ -87,11 +87,11 @@ var Picture = (function () {
         //     </xdr:spPr>
         return this.anchor.toXML(xmlDoc, pictureNode);
     };
-    Picture.Cctor = (function () {
-        var thisProto = Picture.prototype;
-        Picture.prototype = new Drawing();
-        Object.assign(Picture.prototype, thisProto);
-    }());
     return Picture;
+}());
+Picture.Cctor = (function () {
+    var thisProto = Picture.prototype;
+    Picture.prototype = new Drawing();
+    Object.assign(Picture.prototype, thisProto);
 }());
 module.exports = Picture;
