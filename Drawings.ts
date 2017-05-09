@@ -21,7 +21,7 @@ class Drawings {
     /**
      * Adds a drawing (more likely a subclass of a Drawing) to the 'Drawings' for a particular worksheet.
      * 
-     * @param {Drawing} drawing
+     * @param drawing
      */
     public addDrawing(drawing: Drawings.Drawing) {
         this.drawings.push(drawing);

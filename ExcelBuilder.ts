@@ -1,4 +1,3 @@
-/// <reference path="./excel-builder.d.ts" />
 /// <reference path="../definitions/jszip/jszip.d.ts" />
 
 import Workbook = require("./Workbook");
@@ -21,12 +20,12 @@ class ExcelBuilder {
 
 
     /** Turns a workbook into a downloadable file. 
-     * @param {Excel/Workbook} workbook The workbook that is being converted
-     * @param {Object} options
-     * @param {boolean} options.base64 Whether to 'return' the generated file as a base64 string
-     * @param {Function} options.success The callback function to run after workbook creation is successful.
-     * @param {Function} options.error The callback function to run if there is an error creating the workbook.
-     * @param {string} options.requireJsPath (Optional) The path to requirejs. Will use the id 'requirejs' to look up the script if not specified.
+     * @param workbook The workbook that is being converted
+     * @param options
+     * options.base64 Whether to 'return' the generated file as a base64 string
+     * options.success The callback function to run after workbook creation is successful.
+     * options.error The callback function to run if there is an error creating the workbook.
+     * options.requireJsPath (Optional) The path to requirejs. Will use the id 'requirejs' to look up the script if not specified.
      */
     static createFileAsync(workbook: Workbook, options: { base64: boolean; error: () => void; requireJsPath?: string; success: (data: any) => void; }, jszipPath: string, zipWorkerPath: string, worksheetExportWorkerPath: string) {
 
@@ -53,9 +52,9 @@ class ExcelBuilder {
 
 
     /** Turns a workbook into a downloadable file.
-     * @param {JSZip} jszip A JSZip equivalent library to use to generate/zip the excel file
-     * @param {Excel/Workbook} workbook The workbook that is being converted
-     * @param {Object} options - options to modify how the excel doc is created. Only accepts a base64 boolean at the moment.
+     * @param jszip A JSZip equivalent library to use to generate/zip the excel file
+     * @param workbook The workbook that is being converted
+     * @param options - options to modify how the excel doc is created. Only accepts a base64 boolean at the moment.
      */
     static createFile(jszip: typeof JSZip, workbook: Workbook, options?: { base64?: boolean; }) {
         var zip = new jszip();

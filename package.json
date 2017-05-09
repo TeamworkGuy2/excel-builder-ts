@@ -1,15 +1,17 @@
 {
   "name": "excel-builder-ts",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "TypeScript Port of the excel-builder.js Library - 'A way to build excel files with javascript'",
   "dependencies": {
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "@types/chai": "~3.5.0",
+    "@types/mocha": "~2.2.0",
+    "chai": "~3.5.0",
     "mocha": "~2.5.0",
-    "typescript": "~1.8.9"
+    "typescript": "~2.3.0"
   },
   "scripts": {
-    "test": "mocha -u tdd"
+    "test": "mocha -u tdd --recursive"
   }
 }

@@ -92,7 +92,7 @@ class Worksheet {
 
 
     /** Returns an object that can be consumed by a WorksheetExportWorker
-     * @returns {Object}
+     * @returns export ready data object containing this worksheet's data
      */
     public exportData() {
         return {
@@ -111,7 +111,7 @@ class Worksheet {
 
 
     /** Imports data - to be used while inside of a WorksheetExportWorker.
-     * @param {Object} data
+     * @param data
      */
     public importData(data: { relations: any }) {
         this.relations.importData(data.relations);
@@ -152,7 +152,7 @@ class Worksheet {
      * @see Excel/Worksheet compilePageDetailPiece 
      * @see <a href='/cookbook/addingHeadersAndFooters.html'>Adding headers and footers to a worksheet</a>
      * 
-     * @param {Array} headers [left, center, right]
+     * @param headers [left, center, right]
      */
     public setHeader(headers: [string, string, string]) {
         if (!Array.isArray(headers)) {
@@ -168,7 +168,7 @@ class Worksheet {
      * @see Excel/Worksheet compilePageDetailPiece 
      * @see <a href='/cookbook/addingHeadersAndFooters.html'>Adding headers and footers to a worksheet</a>
      * 
-     * @param {Array} footers [left, center, right]
+     * @param footers [left, center, right]
      */
     public setFooter(footers: [string, string, string]) {
         if (!Array.isArray(footers)) {
@@ -179,8 +179,8 @@ class Worksheet {
 
 
     /** Turns page header/footer details into the proper format for Excel.
-     * @param {type} data
-     * @returns {string}
+     * @param data
+     * @returns a page details string header/footer string
      */
     public compilePageDetailPackage(data: [string, string, string]) {
         data = data || <any>"";
@@ -195,38 +195,37 @@ class Worksheet {
     /** Turns instructions on page header/footer details into something
      * usable by Excel.
      * 
-     * @param {type} data
-     * @returns {string|@exp;_@call;reduce}
+     * @param data
+     * @returns string | reduce
      */
     public compilePageDetailPiece(data: string | { font?: number; bold?: boolean; underline?: boolean; fontSize?: number; text?: string; [id: string]: any } | any[]): string {
         if (typeof data === "string") {
             return '&"-,Regular"'.concat(data);
         }
-        if (typeof data === "object" && !Array.isArray(data)) {
-            var string = "";
-            if (data.font || data.bold) {
-                var weighting = data.bold ? "Bold" : "Regular";
-                string += '&"' + (data.font || '-');
-                string += ',' + weighting + '"';
-            } else {
-                string += '&"-,Regular"';
-            }
-            if (data.underline) {
-                string += "&U";
-            }
-            if (data.fontSize) {
-                string += "&" + data.fontSize;
-            }
-            string += data.text;
-
-            return string;
-        }
-
-        if (Array.isArray(data)) {
+        else if (Array.isArray(data)) {
             var self = this;
-            return data.reduce(function (m, v) {
+            return data.reduce<string>(function (m, v) {
                 return m.concat(self.compilePageDetailPiece(v));
             }, "");
+        }
+        else if (typeof data === "object") {
+            var str = "";
+            if (data.font || data.bold) {
+                var weighting = data.bold ? "Bold" : "Regular";
+                str += '&"' + (data.font || '-');
+                str += ',' + weighting + '"';
+            } else {
+                str += '&"-,Regular"';
+            }
+            if (data.underline) {
+                str += "&U";
+            }
+            if (data.fontSize) {
+                str += "&" + data.fontSize;
+            }
+            str += data.text;
+
+            return str;
         }
     }
 
@@ -234,8 +233,8 @@ class Worksheet {
     /** Creates the header node. 
      * 
      * @todo implement the ability to do even/odd headers
-     * @param {XML Doc} doc
-     * @returns {XML Node}
+     * @param doc XmlDom
+     * @returns a new XmlDom.XMLNode instance
      */
     public exportHeader(doc: XmlDom) {
         var oddHeader = doc.createElement("oddHeader");
@@ -247,8 +246,8 @@ class Worksheet {
     /** Creates the footer node.
      * 
      * @todo implement the ability to do even/odd footers
-     * @param {XML Doc} doc
-     * @returns {XML Node}
+     * @param doc XmlDom
+     * @returns a new XmlDom.XMLNode instance
      */
     public exportFooter(doc: XmlDom) {
         var oddFooter = doc.createElement("oddFooter");
@@ -262,7 +261,7 @@ class Worksheet {
      * to be created. Cloning takes less time than creation.
      * 
      * @private
-     * @param {XML Doc} doc
+     * @param doc XmlDom
      * @returns
      */
     private _buildCache(doc: XmlDom) {
@@ -295,7 +294,7 @@ class Worksheet {
     /** Runs through the XML document and grabs all of the strings that will
      * be sent to the 'shared strings' document. 
      * 
-     * @returns {Array}
+     * @returns 
      */
     public collectSharedStrings() {
         var data = this.data;
@@ -516,8 +515,8 @@ class Worksheet {
 
 
     /**
-     * @param {XML Doc} doc
-     * @returns {XML Node}
+     * @param doc XmlDom
+     * @returns a new XmlDom.XMLNode instance
      */
     public exportColumns(doc: XmlDom) {
         var cols = Util.createElement(doc, "cols");
@@ -550,9 +549,8 @@ class Worksheet {
 
     /** Sets the page settings on a worksheet node.
      * 
-     * @param {XML Doc} doc
-     * @param {XML Node} worksheet
-     * @returns {undefined}
+     * @param doc XmlDom
+     * @param worksheet XmlDom.XMLNode
      */
     public exportPageSettings(doc: XmlDom, worksheet: XmlDom.XMLNode) {
         if (this._margin) {
@@ -585,14 +583,12 @@ class Worksheet {
 
     /** Set page details in inches.
      * use this structure:
-     * {
      *  top: 0.7,
      *  bottom: 0.7,
      *  left: 0.7,
      *  right: 0.7,
      *  header: 0.3,
      *  footer: 0.3,
-     * }
      */
     public setPageMargin(input: Worksheet.Margins) {
         this._margin = input;
@@ -602,8 +598,7 @@ class Worksheet {
     /** Can be one of 'portrait' or 'landscape'.
      * http://www.schemacentral.com/sc/ooxml/t-ssml_ST_Orientation.html
      * 
-     * @param {String} orientation
-     * @returns {undefined}
+     * @param orientation
      */
     public setPageOrientation(orientation: string) {
         this._orientation = orientation;
@@ -612,7 +607,7 @@ class Worksheet {
 
     /** Expects an array of column definitions. Each column definition needs to have a width assigned to it. 
      * 
-     * @param {Array} Columns
+     * @param columns
      */
     public setColumns(columns: Worksheet.Column[]) {
         this.columns = columns;
@@ -621,7 +616,7 @@ class Worksheet {
 
     /** Expects an array of data to be translated into cells. 
      * 
-     * @param {Array} data Two dimensional array - [ [A1, A2], [B1, B2] ]
+     * @param data Two dimensional array - [ [A1, A2], [B1, B2] ]
      * @see <a href='/cookbook/addingDataToAWorksheet.html'>Adding data to a worksheet</a>
      */
     public setData(data: any[]) {

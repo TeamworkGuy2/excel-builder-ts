@@ -9,11 +9,11 @@ class AbsoluteAnchor {
 
 
     /**
-     * @param {Object} config
-     * @param {number} config.x X offset in EMU's
-     * @param {number} config.y Y offset in EMU's
-     * @param {number} config.width Width in EMU's
-     * @param {number} config.height Height in EMU's
+     * @param config
+     * config.x X offset in EMU's
+     * config.y Y offset in EMU's
+     * config.width Width in EMU's
+     * config.height Height in EMU's
      * @constructor
      */
     constructor(config?: Util.Pos) {
@@ -21,7 +21,7 @@ class AbsoluteAnchor {
         this.y = null;
         this.width = null;
         this.height = null;
-        if (config) {
+        if (config != null) {
             this.setPos(config.x, config.y);
             this.setDimensions(config.width, config.height);
         }
@@ -29,9 +29,8 @@ class AbsoluteAnchor {
 
 
     /** Sets the X and Y offsets.
-     * 
-     * @param {number} x
-     * @param {number} y
+     * @param x
+     * @param y
      */
     public setPos(x: number, y: number) {
         this.x = x;
@@ -40,9 +39,8 @@ class AbsoluteAnchor {
 
 
     /** Sets the width and height of the image.
-     * 
-     * @param {number} width
-     * @param {number} height
+     * @param width
+     * @param height
      */
     public setDimensions(width: number, height: number) {
         this.width = width;

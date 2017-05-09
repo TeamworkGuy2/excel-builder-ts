@@ -1,7 +1,7 @@
 import XmlDom = require("./XmlDom");
 
 /**
- * @module Excel/util
+ * @module Excel util
  */
 class Util {
     static _idSpaces: { [id: string]: number } = {};
@@ -16,8 +16,8 @@ class Util {
 
     /**
      * Returns a number based on a namespace. So, running with 'Picture' will return 1. Run again, you will get 2. Run with 'Foo', you'll get 1.
-     * @param {string} space
-     * @returns {number}
+     * @param space
+     * @returns a unique ID identifying the string
      */
     static uniqueId(space: string): number {
         if (!this._idSpaces[space]) {
@@ -56,9 +56,9 @@ class Util {
      * Takes a namespace to start the xml file in, as well as the root element
      * of the xml file. 
      * 
-     * @param {type} ns
-     * @param {type} base
-     * @returns {ActiveXObject|@exp;document@pro;implementation@call;createDocument|@new;XMLDOM}
+     * @param ns a namespace string
+     * @param base node name
+     * @returns new ActiveXObject() | document.implementation.createDocument() | new XmlDom()
      */
     static createXmlDoc(ns: string, base: string): XmlDom {
         if (typeof document === "undefined") {
@@ -81,10 +81,10 @@ class Util {
      * Creates an xml node (element). Used to simplify some calls, as IE is
      * very particular about namespaces and such. 
      * 
-     * @param {XMLDOM} doc An xml document (actual DOM or fake DOM, not a string)
-     * @param {type} name The name of the element
-     * @param {type} attributes
-     * @returns {XML Node}
+     * @param doc An xml document (actual DOM or fake DOM, not a string)
+     * @param name The name of the element
+     * @param attributes
+     * @returns ElementLike implementation
      */
     static createElement<E extends Util.ElementLike>(doc: { createElement(tagName: string): E; }, name: string, attributes?: [string, string | number][]): E {
         var el = doc.createElement(name);

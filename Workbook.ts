@@ -104,10 +104,10 @@ class Workbook {
 
 
     /** Set number of rows to repeat for this sheet.
-     * @param {string} inSheet sheet name
-     * @param {int} inRowCount number of rows to repeat from the top
+     * @param inSheet sheet name
+     * @param inRowCount number of rows to repeat from the top
      */
-    public setPrintTitleTop(inSheet, inRowCount) {
+    public setPrintTitleTop(inSheet: string, inRowCount: number) {
         if (this.printTitles == null) {
             this.printTitles = {};
         }
@@ -119,10 +119,10 @@ class Workbook {
 
     
     /** Set number of rows to repeat for this sheet.
-     * @param {string} inSheet sheet name
-     * @param {int} inColumn number of columns to repeat from the left
+     * @param inSheet sheet name
+     * @param inColumn number of columns to repeat from the left
      */
-    public setPrintTitleLeft(inSheet, inColumn) {
+    public setPrintTitleLeft(inSheet: string, inColumn: number) {
         if (this.printTitles == null) {
             this.printTitles = {};
         }
