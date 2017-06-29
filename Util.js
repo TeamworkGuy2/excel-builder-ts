@@ -1,7 +1,7 @@
 "use strict";
 var XmlDom = require("./XmlDom");
 /**
- * @module Excel/util
+ * @module Excel util
  */
 var Util = (function () {
     function Util() {
@@ -12,8 +12,8 @@ var Util = (function () {
     };
     /**
      * Returns a number based on a namespace. So, running with 'Picture' will return 1. Run again, you will get 2. Run with 'Foo', you'll get 1.
-     * @param {string} space
-     * @returns {number}
+     * @param space
+     * @returns a unique ID identifying the string
      */
     Util.uniqueId = function (space) {
         if (!this._idSpaces[space]) {
@@ -46,23 +46,16 @@ var Util = (function () {
      * Takes a namespace to start the xml file in, as well as the root element
      * of the xml file.
      *
-     * @param {type} ns
-     * @param {type} base
-     * @returns {ActiveXObject|@exp;document@pro;implementation@call;createDocument|@new;XMLDOM}
+     * @param ns a namespace string
+     * @param base node name
+     * @returns document.implementation.createDocument() | new XmlDom()
      */
     Util.createXmlDoc = function (ns, base) {
         if (typeof document === "undefined") {
             return new XmlDom(ns || null, base, null);
         }
-        if (document.implementation && document.implementation.createDocument) {
+        else if (document.implementation && document.implementation.createDocument) {
             return document.implementation.createDocument(ns || null, base, null);
-        }
-        else if (window["ActiveXObject"]) {
-            var doc = new ActiveXObject("Microsoft.XMLDOM");
-            var rootNode = doc.createElement(base);
-            rootNode.setAttribute("xmlns", ns);
-            doc.appendChild(rootNode);
-            return doc;
         }
         throw new Error("No xml document generator");
     };
@@ -70,10 +63,10 @@ var Util = (function () {
      * Creates an xml node (element). Used to simplify some calls, as IE is
      * very particular about namespaces and such.
      *
-     * @param {XMLDOM} doc An xml document (actual DOM or fake DOM, not a string)
-     * @param {type} name The name of the element
-     * @param {type} attributes
-     * @returns {XML Node}
+     * @param doc An xml document (actual DOM or fake DOM, not a string)
+     * @param name The name of the element
+     * @param attributes
+     * @returns ElementLike implementation
      */
     Util.createElement = function (doc, name, attributes) {
         var el = doc.createElement(name);
@@ -93,22 +86,22 @@ var Util = (function () {
     Util.positionToLetterRef = function (x, y) {
         var digit = 1;
         var num = x;
-        var string = "";
+        var str = "";
         var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         if (Util.LETTER_REFS[x]) {
             return Util.LETTER_REFS[x].concat(y);
         }
-        var index;
+        var idx;
         while (num > 0) {
             num -= Math.pow(26, digit - 1);
-            index = num % Math.pow(26, digit);
-            num -= index;
-            index = index / Math.pow(26, digit - 1);
-            string = alphabet.charAt(index) + string;
+            idx = num % Math.pow(26, digit);
+            num -= idx;
+            idx = idx / Math.pow(26, digit - 1);
+            str = alphabet.charAt(idx) + str;
             digit += 1;
         }
-        Util.LETTER_REFS[x] = string;
-        return string.concat(y);
+        Util.LETTER_REFS[x] = str;
+        return str.concat(y);
     };
     return Util;
 }());

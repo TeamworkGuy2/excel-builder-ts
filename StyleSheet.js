@@ -92,7 +92,7 @@ var StyleSheet = (function () {
         }
         else if (styleInstructions.font) {
             if (isNaN(parseInt(styleInstructions.font, 10))) {
-                throw "Passing a non-numeric font id is not supported";
+                throw new Error("Passing a non-numeric font id is not supported");
             }
             style.fontId = styleInstructions.font;
         }
@@ -101,7 +101,7 @@ var StyleSheet = (function () {
         }
         else if (styleInstructions.format) {
             if (isNaN(parseInt(styleInstructions.format))) {
-                throw "Invalid number formatter id";
+                throw new Error("Invalid number formatter id");
             }
             style.numFmtId = styleInstructions.format;
         }
@@ -110,7 +110,7 @@ var StyleSheet = (function () {
         }
         else if (styleInstructions.border) {
             if (isNaN(parseInt(styleInstructions.border))) {
-                throw "Passing a non-numeric border id is not supported";
+                throw new Error("Passing a non-numeric border id is not supported");
             }
             style.borderId = styleInstructions.border;
         }
@@ -119,7 +119,7 @@ var StyleSheet = (function () {
         }
         else if (styleInstructions.fill) {
             if (isNaN(parseInt(styleInstructions.fill))) {
-                throw "Passing a non-numeric fill id is not supported";
+                throw new Error("Passing a non-numeric fill id is not supported");
             }
             style.fillId = styleInstructions.fill;
         }
@@ -167,13 +167,12 @@ var StyleSheet = (function () {
             style.alignment = styleInstructions.alignment;
         }
         if (isStr(styleInstructions.format)) {
-            style.numFmt = styleInstructions.format;
+            style.numFmt = this.createNumberFormatter(styleInstructions.format);
         }
         this.differentialStyles[id] = style;
         return style;
     };
-    /**
-     * Should be an object containing keys that match with one of the keys from this list:
+    /** Should be an object containing keys that match with one of the keys from this list:
      * http://www.schemacentral.com/sc/ooxml/t-ssml_ST_TableStyleType.html
      *
      * The value should be a reference to a differential format (dxf)
@@ -181,8 +180,7 @@ var StyleSheet = (function () {
     StyleSheet.prototype.createTableStyle = function (instructions) {
         this.tableStyles.push(instructions);
     };
-    /**
-     * All params optional
+    /** All params optional
      * Expects: {
      * top: {},
      * left: {},
@@ -211,8 +209,7 @@ var StyleSheet = (function () {
         this.borders.push(res);
         return res;
     };
-    /**
-     * Supported font styles:
+    /** Supported font styles:
      * bold
      * italic
      * underline (single, double, singleAccounting, doubleAccounting)

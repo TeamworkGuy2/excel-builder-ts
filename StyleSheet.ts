@@ -5,17 +5,17 @@ import XmlDom = require("./XmlDom");
  * @module Excel/StyleSheet
  */
 class StyleSheet {
-    borders: any[];
-    cellStyles: any[];
+    borders: StyleSheet.Border[];
+    cellStyles: { name: string; xfId: string | number; builtinId: string | number; [key: string]: any; }[];
     defaultTableStyle: boolean;
-    differentialStyles: any[];
+    differentialStyles: StyleSheet.DifferentialStyle[];
     id: string;
-    masterCellFormats: any[];
-    masterCellStyles: any[];
+    masterCellFormats: StyleSheet.CellFormat[];
+    masterCellStyles: StyleSheet.CellStyle[];
     fills: StyleSheet.Fill[];
     fonts: StyleSheet.FontStyle[];
-    numberFormatters: { id: number; formatCode: string }[];
-    tableStyles: any[];
+    numberFormatters: StyleSheet.NumberingFormat[];
+    tableStyles: StyleSheet.TableStyle[];
 
 
     constructor(config?: any) {
@@ -26,7 +26,7 @@ class StyleSheet {
             builtinId: "0"
         }];
         this.defaultTableStyle = false;
-        this.differentialStyles = [{}];
+        this.differentialStyles = [<any>{}];
         this.masterCellFormats = [{
             numFmtId: 0,
             fontId: 0,
@@ -49,11 +49,11 @@ class StyleSheet {
             bgColor: "FF333333"
         }];
         this.borders = [{
-            top: {},
-            left: {},
-            right: {},
-            bottom: {},
-            diagonal: {}
+            top: <any>{},
+            left: <any>{},
+            right: <any>{},
+            bottom: <any>{},
+            diagonal: <any>{}
         }];
         this.tableStyles = [];
     }
@@ -75,18 +75,18 @@ class StyleSheet {
     }
 
 
-    public createFill(fillInstructions) {
+    public createFill(fillInstructions: Partial<StyleSheet.Fill>) {
         var id = this.fills.length;
         var fill = fillInstructions;
         fill.id = id;
-        this.fills.push(fill);
+        this.fills.push(<StyleSheet.Fill>fill);
         return fill;
     }
 
 
     public createNumberFormatter(formatInstructions: string) {
         var id = this.numberFormatters.length + 100;
-        var format = {
+        var format: StyleSheet.NumberingFormat = {
             id: id,
             formatCode: formatInstructions
         }
@@ -99,9 +99,9 @@ class StyleSheet {
      *  horizontal: http://www.schemacentral.com/sc/ooxml/t-ssml_ST_HorizontalAlignment.html
      *  vertical: http://www.schemacentral.com/sc/ooxml/t-ssml_ST_VerticalAlignment.html
      */
-    public createFormat(styleInstructions: { font?; format?; border?; fill?; alignment?; }) {
+    public createFormat(styleInstructions: { font?: object | number; format?: string | number; border?: { [key: string]: any } | number; fill?: Partial<StyleSheet.Fill> | number; alignment?: Partial<StyleSheet.Alignment>; }) {
         var sid = this.masterCellFormats.length;
-        var style = {
+        var style: StyleSheet.CellFormat = {
             id: sid,
             fontId: undefined,
             numFmtId: undefined,
@@ -112,8 +112,8 @@ class StyleSheet {
         if (isObj(styleInstructions.font)) {
             style.fontId = this.createFontStyle(styleInstructions.font).id;
         } else if (styleInstructions.font) {
-            if (isNaN(parseInt(styleInstructions.font, 10))) {
-                throw "Passing a non-numeric font id is not supported";
+            if (isNaN(parseInt(<any>styleInstructions.font, 10))) {
+                throw new Error("Passing a non-numeric font id is not supported");
             }
             style.fontId = styleInstructions.font;
         }
@@ -121,8 +121,8 @@ class StyleSheet {
         if (isStr(styleInstructions.format)) {
             style.numFmtId = this.createNumberFormatter(styleInstructions.format).id;
         } else if (styleInstructions.format) {
-            if (isNaN(parseInt(styleInstructions.format))) {
-                throw "Invalid number formatter id";
+            if (isNaN(parseInt(<any>styleInstructions.format))) {
+                throw new Error("Invalid number formatter id");
             }
             style.numFmtId = styleInstructions.format;
         }
@@ -130,8 +130,8 @@ class StyleSheet {
         if (isObj(styleInstructions.border)) {
             style.borderId = this.createBorderFormatter(styleInstructions.border).id;
         } else if (styleInstructions.border) {
-            if (isNaN(parseInt(styleInstructions.border))) {
-                throw "Passing a non-numeric border id is not supported";
+            if (isNaN(parseInt(<any>styleInstructions.border))) {
+                throw new Error("Passing a non-numeric border id is not supported");
             }
             style.borderId = styleInstructions.border;
         }
@@ -139,8 +139,8 @@ class StyleSheet {
         if (isObj(styleInstructions.fill)) {
             style.fillId = this.createFill(styleInstructions.fill).id;
         } else if (styleInstructions.fill) {
-            if (isNaN(parseInt(styleInstructions.fill))) {
-                throw "Passing a non-numeric fill id is not supported";
+            if (isNaN(parseInt(<any>styleInstructions.fill))) {
+                throw new Error("Passing a non-numeric fill id is not supported");
             }
             style.fillId = styleInstructions.fill;
         }
@@ -163,9 +163,9 @@ class StyleSheet {
     }
 
 
-    public createDifferentialStyle(styleInstructions: { font?; border?; fill?; alignment?; format?; }) {
+    public createDifferentialStyle(styleInstructions: { font?: StyleSheet.FontStyle; border?: object; fill?: StyleSheet.Fill; alignment?: object; format?: string; }) {
         var id = this.differentialStyles.length;
-        var style = {
+        var style: StyleSheet.DifferentialStyle = {
             id: id,
             alignment: undefined,
             border: undefined,
@@ -178,11 +178,11 @@ class StyleSheet {
         }
         if (isObj(styleInstructions.border)) {
             style.border = Util.defaults(styleInstructions.border, {
-                top: {},
-                left: {},
-                right: {},
-                bottom: {},
-                diagonal: {}
+                top: <any>{},
+                left: <any>{},
+                right: <any>{},
+                bottom: <any>{},
+                diagonal: <any>{}
             });
         }
         if (isObj(styleInstructions.fill)) {
@@ -192,26 +192,24 @@ class StyleSheet {
             style.alignment = styleInstructions.alignment;
         }
         if (isStr(styleInstructions.format)) {
-            style.numFmt = styleInstructions.format;
+            style.numFmt = this.createNumberFormatter(styleInstructions.format);
         }
         this.differentialStyles[id] = style;
         return style;
     }
 
 
-    /**
-     * Should be an object containing keys that match with one of the keys from this list:
+    /** Should be an object containing keys that match with one of the keys from this list:
      * http://www.schemacentral.com/sc/ooxml/t-ssml_ST_TableStyleType.html
      * 
      * The value should be a reference to a differential format (dxf)
      */
-    public createTableStyle(instructions) {
+    public createTableStyle(instructions: StyleSheet.TableStyle) {
         this.tableStyles.push(instructions);
     }
 
 
-    /**
-     * All params optional
+    /** All params optional
      * Expects: {
      * top: {},
      * left: {},
@@ -228,8 +226,8 @@ class StyleSheet {
      * color: ARBG color (requires the A, so for example FF006666)
      * }
      */
-    public createBorderFormatter(border?: { top?; left?; right?; bottom?; diagonal?; outline?; diagonalUp?: boolean; diagonalDown?: boolean; [id: string]: any; }) {
-        var res = Util.defaults(border, {
+    public createBorderFormatter(border?: { top?; left?; right?; bottom?; diagonal?; outline?: boolean; diagonalUp?: boolean; diagonalDown?: boolean;[id: string]: any; }) {
+        var res: StyleSheet.Border = Util.defaults(border, {
             top: {},
             left: {},
             right: {},
@@ -242,8 +240,7 @@ class StyleSheet {
     }
 
 
-    /**
-     * Supported font styles:
+    /** Supported font styles:
      * bold
      * italic
      * underline (single, double, singleAccounting, doubleAccounting)
@@ -326,7 +323,7 @@ class StyleSheet {
     }
 
 
-    public exportBorder(doc: XmlDom, data: { left: StyleSheet.Border; right?: StyleSheet.Border; top?: StyleSheet.Border; bottom?: StyleSheet.Border; diagonal?: StyleSheet.Border; [id: string]: StyleSheet.Border }) {
+    public exportBorder(doc: XmlDom, data: StyleSheet.Border) {
         var border = doc.createElement("border");
         var self = this;
         function borderGenerator(name: string) {
@@ -393,7 +390,7 @@ class StyleSheet {
     }
 
 
-    public exportCellFormatElement(doc: XmlDom, styleInstructions) {
+    public exportCellFormatElement(doc: XmlDom, styleInstructions: StyleSheet.CellFormat) {
         var xf = doc.createElement("xf"), i = 0;
         var allowed = ["applyAlignment", "applyBorder", "applyFill", "applyFont", "applyNumberFormat",
             "applyProtection", "borderId", "fillId", "fontId", "numFmtId", "pivotButton", "quotePrefix", "xfId"]
@@ -414,7 +411,7 @@ class StyleSheet {
     }
 
 
-    public exportAlignment(doc: XmlDom, alignmentData: any) {
+    public exportAlignment(doc: XmlDom, alignmentData: { [key: string]: any }) {
         var alignment = doc.createElement("alignment");
         var keys = Object.keys(alignmentData);
         for (var i = 0, len = keys.length; i < len; i++) {
@@ -591,7 +588,7 @@ class StyleSheet {
     }
 
 
-    public exportNumberFormatter(doc: XmlDom, fd) {
+    public exportNumberFormatter(doc: XmlDom, fd: StyleSheet.NumberingFormat) {
         var numFmt = doc.createElement("numFmt");
         numFmt.setAttribute("numFmtId", fd.id);
         numFmt.setAttribute("formatCode", fd.formatCode);
@@ -632,7 +629,7 @@ class StyleSheet {
     }
 
 
-    public exportDFX(doc: XmlDom, style) {
+    public exportDFX(doc: XmlDom, style: StyleSheet.DifferentialStyle) {
         var dxf = doc.createElement("dxf");
         if (style.font) {
             dxf.appendChild(this.exportFont(doc, style.font));
@@ -666,7 +663,7 @@ class StyleSheet {
     }
 
 
-    public exportTableStyle(doc: XmlDom, style) {
+    public exportTableStyle(doc: XmlDom, style: StyleSheet.TableStyle) {
         var tableStyle = doc.createElement("tableStyle");
         tableStyle.setAttribute("name", style.name);
         tableStyle.setAttribute("pivot", 0);
@@ -707,28 +704,78 @@ class StyleSheet {
 
 module StyleSheet {
 
-    export interface FontStyle {
-        id: number;
-        bold?: boolean;
-        color?: string;
-        fontName?: string;
-        italic?: boolean;
-        outline?: boolean;
-        shadow?: boolean;
-        size?: number;
-        strike?: boolean;
-        vertAlign?: string;
-        underline?: boolean | "double" | "singleAccounting" | "doubleAccounting";
+    export interface Alignment {
+        horizontal?: string;
+        //indent?: number; // TODO
+        justifyLastLine?: boolean;
+        readingOrder?: number;
+        relativeIndent?: number;
+        shrinkToFit?: boolean;
+        textRotation?: number;
+        vertical?: string;
+        wrapText?: boolean;
     }
 
 
     export interface Border {
-        style;
-        color;
+        id?: number;
+        left?: BorderProperty;
+        right?: BorderProperty;
+        top?: BorderProperty;
+        bottom?: BorderProperty;
+        diagonal?: BorderProperty;
+        diagonalDown?: boolean;
+        diagonalUp?: boolean;
+        outline?: boolean;
+    }
+
+
+    export interface BorderProperty {
+        color?: Color;
+        style?: string;
+    }
+
+
+    export interface CellFormat {
+        id?: number;
+        numFmtId?: number;
+        fontId?: number;
+        fillId?: number;
+        borderId?: number;
+        xfid?: number;
+        alignment?: Partial<Alignment>;
+    }
+
+
+    export interface CellStyle {
+        borderId?: number;
+        fillId?: number;
+        fontId?: number;
+        numFmtId?: number;
+    }
+
+
+    export interface Color {
+        auto?: boolean;
+        indexed?: number;
+        rgb?: string | number;
+        theme?: number;
+        tint?: number;
+    }
+
+
+    export interface DifferentialStyle {
+        id: number;
+        alignment?: { [key: string]: any };
+        border?: Border;
+        fill?: Fill;
+        font?: FontStyle;
+        numFmt?: NumberingFormat;
     }
 
 
     export interface Fill {
+        id?: number;
         type: string; // 'pattern'
         patternType: string;
         // Pattern fill
@@ -744,12 +791,39 @@ module StyleSheet {
         end?: string | { pureAt?: number; color?; theme?; };
     }
 
+
+    export interface FontStyle {
+        id: number;
+        bold?: boolean;
+        color?: string;
+        fontName?: string;
+        italic?: boolean;
+        outline?: boolean;
+        shadow?: boolean;
+        strike?: boolean;
+        size?: number;
+        vertAlign?: string;
+        underline?: boolean | ("single" | "double" | "singleAccounting" | "doubleAccounting" | "none");
+    }
+
+
+    export interface NumberingFormat {
+        id: number;
+        formatCode: string;
+    }
+
+
+    export interface TableStyle {
+        name: string;
+        [key: string]: any;
+    }
+
 }
 
 
 var toStrFunc = Object.prototype.toString;
 
-function isObj(obj: any): obj is any {
+function isObj(obj: any): obj is object {
     return obj && toStrFunc.call(obj) === "[object Object]";
 }
 

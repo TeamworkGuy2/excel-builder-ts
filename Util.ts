@@ -27,15 +27,15 @@ class Util {
     }
 
 
-    static pick(obj: any, props: string[]) {
+    static pick<T extends object, K extends keyof T>(obj: T, props: K[]): { [P in K]: T[P] } {
         var res = {};
         for (var i = 0, size = props.length; i < size; i++) {
             var key = props[i];
             if (key in obj) {
-                res[key] = obj[key];
+                (<any>res)[key] = obj[key];
             }
         }
-        return res;
+        return <any>res;
     }
 
 
@@ -58,20 +58,14 @@ class Util {
      * 
      * @param ns a namespace string
      * @param base node name
-     * @returns new ActiveXObject() | document.implementation.createDocument() | new XmlDom()
+     * @returns document.implementation.createDocument() | new XmlDom()
      */
     static createXmlDoc(ns: string, base: string): XmlDom {
         if (typeof document === "undefined") {
             return new XmlDom(ns || null, base, null);
         }
-        if (document.implementation && document.implementation.createDocument) {
+        else if (document.implementation && document.implementation.createDocument) {
             return <any>document.implementation.createDocument(ns || null, base, null);
-        } else if (window["ActiveXObject"]) {
-            var doc = new ActiveXObject("Microsoft.XMLDOM");
-            var rootNode = doc.createElement(base);
-            rootNode.setAttribute("xmlns", ns);
-            doc.appendChild(rootNode);
-            return doc;
         }
         throw new Error("No xml document generator");
     }
@@ -88,14 +82,14 @@ class Util {
      */
     static createElement<E extends Util.ElementLike>(doc: { createElement(tagName: string): E; }, name: string, attributes?: [string, string | number][]): E {
         var el = doc.createElement(name);
-        var ie = !el.setAttributeNS
+        var ie = !el.setAttributeNS;
         attributes = attributes || [];
         var i = attributes.length;
         while (i--) {
             if (!ie && attributes[i][0].indexOf("xmlns") != -1) {
-                el.setAttributeNS("http://www.w3.org/2000/xmlns/", attributes[i][0], <any>attributes[i][1])
+                el.setAttributeNS("http://www.w3.org/2000/xmlns/", attributes[i][0], <any>attributes[i][1]);
             } else {
-                el.setAttribute(attributes[i][0], <any>attributes[i][1])
+                el.setAttribute(attributes[i][0], <any>attributes[i][1]);
             }
         }
         return el;
@@ -108,24 +102,24 @@ class Util {
     static positionToLetterRef(x: number, y: number) {
         var digit = 1;
         var num = x;
-        var string = "";
+        var str = "";
         var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         if (Util.LETTER_REFS[x]) {
             return Util.LETTER_REFS[x].concat(<any>y);
         }
 
-        var index: number;
+        var idx: number;
         while (num > 0) {
-            num -= Math.pow(26, digit - 1)
-            index = num % Math.pow(26, digit)
-            num -= index
-            index = index / Math.pow(26, digit - 1)
-            string = alphabet.charAt(index) + string
-            digit += 1
+            num -= Math.pow(26, digit - 1);
+            idx = num % Math.pow(26, digit);
+            num -= idx;
+            idx = idx / Math.pow(26, digit - 1);
+            str = alphabet.charAt(idx) + str;
+            digit += 1;
         }
-        Util.LETTER_REFS[x] = string;
-        return string.concat(<any>y);
+        Util.LETTER_REFS[x] = str;
+        return str.concat(<any>y);
     }
 
 		

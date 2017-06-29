@@ -4,7 +4,15 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.1.5](N/A) - 2017-05-09
+### [0.2.0](N/A) - 2017-06-29
+#### Changed
+* Added missing types and improved existing types (mostly in StyleSheet)
+* Removed `new ActiveXObject("Microsoft.XMLDOM")` fallback from Util.createXmlDoc() since `document.implementation.createDocument()` is supported by all major browsers
+* Throw new Error(string) instances instead of strings
+
+
+--------
+### [0.1.5](https://github.com/TeamworkGuy2/excel-builder-ts/commit/108cb24fdee9553c379e67c70abfc2bf92a74687) - 2017-05-09
 #### Changed
 * Simplified some documentation for Visual Studio
 * Added some missing types

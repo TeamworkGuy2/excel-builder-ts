@@ -15,9 +15,9 @@ var Drawing = (function () {
         this.id = Util._uniqueId("Drawing");
     }
     /**
-     * @param {string} type can be "absoluteAnchor", "oneCellAnchor", or "twoCellAnchor".
-     * @param {Object} config Shorthand - pass the created anchor coords that can normally be used to construct it.
-     * @returns {Anchor}
+     * @param type can be "absoluteAnchor", "oneCellAnchor", or "twoCellAnchor".
+     * @param config Shorthand - pass the created anchor coords that can normally be used to construct it.
+     * @returns a cell anchor object
      */
     Drawing.prototype.createAnchor = function (type, config) {
         config = config || {};

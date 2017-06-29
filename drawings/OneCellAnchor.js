@@ -2,11 +2,11 @@
 var Util = require("../Util");
 var OneCellAnchor = (function () {
     /**
-     * @param {Object} config
-     * @param {number} config.x The cell column number that the top left of the picture will start in
-     * @param {number} config.y The cell row number that the top left of the picture will start in
-     * @param {number} config.width Width in EMU's
-     * @param {number} config.height Height in EMU's
+     * @param config
+     * config.x The cell column number that the top left of the picture will start in
+     * config.y The cell row number that the top left of the picture will start in
+     * config.width Width in EMU's
+     * config.height Height in EMU's
      * @constructor
      */
     function OneCellAnchor(config) {

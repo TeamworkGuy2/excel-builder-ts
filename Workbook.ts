@@ -7,7 +7,6 @@ import StyleSheet = require("./StyleSheet");
 import Worksheet = require("./Worksheet");
 import XmlDom = require("./XmlDom");
 
-// custom-code 2014-6-27
 /** Return base64 encoded data for the printer seeings binary file for a default portrait,
  * 0.25 margin, Excel .xlsx spreadsheet
  * @return a base64 encoded string with no initial 'data:...,' marker, just a base64 string of binary data
@@ -29,7 +28,6 @@ function getXlsxPrinterSettings1binBase64() {
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 }
-// custom-code-end
 
 
 /**
@@ -319,7 +317,6 @@ class Workbook {
 
 
     public _prepareFilesForPackaging(files: { [id: string]: XmlDom | string | { xml: string } }) {
-        // custom-code 2014-6-27
         var contentTypes = this.createContentTypes();
         // adds reference for xl/printerSettings/printerSettings1.bin
         if (files["/xl/printerSettings/printerSettings1.bin"]) {
@@ -328,7 +325,6 @@ class Workbook {
                 ["ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.printerSettings"]
             ]));
         }
-        // custom-code-end
 
         Object.assign(files, {
             "/[Content_Types].xml": contentTypes,
@@ -359,7 +355,7 @@ class Workbook {
             requireJsPath = document.getElementById("requirejs") ? document.getElementById("requirejs")["src"] : '';
         }
         if (!requireJsPath) {
-            throw "Please add 'requirejs' to the script that includes requirejs, or specify the path as an argument";
+            throw new Error("Please add 'requirejs' to the script that includes requirejs, or specify the path as an argument");
         }
 
         var files: { [id: string]: XmlDom | { xml: string } } = {},
@@ -432,7 +428,7 @@ class Workbook {
         var self = this;
         worker.addEventListener("error", callbacks.error);
         worker.addEventListener("message", <any>function (event: MessageEvent, data: any) {
-            //                console.log("Called back by the worker!\n", event.data);
+            //console.log("Called back by the worker!\n", event.data);
             switch (event.data.status) {
                 case "ready":
                     worker.postMessage({
@@ -463,24 +459,21 @@ class Workbook {
         var files: { [id: string]: XmlDom | string } = {};
         this._generateCorePaths(files);
 
-        // custom-code 2014-7-1
+        // TODO work-in-progress
         var anyPrintOptions = false;
-        // custom-code-end
 
         for (var i = 0, l = this.worksheets.length; i < l; i++) {
             files["/xl/worksheets/sheet" + (i + 1) + ".xml"] = this.worksheets[i].toXML();
             Paths[this.worksheets[i].id] = "worksheets/sheet" + (i + 1) + ".xml";
-            // custom-code 2014-6-27
             if (this.worksheets[i]._printerSettings) {
                 //anyPrintOptions = true;
                 //Paths[this.worksheets[i]._printerSettings.id] = '../printerSettings/printerSettings1.bin';
             }
-            // custom-code-end
             files["/xl/worksheets/_rels/sheet" + (i + 1) + ".xml.rels"] = this.worksheets[i].relations.toXML();
         }
-        // custom-code 2014-6-27
-        if (anyPrintOptions) { files["/xl/printerSettings/printerSettings1.bin"] = getXlsxPrinterSettings1binBase64(); }
-        // custom-code-end
+        if (anyPrintOptions) {
+            files["/xl/printerSettings/printerSettings1.bin"] = getXlsxPrinterSettings1binBase64();
+        }
 
         this._prepareFilesForPackaging(files);
 

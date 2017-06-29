@@ -8,7 +8,6 @@ var RelationshipManager = require("./RelationshipManager");
  * @module Excel/Worksheet
  */
 var Worksheet = (function () {
-    // custom-code-end
     /**
      * @constructor
      */
@@ -22,7 +21,6 @@ var Worksheet = (function () {
         this._footers = [];
         this._tables = [];
         this._drawings = [];
-        // custom-code 2014-6-27
         // A two dimensional array of objects with custom XML attributes to add this worksheet's cells
         // for example an object { style: 12b } at index [1][2] would add a {@code style="12b"} attribute to cell 'C2'
         this.customCellAttributes = [];
@@ -35,7 +33,6 @@ var Worksheet = (function () {
         this.pageMargins;
         // An array of attributes to apply to the 'pageSetup' element of the spreadsheet
         this.pageSetup;
-        // custom-code-end
         this.initialize(config);
     }
     Worksheet.prototype.initialize = function (config) {
@@ -49,7 +46,7 @@ var Worksheet = (function () {
         this.relations = new RelationshipManager();
     };
     /** Returns an object that can be consumed by a WorksheetExportWorker
-     * @returns {Object}
+     * @returns export ready data object containing this worksheet's data
      */
     Worksheet.prototype.exportData = function () {
         return {
@@ -66,7 +63,7 @@ var Worksheet = (function () {
         };
     };
     /** Imports data - to be used while inside of a WorksheetExportWorker.
-     * @param {Object} data
+     * @param data
      */
     Worksheet.prototype.importData = function (data) {
         this.relations.importData(data.relations);
@@ -84,44 +81,39 @@ var Worksheet = (function () {
         this._drawings.push(table);
         this.relations.addRelation(table, "drawingRelationship");
     };
-    // not-original 2015-5-1
     Worksheet.prototype.addPagePrintSetup = function (pageSetup, pageMargins) {
         this.pageSetup = pageSetup;
         this.pageMargins = pageMargins;
         //this._printerSettings = { id: _.uniqueId('PrinterSettings') };
         //this.relations.addRelation(this._printerSettings, 'printerSettings');
     };
-    // not-original-end
     /** Expects an array length of three.
-     *
      * @see Excel/Worksheet compilePageDetailPiece
      * @see <a href='/cookbook/addingHeadersAndFooters.html'>Adding headers and footers to a worksheet</a>
      *
-     * @param {Array} headers [left, center, right]
+     * @param headers [left, center, right]
      */
     Worksheet.prototype.setHeader = function (headers) {
         if (!Array.isArray(headers)) {
-            throw "Invalid argument type - setHeader expects an array of three instructions";
+            throw new Error("Invalid argument type - setHeader expects an array of three instructions");
         }
         this._headers = headers;
     };
-    /**
-     * Expects an array length of three.
-     *
+    /** Expects an array length of three.
      * @see Excel/Worksheet compilePageDetailPiece
      * @see <a href='/cookbook/addingHeadersAndFooters.html'>Adding headers and footers to a worksheet</a>
      *
-     * @param {Array} footers [left, center, right]
+     * @param footers [left, center, right]
      */
     Worksheet.prototype.setFooter = function (footers) {
         if (!Array.isArray(footers)) {
-            throw "Invalid argument type - setFooter expects an array of three instructions";
+            throw new Error("Invalid argument type - setFooter expects an array of three instructions");
         }
         this._footers = footers;
     };
     /** Turns page header/footer details into the proper format for Excel.
-     * @param {type} data
-     * @returns {string}
+     * @param data
+     * @returns a page details string header/footer string
      */
     Worksheet.prototype.compilePageDetailPackage = function (data) {
         data = data || "";
@@ -134,44 +126,44 @@ var Worksheet = (function () {
     /** Turns instructions on page header/footer details into something
      * usable by Excel.
      *
-     * @param {type} data
-     * @returns {string|@exp;_@call;reduce}
+     * @param data
+     * @returns string | reduce
      */
     Worksheet.prototype.compilePageDetailPiece = function (data) {
         if (typeof data === "string") {
             return '&"-,Regular"'.concat(data);
         }
-        if (typeof data === "object" && !Array.isArray(data)) {
-            var string = "";
-            if (data.font || data.bold) {
-                var weighting = data.bold ? "Bold" : "Regular";
-                string += '&"' + (data.font || '-');
-                string += ',' + weighting + '"';
-            }
-            else {
-                string += '&"-,Regular"';
-            }
-            if (data.underline) {
-                string += "&U";
-            }
-            if (data.fontSize) {
-                string += "&" + data.fontSize;
-            }
-            string += data.text;
-            return string;
-        }
-        if (Array.isArray(data)) {
+        else if (Array.isArray(data)) {
             var self = this;
             return data.reduce(function (m, v) {
                 return m.concat(self.compilePageDetailPiece(v));
             }, "");
         }
+        else if (typeof data === "object") {
+            var str = "";
+            if (data.font || data.bold) {
+                var weighting = data.bold ? "Bold" : "Regular";
+                str += '&"' + (data.font || '-');
+                str += ',' + weighting + '"';
+            }
+            else {
+                str += '&"-,Regular"';
+            }
+            if (data.underline) {
+                str += "&U";
+            }
+            if (data.fontSize) {
+                str += "&" + data.fontSize;
+            }
+            str += data.text;
+            return str;
+        }
     };
     /** Creates the header node.
      *
      * @todo implement the ability to do even/odd headers
-     * @param {XML Doc} doc
-     * @returns {XML Node}
+     * @param doc XmlDom
+     * @returns a new XmlDom.XMLNode instance
      */
     Worksheet.prototype.exportHeader = function (doc) {
         var oddHeader = doc.createElement("oddHeader");
@@ -181,8 +173,8 @@ var Worksheet = (function () {
     /** Creates the footer node.
      *
      * @todo implement the ability to do even/odd footers
-     * @param {XML Doc} doc
-     * @returns {XML Node}
+     * @param doc XmlDom
+     * @returns a new XmlDom.XMLNode instance
      */
     Worksheet.prototype.exportFooter = function (doc) {
         var oddFooter = doc.createElement("oddFooter");
@@ -194,7 +186,7 @@ var Worksheet = (function () {
      * to be created. Cloning takes less time than creation.
      *
      * @private
-     * @param {XML Doc} doc
+     * @param doc XmlDom
      * @returns
      */
     Worksheet.prototype._buildCache = function (doc) {
@@ -221,7 +213,7 @@ var Worksheet = (function () {
     /** Runs through the XML document and grabs all of the strings that will
      * be sent to the 'shared strings' document.
      *
-     * @returns {Array}
+     * @returns
      */
     Worksheet.prototype.collectSharedStrings = function () {
         var data = this.data;
@@ -254,10 +246,8 @@ var Worksheet = (function () {
     Worksheet.prototype.toXML = function () {
         var data = this.data;
         var columns = this.columns || [];
-        // custom-code 2014-6-27
         var customCellAttributes = this.customCellAttributes || [];
         var customRowAttributes = this.customRowAttributes || [];
-        // custom-code-end
         var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, "worksheet");
         var worksheet = doc.documentElement;
         worksheet.setAttribute("xmlns:r", Util.schemas.relationships);
@@ -283,7 +273,6 @@ var Worksheet = (function () {
                     if (typeof cellValue == "number") {
                         metadata.type = "number";
                     }
-                    // custom-code 2014-6-30
                     // Allows for empty cells in switch statement below
                     if (cellValue == null) {
                         metadata.type = "empty";
@@ -303,12 +292,10 @@ var Worksheet = (function () {
                         cell = cellCache.formula.cloneNode(true);
                         cell.firstChild.firstChild.nodeValue = cellValue;
                         break;
-                    // custom-code 2014-6-30
                     // empty cell that contains no value, valid in Excel
                     case "empty":
                         cell = doc.createElement("c");
                         break;
-                    // custom-code-end
                     case "text":
                     default:
                         var id = sharedStrs.strings[cellValue] || sharedStrs.addString(cellValue);
@@ -321,7 +308,6 @@ var Worksheet = (function () {
                     cell.setAttribute("s", metadata.style);
                 }
                 cell.setAttribute("r", Util.positionToLetterRef(c + 1, row + 1));
-                // custom-code 2014-6-27
                 // add any additional custom attributes to this cell's XML element
                 if (row < customCellAttributes.length && customCellAttributes[row] != null && c < customCellAttributes[row].length) {
                     var attribs = customCellAttributes[row][c];
@@ -329,11 +315,9 @@ var Worksheet = (function () {
                         cell.setAttribute(attrib, attribs[attrib]);
                     }
                 }
-                // custom-code-end
                 rowNode.appendChild(cell);
             }
             rowNode.setAttribute("r", row + 1);
-            // custom-code 2014-6-27
             // add any additional custom attributes to this row's XML element
             if (row < customRowAttributes.length) {
                 var rowAttribs = customRowAttributes[row];
@@ -341,7 +325,6 @@ var Worksheet = (function () {
                     rowNode.setAttribute(attrib, rowAttribs[attrib]);
                 }
             }
-            // custom-code-end
             sheetData.appendChild(rowNode);
         }
         var cellOrRangeRef = (maxX !== 0
@@ -382,12 +365,9 @@ var Worksheet = (function () {
                 mergeCell.setAttribute("ref", this.mergedCells[i][0] + ':' + this.mergedCells[i][1]);
                 mergeCells.appendChild(mergeCell);
             }
-            // custom-code 2014-7-2
             mergeCells.setAttribute("count", this.mergedCells.length);
-            // custom-code-end
             worksheet.appendChild(mergeCells);
         }
-        // custom-code 2014-6-30
         // Add pageMargins element if there are custom page margin attributes
         if (this.pageMargins) {
             var pageMarginsEl = doc.createElement("pageMargins");
@@ -405,7 +385,6 @@ var Worksheet = (function () {
             }
             worksheet.appendChild(pageSetupEl);
         }
-        // custom-code-end
         for (var i = 0, l = this._drawings.length; i < l; i++) {
             var drawing = doc.createElement("drawing");
             drawing.setAttribute("r:id", this.relations.getRelationshipId(this._drawings[i]));
@@ -414,8 +393,8 @@ var Worksheet = (function () {
         return doc;
     };
     /**
-     * @param {XML Doc} doc
-     * @returns {XML Node}
+     * @param doc XmlDom
+     * @returns a new XmlDom.XMLNode instance
      */
     Worksheet.prototype.exportColumns = function (doc) {
         var cols = Util.createElement(doc, "cols");
@@ -447,9 +426,8 @@ var Worksheet = (function () {
     };
     /** Sets the page settings on a worksheet node.
      *
-     * @param {XML Doc} doc
-     * @param {XML Node} worksheet
-     * @returns {undefined}
+     * @param doc XmlDom
+     * @param worksheet XmlDom.XMLNode
      */
     Worksheet.prototype.exportPageSettings = function (doc, worksheet) {
         if (this._margin) {
@@ -478,14 +456,12 @@ var Worksheet = (function () {
     };
     /** Set page details in inches.
      * use this structure:
-     * {
      *  top: 0.7,
      *  bottom: 0.7,
      *  left: 0.7,
      *  right: 0.7,
      *  header: 0.3,
      *  footer: 0.3,
-     * }
      */
     Worksheet.prototype.setPageMargin = function (input) {
         this._margin = input;
@@ -493,22 +469,21 @@ var Worksheet = (function () {
     /** Can be one of 'portrait' or 'landscape'.
      * http://www.schemacentral.com/sc/ooxml/t-ssml_ST_Orientation.html
      *
-     * @param {String} orientation
-     * @returns {undefined}
+     * @param orientation
      */
     Worksheet.prototype.setPageOrientation = function (orientation) {
         this._orientation = orientation;
     };
     /** Expects an array of column definitions. Each column definition needs to have a width assigned to it.
      *
-     * @param {Array} Columns
+     * @param columns
      */
     Worksheet.prototype.setColumns = function (columns) {
         this.columns = columns;
     };
     /** Expects an array of data to be translated into cells.
      *
-     * @param {Array} data Two dimensional array - [ [A1, A2], [B1, B2] ]
+     * @param data Two dimensional array - [ [A1, A2], [B1, B2] ]
      * @see <a href='/cookbook/addingDataToAWorksheet.html'>Adding data to a worksheet</a>
      */
     Worksheet.prototype.setData = function (data) {

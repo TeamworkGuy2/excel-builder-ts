@@ -66,17 +66,17 @@ var XmlDom = (function () {
             }
         }
         XMLNode.prototype.toString = function () {
-            var string = "<" + this.nodeName + " ";
+            var str = "<" + this.nodeName + " ";
             var attrs = [];
             for (var attr in this.attributes) {
                 attrs.push(attr + "=\"" + this.attributes[attr] + "\"");
             }
-            string += attrs.join(" ") + ">";
+            str += attrs.join(" ") + ">";
             for (var i = 0, l = this.children.length; i < l; i++) {
-                string += this.children[i].toString();
+                str += this.children[i].toString();
             }
-            string += "</" + this.nodeName + ">";
-            return string;
+            str += "</" + this.nodeName + ">";
+            return str;
         };
         XMLNode.prototype.toJSON = function () {
             var children = [];

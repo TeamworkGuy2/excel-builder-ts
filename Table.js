@@ -76,7 +76,7 @@ var Table = (function () {
             };
         }
         if (!col.name) {
-            throw "Invalid argument for addTableColumn - minimum requirement is a name property";
+            throw new Error("Invalid argument for addTableColumn - minimum requirement is a name property");
         }
         this.tableColumns.push(col);
     };
@@ -110,7 +110,7 @@ var Table = (function () {
             table.setAttribute("headerRowBorderDxfId", this.headerRowBorderDxfId);
         }
         if (!this.ref) {
-            throw "Needs at least a reference range";
+            throw new Error("Needs at least a reference range");
         }
         if (!this.autoFilter) {
             this.addAutoFilter(this.ref[0], this.ref[1]);
@@ -125,17 +125,17 @@ var Table = (function () {
         tableColumns.setAttribute("count", this.tableColumns.length);
         var tcs = this.tableColumns;
         for (var i = 0, l = tcs.length; i < l; i++) {
-            var tc = tcs[i];
+            var col = tcs[i];
             var tableColumn = doc.createElement("tableColumn");
             tableColumn.setAttribute("id", i + 1);
-            tableColumn.setAttribute("name", tc.name);
+            tableColumn.setAttribute("name", col.name);
+            if (col.totalsRowFunction) {
+                tableColumn.setAttribute("totalsRowFunction", col.totalsRowFunction);
+            }
+            if (col.totalsRowLabel) {
+                tableColumn.setAttribute("totalsRowLabel", col.totalsRowLabel);
+            }
             tableColumns.appendChild(tableColumn);
-            if (tc.totalsRowFunction) {
-                tableColumn.setAttribute("totalsRowFunction", tc.totalsRowFunction);
-            }
-            if (tc.totalsRowLabel) {
-                tableColumn.setAttribute("totalsRowLabel", tc.totalsRowLabel);
-            }
         }
         return tableColumns;
     };

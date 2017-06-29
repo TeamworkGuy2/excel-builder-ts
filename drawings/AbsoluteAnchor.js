@@ -2,11 +2,11 @@
 var Util = require("../Util");
 var AbsoluteAnchor = (function () {
     /**
-     * @param {Object} config
-     * @param {number} config.x X offset in EMU's
-     * @param {number} config.y Y offset in EMU's
-     * @param {number} config.width Width in EMU's
-     * @param {number} config.height Height in EMU's
+     * @param config
+     * config.x X offset in EMU's
+     * config.y Y offset in EMU's
+     * config.width Width in EMU's
+     * config.height Height in EMU's
      * @constructor
      */
     function AbsoluteAnchor(config) {
@@ -14,24 +14,22 @@ var AbsoluteAnchor = (function () {
         this.y = null;
         this.width = null;
         this.height = null;
-        if (config) {
+        if (config != null) {
             this.setPos(config.x, config.y);
             this.setDimensions(config.width, config.height);
         }
     }
     /** Sets the X and Y offsets.
-     *
-     * @param {number} x
-     * @param {number} y
+     * @param x
+     * @param y
      */
     AbsoluteAnchor.prototype.setPos = function (x, y) {
         this.x = x;
         this.y = y;
     };
     /** Sets the width and height of the image.
-     *
-     * @param {number} width
-     * @param {number} height
+     * @param width
+     * @param height
      */
     AbsoluteAnchor.prototype.setDimensions = function (width, height) {
         this.width = width;

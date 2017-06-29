@@ -7,13 +7,14 @@ interface WorksheetExportWorkerData {
     sharedStrings: { [key: string]: number };
 }
 
+
 var worksheet: Worksheet;
 
 var console = {
     log: postMessage
 };
 
-var start = function(data) {
+var start = function (data: any) {
     worksheet = new Worksheet();
     worksheet.importData(data);
     postMessage({ status: "sharedStrings", data: worksheet.collectSharedStrings() }, undefined);
@@ -21,7 +22,7 @@ var start = function(data) {
 
 onmessage = function (event: { data: WorksheetExportWorkerData }) {
     var data = event.data;
-    if (typeof data == "object") {
+    if (typeof data === "object") {
         switch (data.instruction) {
             case "setup":
                 importScripts(data.requireJsPath);

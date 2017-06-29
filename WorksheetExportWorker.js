@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var Worksheet = require("./Worksheet");
 var worksheet;
 var console = {
@@ -11,7 +12,7 @@ var start = function (data) {
 };
 onmessage = function (event) {
     var data = event.data;
-    if (typeof data == "object") {
+    if (typeof data === "object") {
         switch (data.instruction) {
             case "setup":
                 importScripts(data.requireJsPath);

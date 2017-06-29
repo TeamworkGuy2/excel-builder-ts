@@ -10,10 +10,9 @@ var Drawings = (function () {
         this.relations = new RelationshipManager();
         this.id = Util._uniqueId("Drawings");
     }
-    /**
-     * Adds a drawing (more likely a subclass of a Drawing) to the 'Drawings' for a particular worksheet.
+    /** Adds a drawing (more likely a subclass of a Drawing) to the 'Drawings' for a particular worksheet.
      *
-     * @param {Drawing} drawing
+     * @param drawing
      */
     Drawings.prototype.addDrawing = function (drawing) {
         this.drawings.push(drawing);

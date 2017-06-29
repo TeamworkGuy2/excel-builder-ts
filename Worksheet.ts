@@ -28,8 +28,6 @@ class Worksheet {
     _orientation: string;
     // the page margins
     _margin: Worksheet.Margins;
-
-    // custom-code 2014-6-27
     // A two dimensional array of objects with custom XML attributes to add this worksheet's cells
     // for example an object { style: 12b } at index [1][2] would add a {@code style="12b"} attribute to cell 'C2'
     customCellAttributes: any[];
@@ -42,7 +40,6 @@ class Worksheet {
     pageMargins: any;
     // An array of attributes to apply to the 'pageSetup' element of the spreadsheet
     pageSetup: any;
-    // custom-code-end
 
 
     /**
@@ -58,8 +55,6 @@ class Worksheet {
         this._footers = <any>[];
         this._tables = [];
         this._drawings = [];
-
-        // custom-code 2014-6-27
         // A two dimensional array of objects with custom XML attributes to add this worksheet's cells
         // for example an object { style: 12b } at index [1][2] would add a {@code style="12b"} attribute to cell 'C2'
         this.customCellAttributes = [];
@@ -72,7 +67,6 @@ class Worksheet {
         this.pageMargins;
         // An array of attributes to apply to the 'pageSetup' element of the spreadsheet
         this.pageSetup;
-        // custom-code-end
 
         this.initialize(config);
     }
@@ -137,18 +131,15 @@ class Worksheet {
     }
 
 
-    // not-original 2015-5-1
     public addPagePrintSetup(pageSetup: any, pageMargins: any) {
         this.pageSetup = pageSetup;
         this.pageMargins = pageMargins;
         //this._printerSettings = { id: _.uniqueId('PrinterSettings') };
         //this.relations.addRelation(this._printerSettings, 'printerSettings');
     }
-    // not-original-end
 
 
     /** Expects an array length of three.
-     * 
      * @see Excel/Worksheet compilePageDetailPiece 
      * @see <a href='/cookbook/addingHeadersAndFooters.html'>Adding headers and footers to a worksheet</a>
      * 
@@ -156,15 +147,13 @@ class Worksheet {
      */
     public setHeader(headers: [string, string, string]) {
         if (!Array.isArray(headers)) {
-            throw "Invalid argument type - setHeader expects an array of three instructions";
+            throw new Error("Invalid argument type - setHeader expects an array of three instructions");
         }
         this._headers = headers;
     }
 
 
-    /**
-     * Expects an array length of three.
-     * 
+    /** Expects an array length of three.
      * @see Excel/Worksheet compilePageDetailPiece 
      * @see <a href='/cookbook/addingHeadersAndFooters.html'>Adding headers and footers to a worksheet</a>
      * 
@@ -172,7 +161,7 @@ class Worksheet {
      */
     public setFooter(footers: [string, string, string]) {
         if (!Array.isArray(footers)) {
-            throw "Invalid argument type - setFooter expects an array of three instructions";
+            throw new Error("Invalid argument type - setFooter expects an array of three instructions");
         }
         this._footers = footers;
     }
@@ -287,7 +276,7 @@ class Worksheet {
             date: numberNode,
             string: stringNode,
             formula: formulaNode
-        }
+        };
     }
 
 
@@ -330,11 +319,8 @@ class Worksheet {
     public toXML() {
         var data = this.data;
         var columns = this.columns || [];
-
-        // custom-code 2014-6-27
         var customCellAttributes = this.customCellAttributes || [];
         var customRowAttributes = this.customRowAttributes || [];
-        // custom-code-end
 
         var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, "worksheet");
         var worksheet = doc.documentElement;
@@ -367,12 +353,10 @@ class Worksheet {
                     if (typeof cellValue == "number") {
                         metadata.type = "number";
                     }
-                    // custom-code 2014-6-30
                     // Allows for empty cells in switch statement below
                     if (cellValue == null) {
                         metadata.type = "empty";
                     }
-                    // custom-code-end
                 }
 
                 var cell: XmlDom.XMLNode;
@@ -390,12 +374,10 @@ class Worksheet {
                         cell = cellCache.formula.cloneNode(true);
                         (<XmlDom.XMLNode>cell.firstChild).firstChild.nodeValue = cellValue;
                         break;
-                    // custom-code 2014-6-30
                     // empty cell that contains no value, valid in Excel
                     case "empty":
                         cell = doc.createElement("c");
                         break;
-                    // custom-code-end
                     case "text":
                     default:
                         var id = sharedStrs.strings[cellValue] || sharedStrs.addString(cellValue);
@@ -408,7 +390,6 @@ class Worksheet {
                 }
                 cell.setAttribute("r", Util.positionToLetterRef(c + 1, row + 1));
 
-                // custom-code 2014-6-27
                 // add any additional custom attributes to this cell's XML element
                 if (row < customCellAttributes.length && customCellAttributes[row] != null && c < customCellAttributes[row].length) {
                     var attribs = customCellAttributes[row][c];
@@ -416,13 +397,11 @@ class Worksheet {
                         cell.setAttribute(attrib, attribs[attrib]);
                     }
                 }
-                // custom-code-end
 
                 rowNode.appendChild(cell);
             }
             rowNode.setAttribute("r", row + 1);
 
-            // custom-code 2014-6-27
             // add any additional custom attributes to this row's XML element
             if (row < customRowAttributes.length) {
                 var rowAttribs = customRowAttributes[row];
@@ -430,7 +409,6 @@ class Worksheet {
                     rowNode.setAttribute(attrib, rowAttribs[attrib]);
                 }
             }
-            // custom-code-end
 
             sheetData.appendChild(rowNode);
         }
@@ -478,13 +456,10 @@ class Worksheet {
                 mergeCell.setAttribute("ref", this.mergedCells[i][0] + ':' + this.mergedCells[i][1]);
                 mergeCells.appendChild(mergeCell);
             }
-            // custom-code 2014-7-2
             mergeCells.setAttribute("count", this.mergedCells.length);
-            // custom-code-end
             worksheet.appendChild(mergeCells);
         }
 
-        // custom-code 2014-6-30
         // Add pageMargins element if there are custom page margin attributes
         if (this.pageMargins) {
             var pageMarginsEl = doc.createElement("pageMargins");
@@ -502,7 +477,6 @@ class Worksheet {
             }
             worksheet.appendChild(pageSetupEl);
         }
-        // custom-code-end
 
         for (var i = 0, l = this._drawings.length; i < l; i++) {
             var drawing = doc.createElement("drawing");

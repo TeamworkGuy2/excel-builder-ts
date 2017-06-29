@@ -5,7 +5,6 @@ var RelationshipManager = require("./RelationshipManager");
 var SharedStrings = require("./SharedStrings");
 var StyleSheet = require("./StyleSheet");
 var Worksheet = require("./Worksheet");
-// custom-code 2014-6-27
 /** Return base64 encoded data for the printer seeings binary file for a default portrait,
  * 0.25 margin, Excel .xlsx spreadsheet
  * @return a base64 encoded string with no initial 'data:...,' marker, just a base64 string of binary data
@@ -27,7 +26,6 @@ function getXlsxPrinterSettings1binBase64() {
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 }
-// custom-code-end
 /**
  * @module Excel/Workbook
  */
@@ -64,8 +62,8 @@ var Workbook = (function () {
         this.drawings.push(drawings);
     };
     /** Set number of rows to repeat for this sheet.
-     * @param {string} inSheet sheet name
-     * @param {int} inRowCount number of rows to repeat from the top
+     * @param inSheet sheet name
+     * @param inRowCount number of rows to repeat from the top
      */
     Workbook.prototype.setPrintTitleTop = function (inSheet, inRowCount) {
         if (this.printTitles == null) {
@@ -77,8 +75,8 @@ var Workbook = (function () {
         this.printTitles[inSheet].top = inRowCount;
     };
     /** Set number of rows to repeat for this sheet.
-     * @param {string} inSheet sheet name
-     * @param {int} inColumn number of columns to repeat from the left
+     * @param inSheet sheet name
+     * @param inColumn number of columns to repeat from the left
      */
     Workbook.prototype.setPrintTitleLeft = function (inSheet, inColumn) {
         if (this.printTitles == null) {
@@ -249,7 +247,6 @@ var Workbook = (function () {
         }
     };
     Workbook.prototype._prepareFilesForPackaging = function (files) {
-        // custom-code 2014-6-27
         var contentTypes = this.createContentTypes();
         // adds reference for xl/printerSettings/printerSettings1.bin
         if (files["/xl/printerSettings/printerSettings1.bin"]) {
@@ -258,7 +255,6 @@ var Workbook = (function () {
                 ["ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.printerSettings"]
             ]));
         }
-        // custom-code-end
         Object.assign(files, {
             "/[Content_Types].xml": contentTypes,
             "/_rels/.rels": this.createWorkbookRelationship(),
@@ -285,7 +281,7 @@ var Workbook = (function () {
             requireJsPath = document.getElementById("requirejs") ? document.getElementById("requirejs")["src"] : '';
         }
         if (!requireJsPath) {
-            throw "Please add 'requirejs' to the script that includes requirejs, or specify the path as an argument";
+            throw new Error("Please add 'requirejs' to the script that includes requirejs, or specify the path as an argument");
         }
         var files = {}, doneCount = this.worksheets.length, stringsCollectedCount = this.worksheets.length, workers = [];
         var result = {
@@ -345,7 +341,7 @@ var Workbook = (function () {
         var self = this;
         worker.addEventListener("error", callbacks.error);
         worker.addEventListener("message", function (event, data) {
-            //                console.log("Called back by the worker!\n", event.data);
+            //console.log("Called back by the worker!\n", event.data);
             switch (event.data.status) {
                 case "ready":
                     worker.postMessage({
@@ -373,23 +369,20 @@ var Workbook = (function () {
     Workbook.prototype.generateFiles = function () {
         var files = {};
         this._generateCorePaths(files);
-        // custom-code 2014-7-1
+        // TODO work-in-progress
         var anyPrintOptions = false;
-        // custom-code-end
         for (var i = 0, l = this.worksheets.length; i < l; i++) {
             files["/xl/worksheets/sheet" + (i + 1) + ".xml"] = this.worksheets[i].toXML();
             Paths[this.worksheets[i].id] = "worksheets/sheet" + (i + 1) + ".xml";
-            // custom-code 2014-6-27
             if (this.worksheets[i]._printerSettings) {
+                //anyPrintOptions = true;
+                //Paths[this.worksheets[i]._printerSettings.id] = '../printerSettings/printerSettings1.bin';
             }
-            // custom-code-end
             files["/xl/worksheets/_rels/sheet" + (i + 1) + ".xml.rels"] = this.worksheets[i].relations.toXML();
         }
-        // custom-code 2014-6-27
         if (anyPrintOptions) {
             files["/xl/printerSettings/printerSettings1.bin"] = getXlsxPrinterSettings1binBase64();
         }
-        // custom-code-end
         this._prepareFilesForPackaging(files);
         return files;
     };
