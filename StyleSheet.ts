@@ -75,12 +75,12 @@ class StyleSheet {
     }
 
 
-    public createFill(fillInstructions: Partial<StyleSheet.Fill>) {
+    public createFill(fillInstructions: StyleSheet.Fill): StyleSheet.Fill & { id: number } {
         var id = this.fills.length;
         var fill = fillInstructions;
         fill.id = id;
         this.fills.push(<StyleSheet.Fill>fill);
-        return fill;
+        return <any>fill;
     }
 
 
@@ -99,9 +99,9 @@ class StyleSheet {
      *  horizontal: http://www.schemacentral.com/sc/ooxml/t-ssml_ST_HorizontalAlignment.html
      *  vertical: http://www.schemacentral.com/sc/ooxml/t-ssml_ST_VerticalAlignment.html
      */
-    public createFormat(styleInstructions: { font?: object | number; format?: string | number; border?: { [key: string]: any } | number; fill?: Partial<StyleSheet.Fill> | number; alignment?: Partial<StyleSheet.Alignment>; }) {
+    public createFormat(styleInstructions: { font?: object | number; format?: string | number; border?: { [key: string]: any } | number; fill?: StyleSheet.Fill | number; alignment?: Partial<StyleSheet.Alignment>; }) {
         var sid = this.masterCellFormats.length;
-        var style: StyleSheet.CellFormat = {
+        var style: StyleSheet.CellFormat & { id: number } = {
             id: sid,
             fontId: undefined,
             numFmtId: undefined,
@@ -165,7 +165,7 @@ class StyleSheet {
 
     public createDifferentialStyle(styleInstructions: { font?: StyleSheet.FontStyle; border?: object; fill?: StyleSheet.Fill; alignment?: object; format?: string; }) {
         var id = this.differentialStyles.length;
-        var style: StyleSheet.DifferentialStyle = {
+        var style: StyleSheet.DifferentialStyle & { id: number } = {
             id: id,
             alignment: undefined,
             border: undefined,
@@ -227,7 +227,7 @@ class StyleSheet {
      * }
      */
     public createBorderFormatter(border?: { top?; left?; right?; bottom?; diagonal?; outline?: boolean; diagonalUp?: boolean; diagonalDown?: boolean;[id: string]: any; }) {
-        var res: StyleSheet.Border = Util.defaults(border, {
+        var res: StyleSheet.Border & { id: number } = Util.defaults(border, {
             top: {},
             left: {},
             right: {},
@@ -257,7 +257,7 @@ class StyleSheet {
      */
     public createFontStyle(instructions: { bold?: boolean; color?; fontName?: string; italic?: boolean; size?: number; shadow?: boolean; strike?: boolean; superscript?: boolean; subscript?: boolean; underline?: boolean | string; outline?: boolean; }) {
         var fontId = this.fonts.length;
-        var fontStyle: StyleSheet.FontStyle = {
+        var fontStyle: StyleSheet.FontStyle & { id: number } = {
             id: fontId,
             bold: undefined,
             color: undefined,
@@ -707,13 +707,13 @@ module StyleSheet {
     export interface Alignment {
         horizontal?: string;
         //indent?: number; // TODO
-        justifyLastLine?: boolean;
+        justifyLastLine?: 0 | 1;
         readingOrder?: number;
         relativeIndent?: number;
-        shrinkToFit?: boolean;
+        shrinkToFit?: 0 | 1;
         textRotation?: number;
         vertical?: string;
-        wrapText?: boolean;
+        wrapText?: 0 | 1;
     }
 
 
@@ -724,9 +724,9 @@ module StyleSheet {
         top?: BorderProperty;
         bottom?: BorderProperty;
         diagonal?: BorderProperty;
-        diagonalDown?: boolean;
-        diagonalUp?: boolean;
-        outline?: boolean;
+        diagonalDown?: 0 | 1;
+        diagonalUp?: 0 | 1;
+        outline?: 0 | 1;
     }
 
 
@@ -765,7 +765,7 @@ module StyleSheet {
 
 
     export interface DifferentialStyle {
-        id: number;
+        id?: number;
         alignment?: { [key: string]: any };
         border?: Border;
         fill?: Fill;
@@ -793,7 +793,7 @@ module StyleSheet {
 
 
     export interface FontStyle {
-        id: number;
+        id?: number;
         bold?: boolean;
         color?: string;
         fontName?: string;
