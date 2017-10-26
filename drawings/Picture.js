@@ -1,5 +1,5 @@
 "use strict";
-var Util = require("../Util");
+var Util = require("../util/Util");
 var Drawing = require("./Drawing");
 var Picture = (function () {
     function Picture() {
@@ -32,20 +32,20 @@ var Picture = (function () {
     };
     Picture.prototype.toXML = function (xmlDoc) {
         var pictureNode = Util.createElement(xmlDoc, "xdr:pic");
-        var nonVisibleProperties = Util.createElement(xmlDoc, "xdr:nvPicPr");
-        var nameProperties = Util.createElement(xmlDoc, "xdr:cNvPr", [
+        var nonVisibleProps = Util.createElement(xmlDoc, "xdr:nvPicPr");
+        var nameProps = Util.createElement(xmlDoc, "xdr:cNvPr", [
             ["id", this.pictureId],
             ["name", this.mediaData.fileName],
             ["descr", this.description || ""]
         ]);
-        nonVisibleProperties.appendChild(nameProperties);
-        var nvPicProperties = Util.createElement(xmlDoc, "xdr:cNvPicPr");
-        nvPicProperties.appendChild(Util.createElement(xmlDoc, "a:picLocks", [
+        nonVisibleProps.appendChild(nameProps);
+        var nvPicProps = Util.createElement(xmlDoc, "xdr:cNvPicPr");
+        nvPicProps.appendChild(Util.createElement(xmlDoc, "a:picLocks", [
             ["noChangeAspect", '1'],
             ["noChangeArrowheads", '1']
         ]));
-        nonVisibleProperties.appendChild(nvPicProperties);
-        pictureNode.appendChild(nonVisibleProperties);
+        nonVisibleProps.appendChild(nvPicProps);
+        pictureNode.appendChild(nonVisibleProps);
         var pictureFill = Util.createElement(xmlDoc, "xdr:blipFill");
         pictureFill.appendChild(Util.createElement(xmlDoc, "a:blip", [
             ["xmlns:r", Util.schemas.relationships],
@@ -56,16 +56,16 @@ var Picture = (function () {
         stretch.appendChild(Util.createElement(xmlDoc, "a:fillRect"));
         pictureFill.appendChild(stretch);
         pictureNode.appendChild(pictureFill);
-        var shapeProperties = Util.createElement(xmlDoc, "xdr:spPr", [
+        var shapeProps = Util.createElement(xmlDoc, "xdr:spPr", [
             ["bwMode", "auto"]
         ]);
         var transform2d = Util.createElement(xmlDoc, "a:xfrm");
-        shapeProperties.appendChild(transform2d);
+        shapeProps.appendChild(transform2d);
         var presetGeometry = Util.createElement(xmlDoc, "a:prstGeom", [
             ["prst", "rect"]
         ]);
-        shapeProperties.appendChild(presetGeometry);
-        pictureNode.appendChild(shapeProperties);
+        shapeProps.appendChild(presetGeometry);
+        pictureNode.appendChild(shapeProps);
         //     <xdr:spPr bwMode="auto">
         //         <a:xfrm>
         //             <a:off x="1" y="1"/>
@@ -87,11 +87,11 @@ var Picture = (function () {
         //     </xdr:spPr>
         return this.anchor.toXML(xmlDoc, pictureNode);
     };
+    Picture.Cctor = (function () {
+        var thisProto = Picture.prototype;
+        Picture.prototype = new Drawing();
+        Object.assign(Picture.prototype, thisProto);
+    }());
     return Picture;
-}());
-Picture.Cctor = (function () {
-    var thisProto = Picture.prototype;
-    Picture.prototype = new Drawing();
-    Object.assign(Picture.prototype, thisProto);
 }());
 module.exports = Picture;

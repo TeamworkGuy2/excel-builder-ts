@@ -1,5 +1,5 @@
-import Util = require("../Util");
-import XmlDom = require("../XmlDom");
+import Util = require("../util/Util");
+import XmlDom = require("../xml/XmlDom");
 
 class AbsoluteAnchor {
     x: number;

@@ -1,4 +1,6 @@
 
+declare var importScripts: any;
+
 onmessage = function (event: { data: any; }) {
     importScripts(event.data.ziplib);
 

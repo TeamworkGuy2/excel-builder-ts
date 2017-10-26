@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Worksheet = require("./Worksheet");
+var Worksheet = require("../worksheet/Worksheet");
 var worksheet;
 var console = {
     log: postMessage

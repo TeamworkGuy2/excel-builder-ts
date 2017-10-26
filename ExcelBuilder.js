@@ -1,6 +1,6 @@
 "use strict";
 /// <reference path="../definitions/jszip/jszip.d.ts" />
-var Workbook = require("./Workbook");
+var Workbook = require("./workbook/Workbook");
 /**
  * @name Excel
  * @public

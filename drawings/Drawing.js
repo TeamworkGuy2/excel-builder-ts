@@ -1,5 +1,5 @@
 "use strict";
-var Util = require("../Util");
+var Util = require("../util/Util");
 var AbsoluteAnchor = require("./AbsoluteAnchor");
 var OneCellAnchor = require("./OneCellAnchor");
 var TwoCellAnchor = require("./TwoCellAnchor");

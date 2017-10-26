@@ -1,6 +1,6 @@
-import Util = require("./Util");
-import RelationshipManager = require("./RelationshipManager");
-import XmlDom = require("./XmlDom");
+import Util = require("../util/Util");
+import RelationshipManager = require("../worksheet/RelationshipManager");
+import XmlDom = require("../xml/XmlDom");
 
 /**
  * @module Excel/Drawings
@@ -55,8 +55,8 @@ class Drawings {
 module Drawings {
 
     export interface Drawing {
-        getMediaData(): { id: string; schema?: string; };
-        getMediaType(): string;
+        getMediaData(): { id: string; schema?: Util.SchemaName; };
+        getMediaType(): Util.SchemaName;
         setRelationshipId(rId: string): void;
         toXML(doc: XmlDom): XmlDom.NodeBase;
     }

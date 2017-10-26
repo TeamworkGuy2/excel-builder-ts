@@ -1,6 +1,4 @@
-﻿import Util = require("./Util");
-
-
+﻿
 class XmlDom {
     documentElement: XmlDom.XMLNode;
 
@@ -25,6 +23,18 @@ class XmlDom {
         return this.documentElement.toString();
     }
 
+
+    static createNode(config: XmlDom.NodeInfo): XmlDom.NodeBase {
+        switch (config.type) {
+            case "XML":
+                return new XmlDom.XMLNode(config);
+            case "TEXT":
+                return new XmlDom.TextNode(config.nodeValue);
+            default:
+                return null;
+        }
+    }
+
 }
 
 
@@ -40,7 +50,7 @@ module XmlDom {
     }
 
 
-    export interface NodeConfig {
+    export interface NodeInfo {
         nodeValue?: string;
         type: "XML" | "TEXT";
     }
@@ -48,25 +58,7 @@ module XmlDom {
 
     export interface NodeBase {
         nodeValue?: string;
-        toJSON?(): NodeConfig;
-    }
-
-
-
-
-    export class Node {
-
-        static Create(config: NodeConfig): NodeBase {
-            switch (config.type) {
-                case "XML":
-                    return new XmlDom.XMLNode(config);
-                case "TEXT":
-                    return new XmlDom.TextNode(config.nodeValue);
-                default:
-                    return null;
-            }
-        }
-
+        toJSON?(): NodeInfo;
     }
 
 
@@ -81,7 +73,7 @@ module XmlDom {
         }
 
 
-        public toJSON(): NodeConfig {
+        public toJSON(): NodeInfo {
             return {
                 nodeValue: this.nodeValue,
                 type: "TEXT"
@@ -106,7 +98,7 @@ module XmlDom {
         attributes: { [key: string]: any };
 
 
-        constructor(config: { nodeName?: string; nodeValue?: string; children?: NodeConfig[]; attributes?: { [key: string]: any }; }) {
+        constructor(config: { nodeName?: string; nodeValue?: string; children?: NodeInfo[]; attributes?: { [key: string]: any }; }) {
             this.nodeName = config.nodeName;
             this.children = [];
             this.nodeValue = config.nodeValue || "";
@@ -114,7 +106,7 @@ module XmlDom {
 
             if (config.children) {
                 for (var i = 0; i < config.children.length; i++) {
-                    this.appendChild(XmlDom.Node.Create(config.children[i]));
+                    this.appendChild(XmlDom.createNode(config.children[i]));
                 }
             }
 
@@ -143,8 +135,8 @@ module XmlDom {
         }
 
 
-        public toJSON(): (NodeConfig & StringMap<any>) {
-            var children: NodeConfig[] = [];
+        public toJSON(): (NodeInfo & StringMap<any>) {
+            var children: NodeInfo[] = [];
             for (var i = 0, l = this.children.length; i < l; i++) {
                 children.push(this.children[i].toJSON());
             }

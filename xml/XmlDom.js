@@ -13,25 +13,19 @@ var XmlDom = (function () {
     XmlDom.prototype.toString = function () {
         return this.documentElement.toString();
     };
+    XmlDom.createNode = function (config) {
+        switch (config.type) {
+            case "XML":
+                return new XmlDom.XMLNode(config);
+            case "TEXT":
+                return new XmlDom.TextNode(config.nodeValue);
+            default:
+                return null;
+        }
+    };
     return XmlDom;
 }());
 (function (XmlDom) {
-    var Node = (function () {
-        function Node() {
-        }
-        Node.Create = function (config) {
-            switch (config.type) {
-                case "XML":
-                    return new XmlDom.XMLNode(config);
-                case "TEXT":
-                    return new XmlDom.TextNode(config.nodeValue);
-                default:
-                    return null;
-            }
-        };
-        return Node;
-    }());
-    XmlDom.Node = Node;
     var TextNode = (function () {
         function TextNode(text) {
             this.nodeValue = text;
@@ -56,7 +50,7 @@ var XmlDom = (function () {
             this.attributes = {};
             if (config.children) {
                 for (var i = 0; i < config.children.length; i++) {
-                    this.appendChild(XmlDom.Node.Create(config.children[i]));
+                    this.appendChild(XmlDom.createNode(config.children[i]));
                 }
             }
             if (config.attributes) {

@@ -1,7 +1,7 @@
-import Util = require("../Util");
-import XmlDom = require("../XmlDom");
+import Util = require("../util/Util");
+import XmlDom = require("../xml/XmlDom");
 import Drawing = require("./Drawing");
-import Drawings = require("../Drawings");
+import Drawings = require("./Drawings");
 
 class Picture {
     static Cctor = (function () {
@@ -48,12 +48,12 @@ class Picture {
     }
 
 
-    public getMediaType() {
+    public getMediaType(): Util.SchemaName {
         return "image";
     }
 
 
-    public getMediaData(): { id: string; schema?: string; } {
+    public getMediaData(): { id: string; schema?: Util.SchemaName; } {
         return this.mediaData;
     }
 
@@ -66,21 +66,22 @@ class Picture {
     public toXML(xmlDoc: XmlDom): XmlDom.NodeBase {
         var pictureNode = Util.createElement(xmlDoc, "xdr:pic");
 
-        var nonVisibleProperties = Util.createElement(xmlDoc, "xdr:nvPicPr");
+        var nonVisibleProps = Util.createElement(xmlDoc, "xdr:nvPicPr");
 
-        var nameProperties = Util.createElement(xmlDoc, "xdr:cNvPr", [
+        var nameProps = Util.createElement(xmlDoc, "xdr:cNvPr", [
             ["id", this.pictureId],
             ["name", this.mediaData.fileName],
             ["descr", this.description || ""]
         ]);
-        nonVisibleProperties.appendChild(nameProperties);
-        var nvPicProperties = Util.createElement(xmlDoc, "xdr:cNvPicPr");
-        nvPicProperties.appendChild(Util.createElement(xmlDoc, "a:picLocks", [
+        nonVisibleProps.appendChild(nameProps);
+        var nvPicProps = Util.createElement(xmlDoc, "xdr:cNvPicPr");
+        nvPicProps.appendChild(Util.createElement(xmlDoc, "a:picLocks", [
             ["noChangeAspect", '1'],
             ["noChangeArrowheads", '1']
         ]));
-        nonVisibleProperties.appendChild(nvPicProperties);
-        pictureNode.appendChild(nonVisibleProperties);
+        nonVisibleProps.appendChild(nvPicProps);
+        pictureNode.appendChild(nonVisibleProps);
+
         var pictureFill = Util.createElement(xmlDoc, "xdr:blipFill");
         pictureFill.appendChild(Util.createElement(xmlDoc, "a:blip", [
             ["xmlns:r", Util.schemas.relationships],
@@ -92,19 +93,19 @@ class Picture {
         pictureFill.appendChild(stretch);
         pictureNode.appendChild(pictureFill);
 
-        var shapeProperties = Util.createElement(xmlDoc, "xdr:spPr", [
+        var shapeProps = Util.createElement(xmlDoc, "xdr:spPr", [
             ["bwMode", "auto"]
         ]);
 
         var transform2d = Util.createElement(xmlDoc, "a:xfrm");
-        shapeProperties.appendChild(transform2d);
+        shapeProps.appendChild(transform2d);
 
         var presetGeometry = Util.createElement(xmlDoc, "a:prstGeom", [
             ["prst", "rect"]
         ]);
-        shapeProperties.appendChild(presetGeometry);
+        shapeProps.appendChild(presetGeometry);
 
-        pictureNode.appendChild(shapeProperties);
+        pictureNode.appendChild(shapeProps);
         //     <xdr:spPr bwMode="auto">
         //         <a:xfrm>
         //             <a:off x="1" y="1"/>

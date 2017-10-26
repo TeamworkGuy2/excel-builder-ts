@@ -1,6 +1,6 @@
-import Util = require("../Util");
-import XmlDom = require("../XmlDom");
-import Drawings = require("../Drawings");
+import Util = require("../util/Util");
+import XmlDom = require("../xml/XmlDom");
+import Drawings = require("./Drawings");
 import AbsoluteAnchor = require("./AbsoluteAnchor");
 import OneCellAnchor = require("./OneCellAnchor");
 import TwoCellAnchor = require("./TwoCellAnchor");
@@ -49,9 +49,9 @@ abstract class Drawing implements Drawings.Drawing {
 
     public abstract toXML(xmlDoc: XmlDom): XmlDom.NodeBase;
 
-    public abstract getMediaData(): { id: string; schema?: string; };
+    public abstract getMediaData(): { id: string; schema?: Util.SchemaName; };
 
-    public abstract getMediaType(): string;
+    public abstract getMediaType(): Util.SchemaName;
 
 }
 

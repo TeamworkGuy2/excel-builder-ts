@@ -1,6 +1,6 @@
 "use strict";
-var Util = require("./Util");
-var RelationshipManager = require("./RelationshipManager");
+var Util = require("../util/Util");
+var RelationshipManager = require("../worksheet/RelationshipManager");
 /**
  * @module Excel/Drawings
  */

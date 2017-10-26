@@ -1,5 +1,5 @@
 "use strict";
-var Util = require("../Util");
+var Util = require("../util/Util");
 var TwoCellAnchor = (function () {
     function TwoCellAnchor(config) {
         this.from = { xOff: 0, yOff: 0 };

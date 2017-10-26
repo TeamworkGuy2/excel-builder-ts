@@ -1,69 +1,53 @@
-import Util = require("./Util");
-import XmlDom = require("./XmlDom");
-
+"use strict";
+var Util = require("../util/Util");
 /**
  * @module Excel/StyleSheet
  */
-class StyleSheet {
-    borders: StyleSheet.Border[];
-    cellStyles: { name: string; xfId: string | number; builtinId: string | number; [key: string]: any; }[];
-    defaultTableStyle: boolean;
-    differentialStyles: StyleSheet.DifferentialStyle[];
-    id: string;
-    masterCellFormats: StyleSheet.CellFormat[];
-    masterCellStyles: StyleSheet.CellStyle[];
-    fills: StyleSheet.Fill[];
-    fonts: StyleSheet.FontStyle[];
-    numberFormatters: StyleSheet.NumberingFormat[];
-    tableStyles: StyleSheet.TableStyle[];
-
-
-    constructor(config?: any) {
+var StyleSheet = (function () {
+    function StyleSheet(config) {
         this.id = Util._uniqueId("StyleSheet");
         this.cellStyles = [{
-            name: "Normal",
-            xfId: "0",
-            builtinId: "0"
-        }];
+                name: "Normal",
+                xfId: "0",
+                builtinId: "0"
+            }];
         this.defaultTableStyle = false;
-        this.differentialStyles = [<any>{}];
+        this.differentialStyles = [{}];
         this.masterCellFormats = [{
-            numFmtId: 0,
-            fontId: 0,
-            fillId: 0,
-            borderId: 0,
-            xfid: 0
-        }];
+                numFmtId: 0,
+                fontId: 0,
+                fillId: 0,
+                borderId: 0,
+                xfid: 0
+            }];
         this.masterCellStyles = [{
-            numFmtId: 0,
-            fontId: 0,
-            fillId: 0,
-            borderId: 0
-        }];
-        this.fonts = [<any>{}];
+                numFmtId: 0,
+                fontId: 0,
+                fillId: 0,
+                borderId: 0
+            }];
+        this.fonts = [{}];
         this.numberFormatters = [];
-        this.fills = [<any>{}, {
-            type: "pattern",
-            patternType: "gray125",
-            fgColor: "FF333333",
-            bgColor: "FF333333"
-        }];
+        this.fills = [{}, {
+                type: "pattern",
+                patternType: "gray125",
+                fgColor: "FF333333",
+                bgColor: "FF333333"
+            }];
         this.borders = [{
-            top: <any>{},
-            left: <any>{},
-            right: <any>{},
-            bottom: <any>{},
-            diagonal: <any>{}
-        }];
+                top: {},
+                left: {},
+                right: {},
+                bottom: {},
+                diagonal: {}
+            }];
         this.tableStyles = [];
     }
-
-
-    public createSimpleFormatter(type: string): { id: number; numFmtId?: number; } {
+    StyleSheet.prototype.createSimpleFormatter = function (type) {
         var sid = this.masterCellFormats.length;
         var style = {
             id: sid,
-            numFmtId: <number>undefined,
+            numFmtId: undefined,
         };
         switch (type) {
             case "date":
@@ -72,36 +56,30 @@ class StyleSheet {
         }
         this.masterCellFormats.push(style);
         return style;
-    }
-
-
-    public createFill(fillInstructions: StyleSheet.Fill): StyleSheet.Fill & { id: number } {
+    };
+    StyleSheet.prototype.createFill = function (fillInstructions) {
         var id = this.fills.length;
         var fill = fillInstructions;
         fill.id = id;
-        this.fills.push(<StyleSheet.Fill>fill);
-        return <any>fill;
-    }
-
-
-    public createNumberFormatter(formatInstructions: string) {
+        this.fills.push(fill);
+        return fill;
+    };
+    StyleSheet.prototype.createNumberFormatter = function (formatInstructions) {
         var id = this.numberFormatters.length + 100;
-        var format: StyleSheet.NumberingFormat = {
+        var format = {
             id: id,
             formatCode: formatInstructions
-        }
+        };
         this.numberFormatters.push(format);
         return format;
-    }
-
-
+    };
     /** alignment:
      *  horizontal: http://www.schemacentral.com/sc/ooxml/t-ssml_ST_HorizontalAlignment.html
      *  vertical: http://www.schemacentral.com/sc/ooxml/t-ssml_ST_VerticalAlignment.html
      */
-    public createFormat(styleInstructions: { font?: object | number; format?: string | number; border?: { [key: string]: any } | number; fill?: StyleSheet.Fill | number; alignment?: Partial<StyleSheet.Alignment>; }) {
+    StyleSheet.prototype.createFormat = function (styleInstructions) {
         var sid = this.masterCellFormats.length;
-        var style: StyleSheet.CellFormat & { id: number } = {
+        var style = {
             id: sid,
             fontId: undefined,
             numFmtId: undefined,
@@ -111,40 +89,40 @@ class StyleSheet {
         };
         if (isObj(styleInstructions.font)) {
             style.fontId = this.createFontStyle(styleInstructions.font).id;
-        } else if (styleInstructions.font) {
-            if (isNaN(parseInt(<any>styleInstructions.font, 10))) {
+        }
+        else if (styleInstructions.font) {
+            if (isNaN(parseInt(styleInstructions.font, 10))) {
                 throw new Error("Passing a non-numeric font id is not supported");
             }
             style.fontId = styleInstructions.font;
         }
-
         if (isStr(styleInstructions.format)) {
             style.numFmtId = this.createNumberFormatter(styleInstructions.format).id;
-        } else if (styleInstructions.format) {
-            if (isNaN(parseInt(<any>styleInstructions.format))) {
+        }
+        else if (styleInstructions.format) {
+            if (isNaN(parseInt(styleInstructions.format))) {
                 throw new Error("Invalid number formatter id");
             }
             style.numFmtId = styleInstructions.format;
         }
-
         if (isObj(styleInstructions.border)) {
             style.borderId = this.createBorderFormatter(styleInstructions.border).id;
-        } else if (styleInstructions.border) {
-            if (isNaN(parseInt(<any>styleInstructions.border))) {
+        }
+        else if (styleInstructions.border) {
+            if (isNaN(parseInt(styleInstructions.border))) {
                 throw new Error("Passing a non-numeric border id is not supported");
             }
             style.borderId = styleInstructions.border;
         }
-
         if (isObj(styleInstructions.fill)) {
             style.fillId = this.createFill(styleInstructions.fill).id;
-        } else if (styleInstructions.fill) {
-            if (isNaN(parseInt(<any>styleInstructions.fill))) {
+        }
+        else if (styleInstructions.fill) {
+            if (isNaN(parseInt(styleInstructions.fill))) {
                 throw new Error("Passing a non-numeric fill id is not supported");
             }
             style.fillId = styleInstructions.fill;
         }
-
         if (isObj(styleInstructions.alignment)) {
             style.alignment = Util.pick(styleInstructions.alignment, [
                 "horizontal",
@@ -157,32 +135,29 @@ class StyleSheet {
                 "wrapText"
             ]);
         }
-
         this.masterCellFormats.push(style);
         return style;
-    }
-
-
-    public createDifferentialStyle(styleInstructions: { font?: StyleSheet.FontStyle; border?: object; fill?: StyleSheet.Fill; alignment?: object; format?: string; }) {
+    };
+    StyleSheet.prototype.createDifferentialStyle = function (styleInstructions) {
         var id = this.differentialStyles.length;
-        var style: StyleSheet.DifferentialStyle & { id: number } = {
+        var style = {
             id: id,
             alignment: undefined,
             border: undefined,
             fill: undefined,
             font: undefined,
             numFmt: undefined,
-        }
+        };
         if (isObj(styleInstructions.font)) {
             style.font = styleInstructions.font;
         }
         if (isObj(styleInstructions.border)) {
             style.border = Util.defaults(styleInstructions.border, {
-                top: <any>{},
-                left: <any>{},
-                right: <any>{},
-                bottom: <any>{},
-                diagonal: <any>{}
+                top: {},
+                left: {},
+                right: {},
+                bottom: {},
+                diagonal: {}
             });
         }
         if (isObj(styleInstructions.fill)) {
@@ -196,19 +171,14 @@ class StyleSheet {
         }
         this.differentialStyles[id] = style;
         return style;
-    }
-
-
+    };
     /** Should be an object containing keys that match with one of the keys from this list:
      * http://www.schemacentral.com/sc/ooxml/t-ssml_ST_TableStyleType.html
-     * 
      * The value should be a reference to a differential format (dxf)
      */
-    public createTableStyle(instructions: StyleSheet.TableStyle) {
+    StyleSheet.prototype.createTableStyle = function (instructions) {
         this.tableStyles.push(instructions);
-    }
-
-
+    };
     /** All params optional
      * Expects: {
      * top: {},
@@ -226,8 +196,8 @@ class StyleSheet {
      * color: ARBG color (requires the A, so for example FF006666)
      * }
      */
-    public createBorderFormatter(border?: { top?; left?; right?; bottom?; diagonal?; outline?: boolean; diagonalUp?: boolean; diagonalDown?: boolean;[id: string]: any; }) {
-        var res: StyleSheet.Border & { id: number } = Util.defaults(border, {
+    StyleSheet.prototype.createBorderFormatter = function (border) {
+        var res = Util.defaults(border, {
             top: {},
             left: {},
             right: {},
@@ -237,9 +207,7 @@ class StyleSheet {
         });
         this.borders.push(res);
         return res;
-    }
-
-
+    };
     /** Supported font styles:
      * bold
      * italic
@@ -255,9 +223,9 @@ class StyleSheet {
      *
      * Color is a future goal - at the moment it's looking a bit complicated
      */
-    public createFontStyle(instructions: { bold?: boolean; color?; fontName?: string; italic?: boolean; size?: number; shadow?: boolean; strike?: boolean; superscript?: boolean; subscript?: boolean; underline?: boolean | string; outline?: boolean; }) {
+    StyleSheet.prototype.createFontStyle = function (instructions) {
         var fontId = this.fonts.length;
-        var fontStyle: StyleSheet.FontStyle & { id: number } = {
+        var fontStyle = {
             id: fontId,
             bold: undefined,
             color: undefined,
@@ -283,9 +251,10 @@ class StyleSheet {
             fontStyle.vertAlign = "subscript";
         }
         if (instructions.underline) {
-            if (["double", "singleAccounting", "doubleAccounting"].indexOf(<string>instructions.underline) != -1) {
-                fontStyle.underline = <any>instructions.underline;
-            } else {
+            if (["double", "singleAccounting", "doubleAccounting"].indexOf(instructions.underline) != -1) {
+                fontStyle.underline = instructions.underline;
+            }
+            else {
                 fontStyle.underline = true;
             }
         }
@@ -309,24 +278,19 @@ class StyleSheet {
         }
         this.fonts.push(fontStyle);
         return fontStyle;
-    }
-
-
-    public exportBorders(doc: XmlDom) {
+    };
+    StyleSheet.prototype.exportBorders = function (doc) {
         var borders = doc.createElement("borders");
         borders.setAttribute("count", this.borders.length);
-
         for (var i = 0, l = this.borders.length; i < l; i++) {
             borders.appendChild(this.exportBorder(doc, this.borders[i]));
         }
         return borders;
-    }
-
-
-    public exportBorder(doc: XmlDom, data: StyleSheet.Border) {
+    };
+    StyleSheet.prototype.exportBorder = function (doc, data) {
         var border = doc.createElement("border");
         var self = this;
-        function borderGenerator(name: string) {
+        function borderGenerator(name) {
             var b = doc.createElement(name);
             border.appendChild(b);
             if (data[name].style) {
@@ -336,17 +300,16 @@ class StyleSheet {
                 b.appendChild(self.exportColor(doc, data[name].color));
             }
             return b;
-        };
+        }
+        ;
         border.appendChild(borderGenerator("left"));
         border.appendChild(borderGenerator("right"));
         border.appendChild(borderGenerator("top"));
         border.appendChild(borderGenerator("bottom"));
         border.appendChild(borderGenerator("diagonal"));
         return border;
-    }
-
-
-    public exportColor(doc: XmlDom, color: string | { tint?; auto?; theme?; }) {
+    };
+    StyleSheet.prototype.exportColor = function (doc, color) {
         var colorEl = doc.createElement("color");
         if (isStr(color)) {
             colorEl.setAttribute("rgb", color);
@@ -363,10 +326,8 @@ class StyleSheet {
             }
         }
         return colorEl;
-    }
-
-
-    public exportMasterCellFormats(doc: XmlDom) {
+    };
+    StyleSheet.prototype.exportMasterCellFormats = function (doc) {
         var cellFormats = Util.createElement(doc, "cellXfs", [
             ["count", this.masterCellFormats.length]
         ]);
@@ -375,10 +336,8 @@ class StyleSheet {
             cellFormats.appendChild(this.exportCellFormatElement(doc, mformat));
         }
         return cellFormats;
-    }
-
-
-    public exportMasterCellStyles(doc: XmlDom) {
+    };
+    StyleSheet.prototype.exportMasterCellStyles = function (doc) {
         var records = Util.createElement(doc, "cellStyleXfs", [
             ["count", this.masterCellStyles.length]
         ]);
@@ -387,15 +346,12 @@ class StyleSheet {
             records.appendChild(this.exportCellFormatElement(doc, mstyle));
         }
         return records;
-    }
-
-
-    public exportCellFormatElement(doc: XmlDom, styleInstructions: StyleSheet.CellFormat) {
+    };
+    StyleSheet.prototype.exportCellFormatElement = function (doc, styleInstructions) {
         var xf = doc.createElement("xf"), i = 0;
         var allowed = ["applyAlignment", "applyBorder", "applyFill", "applyFont", "applyNumberFormat",
-            "applyProtection", "borderId", "fillId", "fontId", "numFmtId", "pivotButton", "quotePrefix", "xfId"]
-        var attributes = Object.keys(styleInstructions).filter((key) => allowed.indexOf(key) != -1);
-
+            "applyProtection", "borderId", "fillId", "fontId", "numFmtId", "pivotButton", "quotePrefix", "xfId"];
+        var attributes = Object.keys(styleInstructions).filter(function (key) { return allowed.indexOf(key) != -1; });
         if (styleInstructions.alignment) {
             var alignmentData = styleInstructions.alignment;
             xf.appendChild(this.exportAlignment(doc, alignmentData));
@@ -408,20 +364,16 @@ class StyleSheet {
             xf.setAttribute("applyFill", '1');
         }
         return xf;
-    }
-
-
-    public exportAlignment(doc: XmlDom, alignmentData: { [key: string]: any }) {
+    };
+    StyleSheet.prototype.exportAlignment = function (doc, alignmentData) {
         var alignment = doc.createElement("alignment");
         var keys = Object.keys(alignmentData);
         for (var i = 0, len = keys.length; i < len; i++) {
             alignment.setAttribute(keys[i], alignmentData[keys[i]]);
         }
         return alignment;
-    }
-
-
-    public exportFonts(doc: XmlDom) {
+    };
+    StyleSheet.prototype.exportFonts = function (doc) {
         var fonts = doc.createElement("fonts");
         fonts.setAttribute("count", this.fonts.length);
         for (var i = 0, l = this.fonts.length; i < l; i++) {
@@ -429,23 +381,19 @@ class StyleSheet {
             fonts.appendChild(this.exportFont(doc, fd));
         }
         return fonts;
-    }
-
-
-    public exportFont(doc: XmlDom, fd: StyleSheet.FontStyle) {
+    };
+    StyleSheet.prototype.exportFont = function (doc, fd) {
         var font = doc.createElement("font");
         if (fd.size) {
             var size = doc.createElement("sz");
             size.setAttribute("val", fd.size);
             font.appendChild(size);
         }
-
         if (fd.fontName) {
             var fontName = doc.createElement("name");
             fontName.setAttribute("val", fd.fontName);
             font.appendChild(fontName);
         }
-
         if (fd.bold) {
             font.appendChild(doc.createElement("b"));
         }
@@ -477,10 +425,8 @@ class StyleSheet {
             font.appendChild(this.exportColor(doc, fd.color));
         }
         return font;
-    }
-
-
-    public exportFills(doc: XmlDom) {
+    };
+    StyleSheet.prototype.exportFills = function (doc) {
         var fills = doc.createElement("fills");
         fills.setAttribute("count", this.fills.length);
         for (var i = 0, l = this.fills.length; i < l; i++) {
@@ -488,48 +434,46 @@ class StyleSheet {
             fills.appendChild(this.exportFill(doc, fd));
         }
         return fills;
-    }
-
-
-    public exportFill(doc: XmlDom, fd: StyleSheet.Fill) {
-        var fillDef: XmlDom.XMLNode;
+    };
+    StyleSheet.prototype.exportFill = function (doc, fd) {
         var fill = doc.createElement("fill");
         if (fd.type == "pattern") {
-            fillDef = this.exportPatternFill(doc, fd);
+            var fillDef = this.exportPatternFill(doc, fd);
             fill.appendChild(fillDef);
-        } else if (fd.type == "gradient") {
-            fillDef = this.exportGradientFill(doc, fd);
+        }
+        else if (fd.type == "gradient") {
+            var fillDef = this.exportGradientFill(doc, fd);
             fill.appendChild(fillDef);
         }
         return fill;
-    }
-
-
-    public exportGradientFill(doc: XmlDom, data: StyleSheet.Fill) {
+    };
+    StyleSheet.prototype.exportGradientFill = function (doc, data) {
         var fillDef = doc.createElement("gradientFill");
         if (data.degree) {
             fillDef.setAttribute("degree", data.degree);
-        } else if (data.left) {
+        }
+        else if (data.left) {
             fillDef.setAttribute("left", data.left);
             fillDef.setAttribute("right", data.right);
             fillDef.setAttribute("top", data.top);
             fillDef.setAttribute("bottom", data.bottom);
         }
         var start = doc.createElement("stop");
-        start.setAttribute("position", (<any>data.start).pureAt || 0);
+        start.setAttribute("position", data.start.pureAt || 0);
         var startColor = doc.createElement("color");
         if (isStr(data.start) || data.start.color) {
-            startColor.setAttribute("rgb", (<any>data.start).color || data.start);
-        } else if (typeof data.start.theme) {
+            startColor.setAttribute("rgb", data.start.color || data.start);
+        }
+        else if (typeof data.start.theme) {
             startColor.setAttribute("theme", data.start.theme);
         }
-
         var end = doc.createElement("stop");
         var endColor = doc.createElement("color");
-        end.setAttribute("position", (<any>data.end).pureAt || 1);
+        end.setAttribute("position", data.end.pureAt || 1);
         if (isStr(data.end) || data.end.color) {
-            endColor.setAttribute("rgb", (<any>data.end).color || data.end);
-        } else if (typeof data.end.theme) {
+            endColor.setAttribute("rgb", data.end.color || data.end);
+        }
+        else if (typeof data.end.theme) {
             endColor.setAttribute("theme", data.end.theme);
         }
         start.appendChild(startColor);
@@ -537,47 +481,45 @@ class StyleSheet {
         fillDef.appendChild(start);
         fillDef.appendChild(end);
         return fillDef;
-    }
-
-
+    };
     /**
      * Pattern types: http://www.schemacentral.com/sc/ooxml/t-ssml_ST_PatternType.html
      */
-    public exportPatternFill(doc: XmlDom, data: StyleSheet.Fill) {
+    StyleSheet.prototype.exportPatternFill = function (doc, data) {
         var fillDef = Util.createElement(doc, "patternFill", [
             ["patternType", data.patternType]
         ]);
         var bgColor = (!data.bgColor ? data.bgColor = "FFFFFFFF" : data.bgColor);
         var fgColor = (!data.fgColor ? data.fgColor = "FFFFFFFF" : data.fgColor);
-
         var bgColorElem = doc.createElement("bgColor");
         if (isStr(bgColor)) {
-            bgColorElem.setAttribute("rgb", bgColor)
-        } else {
+            bgColorElem.setAttribute("rgb", bgColor);
+        }
+        else {
             if (bgColor.theme) {
                 bgColorElem.setAttribute("theme", bgColor.theme);
-            } else {
+            }
+            else {
                 bgColorElem.setAttribute("rgb", bgColor.rbg);
             }
         }
-
         var fgColorElem = doc.createElement("fgColor");
         if (isStr(fgColor)) {
-            fgColorElem.setAttribute("rgb", fgColor)
-        } else {
+            fgColorElem.setAttribute("rgb", fgColor);
+        }
+        else {
             if (fgColor.theme) {
                 fgColorElem.setAttribute("theme", fgColor.theme);
-            } else {
+            }
+            else {
                 fgColorElem.setAttribute("rgb", fgColor.rbg);
             }
         }
         fillDef.appendChild(fgColorElem);
         fillDef.appendChild(bgColorElem);
         return fillDef;
-    }
-
-
-    public exportNumberFormatters(doc: XmlDom) {
+    };
+    StyleSheet.prototype.exportNumberFormatters = function (doc) {
         var formatters = doc.createElement("numFmts");
         formatters.setAttribute("count", this.numberFormatters.length);
         for (var i = 0, l = this.numberFormatters.length; i < l; i++) {
@@ -585,21 +527,16 @@ class StyleSheet {
             formatters.appendChild(this.exportNumberFormatter(doc, fd));
         }
         return formatters;
-    }
-
-
-    public exportNumberFormatter(doc: XmlDom, fd: StyleSheet.NumberingFormat) {
+    };
+    StyleSheet.prototype.exportNumberFormatter = function (doc, fd) {
         var numFmt = doc.createElement("numFmt");
         numFmt.setAttribute("numFmtId", fd.id);
         numFmt.setAttribute("formatCode", fd.formatCode);
         return numFmt;
-    }
-
-
-    public exportCellStyles(doc: XmlDom) {
+    };
+    StyleSheet.prototype.exportCellStyles = function (doc) {
         var cellStylesElem = doc.createElement("cellStyles");
         cellStylesElem.setAttribute("count", this.cellStyles.length);
-
         for (var i = 0, l = this.cellStyles.length; i < l; i++) {
             var style = this.cellStyles[i];
             delete style.id; //Remove internal id
@@ -611,25 +548,18 @@ class StyleSheet {
                 record.setAttribute(attributes[a], style[attributes[a]]);
             }
         }
-
         return cellStylesElem;
-    }
-
-
-    public exportDifferentialStyles(doc: XmlDom) {
+    };
+    StyleSheet.prototype.exportDifferentialStyles = function (doc) {
         var dxfs = doc.createElement("dxfs");
         dxfs.setAttribute("count", this.differentialStyles.length);
-
         for (var i = 0, l = this.differentialStyles.length; i < l; i++) {
             var style = this.differentialStyles[i];
             dxfs.appendChild(this.exportDFX(doc, style));
         }
-
         return dxfs;
-    }
-
-
-    public exportDFX(doc: XmlDom, style: StyleSheet.DifferentialStyle) {
+    };
+    StyleSheet.prototype.exportDFX = function (doc, style) {
         var dxf = doc.createElement("dxf");
         if (style.font) {
             dxf.appendChild(this.exportFont(doc, style.font));
@@ -647,10 +577,8 @@ class StyleSheet {
             dxf.appendChild(this.exportAlignment(doc, style.alignment));
         }
         return dxf;
-    }
-
-
-    public exportTableStyles(doc: XmlDom) {
+    };
+    StyleSheet.prototype.exportTableStyles = function (doc) {
         var tableStyles = doc.createElement("tableStyles");
         tableStyles.setAttribute("count", this.tableStyles.length);
         if (this.defaultTableStyle) {
@@ -660,18 +588,17 @@ class StyleSheet {
             tableStyles.appendChild(this.exportTableStyle(doc, this.tableStyles[i]));
         }
         return tableStyles;
-    }
-
-
-    public exportTableStyle(doc: XmlDom, style: StyleSheet.TableStyle) {
+    };
+    StyleSheet.prototype.exportTableStyle = function (doc, style) {
         var tableStyle = doc.createElement("tableStyle");
         tableStyle.setAttribute("name", style.name);
         tableStyle.setAttribute("pivot", 0);
         var i = 0;
-
         Object.keys(style).forEach(function (key) {
             var value = style[key];
-            if (key == "name") { return; }
+            if (key == "name") {
+                return;
+            }
             i++;
             var styleEl = doc.createElement("tableStyleElement");
             styleEl.setAttribute("type", key);
@@ -680,10 +607,8 @@ class StyleSheet {
         });
         tableStyle.setAttribute("count", i);
         return tableStyle;
-    }
-
-
-    public toXML() {
+    };
+    StyleSheet.prototype.toXML = function () {
         var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, "styleSheet");
         var styleSheet = doc.documentElement;
         styleSheet.appendChild(this.exportNumberFormatters(doc));
@@ -698,138 +623,14 @@ class StyleSheet {
             styleSheet.appendChild(this.exportTableStyles(doc));
         }
         return doc;
-    }
-
-}
-
-module StyleSheet {
-
-    export interface Alignment {
-        horizontal?: string;
-        //indent?: number; // TODO
-        justifyLastLine?: 0 | 1;
-        readingOrder?: number;
-        relativeIndent?: number;
-        shrinkToFit?: 0 | 1;
-        textRotation?: number;
-        vertical?: string;
-        wrapText?: 0 | 1;
-    }
-
-
-    export interface Border {
-        id?: number;
-        left?: BorderProperty;
-        right?: BorderProperty;
-        top?: BorderProperty;
-        bottom?: BorderProperty;
-        diagonal?: BorderProperty;
-        diagonalDown?: 0 | 1;
-        diagonalUp?: 0 | 1;
-        outline?: 0 | 1;
-    }
-
-
-    export interface BorderProperty {
-        color?: Color;
-        style?: string;
-    }
-
-
-    export interface CellFormat {
-        id?: number;
-        numFmtId?: number;
-        fontId?: number;
-        fillId?: number;
-        borderId?: number;
-        xfid?: number;
-        alignment?: Partial<Alignment>;
-    }
-
-
-    export interface CellStyle {
-        borderId?: number;
-        fillId?: number;
-        fontId?: number;
-        numFmtId?: number;
-    }
-
-
-    export interface Color {
-        auto?: boolean;
-        indexed?: number;
-        rgb?: string | number;
-        theme?: number;
-        tint?: number;
-    }
-
-
-    export interface DifferentialStyle {
-        id?: number;
-        alignment?: { [key: string]: any };
-        border?: Border;
-        fill?: Fill;
-        font?: FontStyle;
-        numFmt?: NumberingFormat;
-    }
-
-
-    export interface Fill {
-        id?: number;
-        type: string; // 'pattern'
-        patternType: string;
-        // Pattern fill
-        bgColor?: string | { theme?; rbg?; }; // ARGB
-        fgColor?: string | { theme?; rbg?; }; // ARGB
-        // Gradient fill
-        degree?;
-        left?;
-        right?;
-        top?;
-        bottom?;
-        start?: string | { pureAt?: number; color?; theme?; };
-        end?: string | { pureAt?: number; color?; theme?; };
-    }
-
-
-    export interface FontStyle {
-        id?: number;
-        bold?: boolean;
-        color?: string;
-        fontName?: string;
-        italic?: boolean;
-        outline?: boolean;
-        shadow?: boolean;
-        strike?: boolean;
-        size?: number;
-        vertAlign?: string;
-        underline?: boolean | ("single" | "double" | "singleAccounting" | "doubleAccounting" | "none");
-    }
-
-
-    export interface NumberingFormat {
-        id: number;
-        formatCode: string;
-    }
-
-
-    export interface TableStyle {
-        name: string;
-        [key: string]: any;
-    }
-
-}
-
-
+    };
+    return StyleSheet;
+}());
 var toStrFunc = Object.prototype.toString;
-
-function isObj(obj: any): obj is object {
+function isObj(obj) {
     return obj && toStrFunc.call(obj) === "[object Object]";
 }
-
-function isStr(str: any): str is string {
+function isStr(str) {
     return str && toStrFunc.call(str) === "[object String]";
 }
-
-
-export = StyleSheet;
+module.exports = StyleSheet;

@@ -1,5 +1,5 @@
 "use strict";
-var Util = require("./Util");
+var Util = require("../util/Util");
 var Paths = require("./Paths");
 /**
  * @module Excel/RelationshipManager
@@ -22,15 +22,15 @@ var RelationshipManager = (function () {
             lastId: this.lastId
         };
     };
-    RelationshipManager.prototype.addRelation = function (object, type) {
-        var newRelation = this.relations[object.id] = {
+    RelationshipManager.prototype.addRelation = function (obj, type) {
+        var newRelation = this.relations[obj.id] = {
             id: Util._uniqueId("rId"),
             schema: Util.schemas[type]
         };
         return newRelation.id;
     };
-    RelationshipManager.prototype.getRelationshipId = function (object) {
-        return this.relations[object.id] ? this.relations[object.id].id : null;
+    RelationshipManager.prototype.getRelationshipId = function (obj) {
+        return this.relations[obj.id] ? this.relations[obj.id].id : null;
     };
     RelationshipManager.prototype.toXML = function () {
         var doc = Util.createXmlDoc(Util.schemas.relationshipPackage, "Relationships");

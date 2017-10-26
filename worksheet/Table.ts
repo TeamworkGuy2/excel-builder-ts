@@ -1,11 +1,39 @@
-"use strict";
-var Util = require("./Util");
+import Util = require("../util/Util");
+import XmlDom = require("../xml/XmlDom");
+
+
+interface SortState {
+    caseSensitive: boolean;
+    dataRange: any;
+    columnSort: boolean; //(assumes true);
+    sortDirection: any;
+    sortRange: any; //(defaults to dataRange)
+}
+
+
 /**
  * @module Excel/Table
  */
-var Table = (function () {
-    function Table(config) {
-        var _this = this;
+class Table {
+    autoFilter: [[number, number], [number, number]];
+    displayName: string;
+    headerRowBorderDxfId: string;
+    headerRowCount: number;
+    headerRowDxfId: string | number;
+    id: string;
+    name: string;
+    ref: [[number, number], [number, number]];
+    sortState: SortState;
+    styleInfo: any;
+    tableId: string;
+    totalsRowCount: number;
+    tableColumns: {
+        name: string;
+        [prop: string]: any;
+    }[];
+
+
+    constructor(config?: any) {
         var defaults = {
             autoFilter: null,
             dataCellStyle: null,
@@ -28,14 +56,16 @@ var Table = (function () {
             totalsRowDxfId: null,
             tableColumns: [],
         };
-        Object.keys(defaults).forEach(function (key) {
-            if (_this[key] == null) {
-                _this[key] = defaults[key];
+        Object.keys(defaults).forEach((key) => {
+            if (this[key] == null) {
+                this[key] = defaults[key];
             }
         });
         this.initialize(config);
     }
-    Table.prototype.initialize = function (config) {
+
+
+    public initialize(config?: any) {
         this.displayName = Util._uniqueId("Table");
         this.name = this.displayName;
         this.id = this.name;
@@ -43,16 +73,21 @@ var Table = (function () {
         if (config != null) {
             Object.assign(this, config);
         }
-    };
-    Table.prototype.setReferenceRange = function (start, end) {
+    }
+
+
+    public setReferenceRange(start: [number, number], end: [number, number]) {
         this.ref = [start, end];
-    };
-    Table.prototype.setTableColumns = function (columns) {
-        var _this = this;
-        columns.forEach(function (column) {
-            _this.addTableColumn(column);
+    }
+
+
+    public setTableColumns(columns: any[]) {
+        columns.forEach((column) => {
+            this.addTableColumn(column);
         });
-    };
+    }
+
+
     /** Expects an object with the following optional properties:
      * name (required)
      * dataCellStyle
@@ -68,8 +103,8 @@ var Table = (function () {
      * totalFormula
      * totalFormulaIsArrayType (boolean)
      */
-    Table.prototype.addTableColumn = function (column) {
-        var col = column;
+    public addTableColumn(column: string | { name: string; }) {
+        var col: { name: string; } = <any>column;
         if (typeof column === "string") {
             col = {
                 name: column
@@ -79,7 +114,9 @@ var Table = (function () {
             throw new Error("Invalid argument for addTableColumn - minimum requirement is a name property");
         }
         this.tableColumns.push(col);
-    };
+    }
+
+
     /** Expects an object with the following properties:
      * caseSensitive (boolean)
      * dataRange
@@ -87,10 +124,12 @@ var Table = (function () {
      * sortDirection
      * sortRange (defaults to dataRange)
      */
-    Table.prototype.setSortState = function (state) {
+    public setSortState(state: SortState) {
         this.sortState = state;
-    };
-    Table.prototype.toXML = function () {
+    }
+
+
+    public toXML() {
         var doc = Util.createXmlDoc(Util.schemas.spreadsheetml, "table");
         var table = doc.documentElement;
         table.setAttribute("id", this.tableId);
@@ -99,8 +138,10 @@ var Table = (function () {
         var s = this.ref[0];
         var e = this.ref[1];
         table.setAttribute("ref", Util.positionToLetterRef(s[0], s[1]) + ":" + Util.positionToLetterRef(e[0], e[1]));
+
         /** TOTALS **/
         table.setAttribute("totalsRowCount", this.totalsRowCount);
+
         /** HEADER **/
         table.setAttribute("headerRowCount", this.headerRowCount);
         if (this.headerRowDxfId) {
@@ -109,20 +150,25 @@ var Table = (function () {
         if (this.headerRowBorderDxfId) {
             table.setAttribute("headerRowBorderDxfId", this.headerRowBorderDxfId);
         }
+
         if (!this.ref) {
             throw new Error("Needs at least a reference range");
         }
         if (!this.autoFilter) {
             this.addAutoFilter(this.ref[0], this.ref[1]);
         }
+
         table.appendChild(this.exportAutoFilter(doc));
+
         table.appendChild(this.exportTableColumns(doc));
         table.appendChild(this.exportTableStyleInfo(doc));
         return table;
-    };
-    Table.prototype.exportTableColumns = function (doc) {
-        var tableColumns = doc.createElement("tableColumns");
-        tableColumns.setAttribute("count", this.tableColumns.length);
+    }
+
+
+    public exportTableColumns(doc: XmlDom) {
+        var tableCols = doc.createElement("tableColumns");
+        tableCols.setAttribute("count", this.tableColumns.length);
         var tcs = this.tableColumns;
         for (var i = 0, l = tcs.length; i < l; i++) {
             var col = tcs[i];
@@ -135,18 +181,22 @@ var Table = (function () {
             if (col.totalsRowLabel) {
                 tableColumn.setAttribute("totalsRowLabel", col.totalsRowLabel);
             }
-            tableColumns.appendChild(tableColumn);
+            tableCols.appendChild(tableColumn);
         }
-        return tableColumns;
-    };
-    Table.prototype.exportAutoFilter = function (doc) {
+        return tableCols;
+    }
+
+
+    public exportAutoFilter(doc: XmlDom) {
         var autoFilter = doc.createElement("autoFilter");
         var s = this.autoFilter[0];
-        var e = this.autoFilter[1];
+        var e = this.autoFilter[1]
         autoFilter.setAttribute("ref", Util.positionToLetterRef(s[0], s[1]) + ":" + Util.positionToLetterRef(e[0], e[1] - this.totalsRowCount));
         return autoFilter;
-    };
-    Table.prototype.exportTableStyleInfo = function (doc) {
+    }
+
+
+    public exportTableStyleInfo(doc: XmlDom) {
         var ts = this.styleInfo;
         var tableStyle = doc.createElement("tableStyleInfo");
         tableStyle.setAttribute("name", ts.themeStyle);
@@ -155,10 +205,13 @@ var Table = (function () {
         tableStyle.setAttribute("showColumnStripes", ts.showColumnStripes ? "1" : "0");
         tableStyle.setAttribute("showRowStripes", ts.showRowStripes ? "1" : "0");
         return tableStyle;
-    };
-    Table.prototype.addAutoFilter = function (startRef, endRef) {
+    }
+
+
+    public addAutoFilter(startRef: [number, number], endRef: [number, number]) {
         this.autoFilter = [startRef, endRef];
-    };
-    return Table;
-}());
-module.exports = Table;
+    }
+
+}
+
+export = Table;

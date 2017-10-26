@@ -1,4 +1,6 @@
-import Worksheet = require("./Worksheet");
+import Worksheet = require("../worksheet/Worksheet");
+
+declare function importScripts(...urls: string[]): void;
 
 interface WorksheetExportWorkerData {
     data: any;

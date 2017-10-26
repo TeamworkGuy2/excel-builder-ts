@@ -1,5 +1,5 @@
-import Util = require("../Util");
-import XmlDom = require("../XmlDom");
+import Util = require("../util/Util");
+import XmlDom = require("../xml/XmlDom");
 
 class TwoCellAnchor {
     from: Util.OffsetConfig;
@@ -72,7 +72,6 @@ class TwoCellAnchor {
         to.appendChild(toColOff);
         to.appendChild(toRow);
         to.appendChild(toRowOff);
-
 
         root.appendChild(from);
         root.appendChild(to);

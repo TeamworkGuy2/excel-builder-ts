@@ -1,17 +1,15 @@
-import Util = require("./Util");
+import Util = require("../util/Util");
 import Paths = require("./Paths");
 
 /**
  * @module Excel/RelationshipManager
  */
 class RelationshipManager {
-
     private Cctor = (function () {
         Util._uniqueId("rId"); //priming
     }());
 
-
-    relations: { [id: string]: { id: string; schema: string; } };
+    relations: { [id: string]: RelationshipManager.Relation };
     lastId: number;
 
 
@@ -21,7 +19,7 @@ class RelationshipManager {
     }
 
 
-    public importData(data: { relations: any; lastId: number; }) {
+    public importData(data: { relations: { [id: string]: RelationshipManager.Relation }; lastId: number; }) {
         this.relations = data.relations;
         this.lastId = data.lastId;
     }
@@ -35,8 +33,8 @@ class RelationshipManager {
     }
 
 
-    public addRelation(object: { id: string; schema?: string; }, type: string) {
-        var newRelation = this.relations[object.id] = {
+    public addRelation(obj: { id: string; schema?: Util.SchemaName; }, type: Util.SchemaName) {
+        var newRelation = this.relations[obj.id] = {
             id: Util._uniqueId("rId"),
             schema: Util.schemas[type]
         };
@@ -44,8 +42,8 @@ class RelationshipManager {
     }
 
 
-    public getRelationshipId(object: { id: string; schema?: string; }) {
-        return this.relations[object.id] ? this.relations[object.id].id : null;
+    public getRelationshipId(obj: { id: string; schema?: string; }) {
+        return this.relations[obj.id] ? this.relations[obj.id].id : null;
     }
 
 
@@ -70,8 +68,14 @@ class RelationshipManager {
 
 module RelationshipManager {
 
+    export interface Relation {
+        id: string;
+        schema: string;
+    }
+
+
     export interface ExportData {
-        relations: { [id: string]: { id: string; schema: string; } };
+        relations: { [id: string]: Relation };
         lastId: number;
     }
 

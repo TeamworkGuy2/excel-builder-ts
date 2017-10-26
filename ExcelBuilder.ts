@@ -1,6 +1,6 @@
 /// <reference path="../definitions/jszip/jszip.d.ts" />
 
-import Workbook = require("./Workbook");
+import Workbook = require("./workbook/Workbook");
 
 /**
  * @name Excel

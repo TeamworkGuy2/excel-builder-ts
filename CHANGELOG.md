@@ -4,7 +4,17 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.2.1](N/A) - 2017-06-29
+### [0.3.0](N/A) - 2017-10-26
+#### Changed
+* Re-organized the project into sub-folders: `drawings`, `export`, `util`, `workbook`, `worksheet`, and `xml`
+* Tweaked some variable names and comments/documentation
+* Improved some TypeScript types
+* Updated README with note about eventual desire to merge/deprecate project in favor of xlsx-spec-models and xlsx-spec-utils libraries
+* Upgraded to TypeScript 2.4
+
+
+--------
+### [0.2.1](https://github.com/TeamworkGuy2/excel-builder-ts/commit/da98cefcb04335ecd7387510aceae8b397bb9082) - 2017-06-29
 #### Changed
 * Fixed some StyleSheet type issues
 
