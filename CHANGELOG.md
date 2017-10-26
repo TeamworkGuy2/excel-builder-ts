@@ -4,9 +4,15 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.0](N/A) - 2017-10-26
+### [0.3.1](N/A) - 2017-10-26
+#### Fixed
+* Fix `importScripts()` definition in ZipWorker to match the definition in `WorksheetExportWorker`
+
+
+--------
+### [0.3.0](https://github.com/TeamworkGuy2/excel-builder-ts/commit/eb4f2bb801e30a9549c34b1873d8dc545fcccb97) - 2017-10-26
 #### Changed
-* Re-organized the project into sub-folders: `drawings`, `export`, `util`, `workbook`, `worksheet`, and `xml`
+* Re-organized the project into sub-folders: `drawings/`, `export/`, `util/`, `workbook/`, `worksheet/`, and `xml/`
 * Tweaked some variable names and comments/documentation
 * Improved some TypeScript types
 * Updated README with note about eventual desire to merge/deprecate project in favor of xlsx-spec-models and xlsx-spec-utils libraries

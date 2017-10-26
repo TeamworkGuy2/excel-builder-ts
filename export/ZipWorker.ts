@@ -1,5 +1,5 @@
 
-declare var importScripts: any;
+declare function importScripts(...urls: string[]): void;
 
 onmessage = function (event: { data: any; }) {
     importScripts(event.data.ziplib);
