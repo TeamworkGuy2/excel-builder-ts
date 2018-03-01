@@ -1,6 +1,6 @@
 "use strict";
 var Util = require("../util/Util");
-var OneCellAnchor = (function () {
+var OneCellAnchor = /** @class */ (function () {
     /**
      * @param config
      * config.x The cell column number that the top left of the picture will start in

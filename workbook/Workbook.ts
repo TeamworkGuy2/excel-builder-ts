@@ -352,7 +352,7 @@ class Workbook {
         var requireJsPath = options.requireJsPath;
         var self = this;
         if (!options.requireJsPath) {
-            requireJsPath = document.getElementById("requirejs") ? document.getElementById("requirejs")["src"] : '';
+            requireJsPath = document.getElementById("requirejs") ? (<any>document.getElementById("requirejs"))["src"] : '';
         }
         if (!requireJsPath) {
             throw new Error("Please add 'requirejs' to the script that includes requirejs, or specify the path as an argument");
@@ -408,7 +408,7 @@ class Workbook {
                         stringsCollected: function () {
                             stringsCollected();
                         },
-                        finished: function (data) {
+                        finished: function (data: any) {
                             files["/xl/worksheets/sheet" + (worksheetIndex + 1) + ".xml"] = { xml: data };
                             Paths[self.worksheets[worksheetIndex].id] = "worksheets/sheet" + (worksheetIndex + 1) + ".xml";
                             files["/xl/worksheets/_rels/sheet" + (worksheetIndex + 1) + ".xml.rels"] = self.worksheets[worksheetIndex].relations.toXML();

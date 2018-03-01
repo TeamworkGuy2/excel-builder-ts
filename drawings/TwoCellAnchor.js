@@ -1,6 +1,6 @@
 "use strict";
 var Util = require("../util/Util");
-var TwoCellAnchor = (function () {
+var TwoCellAnchor = /** @class */ (function () {
     function TwoCellAnchor(config) {
         this.from = { xOff: 0, yOff: 0 };
         this.to = { xOff: 0, yOff: 0 };

@@ -4,7 +4,15 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.1](N/A) - 2017-10-26
+### [0.3.2](N/A) - 2018-02-28
+#### Changed
+* Update to TypeScript 2.7
+* Update dependencies: mocha, @types/chai, @types/mocha
+* Enable tsconfig.json `noImplicitAny` and add/refine missing types
+
+
+--------
+### [0.3.1](https://github.com/TeamworkGuy2/excel-builder-ts/commit/aae03a4578b41d6eef08af6d3908c875e6c5e4fc) - 2017-10-26
 #### Fixed
 * Fix `importScripts()` definition in ZipWorker to match the definition in `WorksheetExportWorker`
 

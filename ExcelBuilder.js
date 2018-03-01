@@ -9,7 +9,7 @@ var Workbook = require("./workbook/Workbook");
  * @requires JSZIP
  * @exports excel-builder
  */
-var ExcelBuilder = (function () {
+var ExcelBuilder = /** @class */ (function () {
     function ExcelBuilder() {
     }
     /** Creates a new workbook.

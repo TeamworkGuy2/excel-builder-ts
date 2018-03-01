@@ -3,7 +3,7 @@ var Util = require("../util/Util");
 /**
  * @module Excel/StyleSheet
  */
-var StyleSheet = (function () {
+var StyleSheet = /** @class */ (function () {
     function StyleSheet(config) {
         this.id = Util._uniqueId("StyleSheet");
         this.cellStyles = [{
@@ -293,11 +293,12 @@ var StyleSheet = (function () {
         function borderGenerator(name) {
             var b = doc.createElement(name);
             border.appendChild(b);
-            if (data[name].style) {
-                b.setAttribute("style", data[name].style);
+            var propVal = data[name];
+            if (propVal.style) {
+                b.setAttribute("style", propVal.style);
             }
-            if (data[name].color) {
-                b.appendChild(self.exportColor(doc, data[name].color));
+            if (propVal.color) {
+                b.appendChild(self.exportColor(doc, propVal.color));
             }
             return b;
         }

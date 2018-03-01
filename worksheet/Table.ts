@@ -35,30 +35,30 @@ class Table {
 
     constructor(config?: any) {
         var defaults = {
-            autoFilter: null,
-            dataCellStyle: null,
-            dataDfxId: null,
+            autoFilter: <[[number, number], [number, number]]>null,
+            dataCellStyle: <any>null,
+            dataDfxId: <any>null,
             displayName: "",
-            headerRowBorderDxfId: null,
-            headerRowCellStyle: null,
+            headerRowBorderDxfId: <string>null,
+            headerRowCellStyle: <any>null,
             headerRowCount: 1,
-            headerRowDxfId: null,
+            headerRowDxfId: <string | number>null,
             insertRow: false,
             insertRowShift: false,
             name: "",
-            ref: null,
-            sortState: null,
+            ref: <[[number, number], [number, number]]>null,
+            sortState: <SortState>null,
             styleInfo: {},
-            tableBorderDxfId: null,
-            totalsRowBorderDxfId: null,
-            totalsRowCellStyle: null,
+            tableBorderDxfId: <any>null,
+            totalsRowBorderDxfId: <any>null,
+            totalsRowCellStyle: <any>null,
             totalsRowCount: 0,
-            totalsRowDxfId: null,
-            tableColumns: [],
+            totalsRowDxfId: <any>null,
+            tableColumns: <{ name: string; [prop: string]: any; }[]>[],
         };
-        Object.keys(defaults).forEach((key) => {
-            if (this[key] == null) {
-                this[key] = defaults[key];
+        (<(keyof typeof defaults)[]>Object.keys(defaults)).forEach((key) => {
+            if ((<any>this)[key] == null) {
+                (<any>this)[key] = defaults[key];
             }
         });
         this.initialize(config);

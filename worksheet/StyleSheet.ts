@@ -146,7 +146,7 @@ class StyleSheet {
         }
 
         if (isObj(styleInstructions.alignment)) {
-            style.alignment = Util.pick(styleInstructions.alignment, [
+            style.alignment = Util.pick<Partial<StyleSheet.Alignment>, keyof Partial<StyleSheet.Alignment>>(styleInstructions.alignment, [
                 "horizontal",
                 "justifyLastLine",
                 "readingOrder",
@@ -225,7 +225,7 @@ class StyleSheet {
      * color: ARBG color (requires the A, so for example FF006666)
      * }
      */
-    public createBorderFormatter(border?: { top?; left?; right?; bottom?; diagonal?; outline?: boolean; diagonalUp?: boolean; diagonalDown?: boolean;[id: string]: any; }) {
+    public createBorderFormatter(border?: { top?: any; left?: any; right?: any; bottom?: any; diagonal?: any; outline?: boolean; diagonalUp?: boolean; diagonalDown?: boolean;[id: string]: any; }) {
         var res: StyleSheet.Border & { id: number } = Util.defaults(border, {
             top: {},
             left: {},
@@ -254,7 +254,7 @@ class StyleSheet {
      *
      * Color is a future goal - at the moment it's looking a bit complicated
      */
-    public createFontStyle(instructions: { bold?: boolean; color?; fontName?: string; italic?: boolean; size?: number; shadow?: boolean; strike?: boolean; superscript?: boolean; subscript?: boolean; underline?: boolean | string; outline?: boolean; }) {
+    public createFontStyle(instructions: { bold?: boolean; color?: string; fontName?: string; italic?: boolean; size?: number; shadow?: boolean; strike?: boolean; superscript?: boolean; subscript?: boolean; underline?: boolean | string; outline?: boolean; }) {
         var fontId = this.fonts.length;
         var fontStyle: StyleSheet.FontStyle & { id: number } = {
             id: fontId,
@@ -325,14 +325,15 @@ class StyleSheet {
     public exportBorder(doc: XmlDom, data: StyleSheet.Border) {
         var border = doc.createElement("border");
         var self = this;
-        function borderGenerator(name: string) {
+        function borderGenerator(name: keyof StyleSheet.Border) {
             var b = doc.createElement(name);
             border.appendChild(b);
-            if (data[name].style) {
-                b.setAttribute("style", data[name].style);
+            var propVal = <StyleSheet.BorderProperty>data[name];
+            if (propVal.style) {
+                b.setAttribute("style", propVal.style);
             }
-            if (data[name].color) {
-                b.appendChild(self.exportColor(doc, data[name].color));
+            if (propVal.color) {
+                b.appendChild(self.exportColor(doc, propVal.color));
             }
             return b;
         };
@@ -345,7 +346,7 @@ class StyleSheet {
     }
 
 
-    public exportColor(doc: XmlDom, color: string | { tint?; auto?; theme?; }) {
+    public exportColor(doc: XmlDom, color: string | { tint?: number | string; auto?: boolean; theme?: number | string; }) {
         var colorEl = doc.createElement("color");
         if (isStr(color)) {
             colorEl.setAttribute("rgb", color);
@@ -393,7 +394,7 @@ class StyleSheet {
         var xf = doc.createElement("xf"), i = 0;
         var allowed = ["applyAlignment", "applyBorder", "applyFill", "applyFont", "applyNumberFormat",
             "applyProtection", "borderId", "fillId", "fontId", "numFmtId", "pivotButton", "quotePrefix", "xfId"]
-        var attributes = Object.keys(styleInstructions).filter((key) => allowed.indexOf(key) != -1);
+        var attributes = <(keyof StyleSheet.CellFormat)[]>Object.keys(styleInstructions).filter((key) => allowed.indexOf(key) != -1);
 
         if (styleInstructions.alignment) {
             var alignmentData = styleInstructions.alignment;
@@ -777,16 +778,16 @@ module StyleSheet {
         type: string; // 'pattern'
         patternType: string;
         // Pattern fill
-        bgColor?: string | { theme?; rbg?; }; // ARGB
-        fgColor?: string | { theme?; rbg?; }; // ARGB
+        bgColor?: string | { theme?: string; rbg?: string; }; // ARGB
+        fgColor?: string | { theme?: string; rbg?: string; }; // ARGB
         // Gradient fill
-        degree?;
-        left?;
-        right?;
-        top?;
-        bottom?;
-        start?: string | { pureAt?: number; color?; theme?; };
-        end?: string | { pureAt?: number; color?; theme?; };
+        degree?: any;
+        left?: any;
+        right?: any;
+        top?: any;
+        bottom?: any;
+        start?: string | { pureAt?: number; color?: string; theme?: string; };
+        end?: string | { pureAt?: number; color?: string; theme?: string; };
     }
 
 

@@ -6,7 +6,7 @@ var RelationshipManager = require("./RelationshipManager");
  * to hold data, the data's link to how it should be styled, and any links to other outside resources.
  * @module Excel/Worksheet
  */
-var Worksheet = (function () {
+var Worksheet = /** @class */ (function () {
     /**
      * @constructor
      */

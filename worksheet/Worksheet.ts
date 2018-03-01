@@ -106,7 +106,7 @@ class Worksheet {
     /** Imports data - to be used while inside of a WorksheetExportWorker.
      * @param data
      */
-    public importData(data: { columns?; columnFormats?; data?; mergedCells?; pageMargins?; pageSetup?; relations: any }) {
+    public importData(data: { columns?: Worksheet.Column[]; columnFormats?: Worksheet.ColumnFormat[]; data?: any[][]; mergedCells?: [string, string][]; pageMargins?: any; pageSetup?: any; relations: RelationshipManager.ExportData }) {
         this.relations.importData(data.relations);
         delete data.relations;
         Object.assign(this, data);

@@ -1,7 +1,7 @@
 
 class Chart {
 
-    constructor(config?) {
+    constructor(config?: any) {
     }
 
 }

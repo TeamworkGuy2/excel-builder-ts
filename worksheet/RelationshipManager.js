@@ -4,7 +4,7 @@ var Paths = require("./Paths");
 /**
  * @module Excel/RelationshipManager
  */
-var RelationshipManager = (function () {
+var RelationshipManager = /** @class */ (function () {
     function RelationshipManager() {
         this.Cctor = (function () {
             Util._uniqueId("rId"); //priming

@@ -65,8 +65,8 @@ module Util {
 
     export function defaults<T1, T2>(obj: T1, overrides: T2): T1 & T2 {
         for (var key in overrides) {
-            if (overrides.hasOwnProperty(key) && (obj[<string>key] === undefined)) {
-                obj[<string>key] = overrides[key];
+            if (overrides.hasOwnProperty(key) && (obj[<keyof T1><string>key] === undefined)) {
+                obj[<keyof T1><string>key] = <any>overrides[key];
             }
         }
         return <any>obj;

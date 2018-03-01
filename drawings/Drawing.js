@@ -7,7 +7,7 @@ var TwoCellAnchor = require("./TwoCellAnchor");
  * path information from/to.
  * @module Excel/Drawing
  */
-var Drawing = (function () {
+var Drawing = /** @class */ (function () {
     /**
      * @constructor
      */

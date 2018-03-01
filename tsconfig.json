@@ -4,7 +4,7 @@
     "lib": ["es2017", "dom", "dom.iterable"],
     "module": "commonjs",
     "noEmitOnError": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noImplicitThis": true,
     "removeComments": false,
     "sourceMap": false,

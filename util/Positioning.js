@@ -1,5 +1,5 @@
 "use strict";
-var Positioning = (function () {
+var Positioning = /** @class */ (function () {
     function Positioning() {
     }
     /** Converts pixel sizes to 'EMU's, which is what Open XML uses.

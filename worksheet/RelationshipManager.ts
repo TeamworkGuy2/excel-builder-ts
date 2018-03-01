@@ -19,7 +19,7 @@ class RelationshipManager {
     }
 
 
-    public importData(data: { relations: { [id: string]: RelationshipManager.Relation }; lastId: number; }) {
+    public importData(data: RelationshipManager.ExportData) {
         this.relations = data.relations;
         this.lastId = data.lastId;
     }

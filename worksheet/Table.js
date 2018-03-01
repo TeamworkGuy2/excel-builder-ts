@@ -3,7 +3,7 @@ var Util = require("../util/Util");
 /**
  * @module Excel/Table
  */
-var Table = (function () {
+var Table = /** @class */ (function () {
     function Table(config) {
         var _this = this;
         var defaults = {

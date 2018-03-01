@@ -1,5 +1,5 @@
 "use strict";
-var XmlDom = (function () {
+var XmlDom = /** @class */ (function () {
     function XmlDom(ns, rootNodeName, documentType) {
         this.documentElement = this.createElement(rootNodeName);
         this.documentElement.setAttribute("xmlns", ns);
@@ -26,7 +26,7 @@ var XmlDom = (function () {
     return XmlDom;
 }());
 (function (XmlDom) {
-    var TextNode = (function () {
+    var TextNode = /** @class */ (function () {
         function TextNode(text) {
             this.nodeValue = text;
         }
@@ -42,7 +42,7 @@ var XmlDom = (function () {
         return TextNode;
     }());
     XmlDom.TextNode = TextNode;
-    var XMLNode = (function () {
+    var XMLNode = /** @class */ (function () {
         function XMLNode(config) {
             this.nodeName = config.nodeName;
             this.children = [];

@@ -1,7 +1,7 @@
 "use strict";
 var Util = require("../util/Util");
 var Drawing = require("./Drawing");
-var Picture = (function () {
+var Picture = /** @class */ (function () {
     function Picture() {
         this.media = null;
         this.id = Util._uniqueId("Picture");

@@ -4,7 +4,7 @@ var RelationshipManager = require("../worksheet/RelationshipManager");
 /**
  * @module Excel/Drawings
  */
-var Drawings = (function () {
+var Drawings = /** @class */ (function () {
     function Drawings() {
         this.drawings = [];
         this.relations = new RelationshipManager();

@@ -27,7 +27,7 @@ abstract class Drawing implements Drawings.Drawing {
      * @param config Shorthand - pass the created anchor coords that can normally be used to construct it.
      * @returns a cell anchor object
      */
-    public createAnchor(type: "absoluteAnchor" | "oneCellAnchor" | "twoCellAnchor", config?: { drawing?; from?: Util.OffsetConfig; to?: Util.OffsetConfig; } & Util.Pos): Drawing.AnchorLike {
+    public createAnchor(type: "absoluteAnchor" | "oneCellAnchor" | "twoCellAnchor", config?: { drawing?: Drawings.Drawing; from?: Util.OffsetConfig; to?: Util.OffsetConfig; } & Util.Pos): Drawing.AnchorLike {
         config = config || <any>{};
         config.drawing = this;
         switch (type) {

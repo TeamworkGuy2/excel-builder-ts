@@ -3,7 +3,7 @@ var Util = require("../util/Util");
 /**
  * @module Excel/SharedStrings
  */
-var SharedStrings = (function () {
+var SharedStrings = /** @class */ (function () {
     function SharedStrings() {
         this.strings = {};
         this.stringArray = [];

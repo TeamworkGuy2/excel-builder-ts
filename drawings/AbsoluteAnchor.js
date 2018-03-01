@@ -1,6 +1,6 @@
 "use strict";
 var Util = require("../util/Util");
-var AbsoluteAnchor = (function () {
+var AbsoluteAnchor = /** @class */ (function () {
     /**
      * @param config
      * config.x X offset in EMU's

@@ -153,11 +153,11 @@ module XmlDom {
         public setAttribute(name: string, val: any) {
             if (val === null) {
                 delete this.attributes[name];
-                delete this[name];
+                delete (<any>this)[name];
                 return;
             }
             this.attributes[name] = val;
-            this[name] = val;
+            (<any>this)[name] = val;
         }
 
 

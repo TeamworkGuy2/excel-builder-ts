@@ -29,7 +29,7 @@ function getXlsxPrinterSettings1binBase64() {
 /**
  * @module Excel/Workbook
  */
-var Workbook = (function () {
+var Workbook = /** @class */ (function () {
     function Workbook(config) {
         this.worksheets = [];
         this.tables = [];

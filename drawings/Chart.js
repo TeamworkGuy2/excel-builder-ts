@@ -1,5 +1,5 @@
 "use strict";
-var Chart = (function () {
+var Chart = /** @class */ (function () {
     function Chart(config) {
     }
     return Chart;
