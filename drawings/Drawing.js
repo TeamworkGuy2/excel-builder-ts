@@ -20,17 +20,17 @@ var Drawing = /** @class */ (function () {
      * @returns a cell anchor object
      */
     Drawing.prototype.createAnchor = function (type, config) {
-        config = config || {};
-        config.drawing = this;
+        var cfg = (config != null ? config : {});
+        cfg.drawing = this;
         switch (type) {
             case "absoluteAnchor":
-                this.anchor = new AbsoluteAnchor(config);
+                this.anchor = new AbsoluteAnchor(cfg);
                 break;
             case "oneCellAnchor":
-                this.anchor = new OneCellAnchor(config);
+                this.anchor = new OneCellAnchor(cfg);
                 break;
             case "twoCellAnchor":
-                this.anchor = new TwoCellAnchor(config);
+                this.anchor = new TwoCellAnchor(cfg);
                 break;
         }
         return this.anchor;

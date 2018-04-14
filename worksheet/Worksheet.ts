@@ -2,7 +2,6 @@ import Util = require("../util/Util");
 import RelationshipManager = require("./RelationshipManager");
 import XmlDom = require("../xml/XmlDom");
 
-
 /**
  * This module represents an excel worksheet in its basic form - no tables, charts, etc. Its purpose is 
  * to hold data, the data's link to how it should be styled, and any links to other outside resources.
@@ -45,7 +44,7 @@ class Worksheet {
      * @constructor
      */
     constructor(config?: { name: string; columns: Worksheet.Column[]; }) {
-        this.relations = null;
+        this.relations = <any>null;
         this.columns = [];
         this.columnFormats = [];
         this.data = [];
@@ -72,12 +71,12 @@ class Worksheet {
 
 
     private initialize(config?: { name: string; columns: Worksheet.Column[]; }) {
-        config = config || <any>{};
-        this.name = config.name;
+        var cfg = (config != null ? config : <any>{});
+        this.name = cfg.name;
         this.id = Util._uniqueId("Worksheet");
         this._timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-        if (config.columns) {
-            this.setColumns(config.columns);
+        if (cfg.columns) {
+            this.setColumns(cfg.columns);
         }
 
         this.relations = new RelationshipManager();
@@ -215,6 +214,7 @@ class Worksheet {
 
             return str;
         }
+        return <never>undefined;
     }
 
 
@@ -375,7 +375,7 @@ class Worksheet {
                         break;
                     case "text":
                     default:
-                        var id = sharedStrs.strings[cellValue] || sharedStrs.addString(cellValue);
+                        var id = sharedStrs.strings[cellValue] || (sharedStrs.addString && sharedStrs.addString(cellValue));
                         var cell = cellCache.string.cloneNode(true);
                         (<XmlDom.XMLNode>cell.firstChild).firstChild.nodeValue = <any>id;
                         break;

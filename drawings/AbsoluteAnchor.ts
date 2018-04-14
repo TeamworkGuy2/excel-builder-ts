@@ -2,10 +2,10 @@ import Util = require("../util/Util");
 import XmlDom = require("../xml/XmlDom");
 
 class AbsoluteAnchor {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
+    x: number | null;
+    y: number | null;
+    width: number | null;
+    height: number | null;
 
 
     /**
@@ -51,13 +51,13 @@ class AbsoluteAnchor {
     public toXML(xmlDoc: XmlDom, content: XmlDom.NodeBase) {
         var root = Util.createElement(xmlDoc, "xdr:absoluteAnchor");
         var pos = Util.createElement(xmlDoc, "xdr:pos");
-        pos.setAttribute("x", <any>this.x);
-        pos.setAttribute("y", <any>this.y);
+        pos.setAttribute("x", this.x);
+        pos.setAttribute("y", this.y);
         root.appendChild(pos);
 
         var dimensions = Util.createElement(xmlDoc, "xdr:ext");
-        dimensions.setAttribute("cx", <any>this.width);
-        dimensions.setAttribute("cy", <any>this.height);
+        dimensions.setAttribute("cx", this.width);
+        dimensions.setAttribute("cy", this.height);
         root.appendChild(dimensions);
 
         root.appendChild(content);

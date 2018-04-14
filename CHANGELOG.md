@@ -4,7 +4,18 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.2](N/A) - 2018-02-28
+### [0.4.0](https://github.com/TeamworkGuy2/excel-builder-ts/commit/3e3b0e09a3ff939db25b3d5d83537adc213ad5f5) - 2018-04-14
+#### Changed
+* Update to TypeScript 2.8
+* Update tsconfig.json with `strictNullChecks: true`, `noImplicitReturns: true` and `forceConsistentCasingInFileNames: true`
+* Added release tarball and npm script `build-package` to package.json referencing external process to generate tarball
+* Cleanup JSZip dependency:
+  * `ExcelBuilder.createFile()` now requires a JSZip instance or object with `file()` method instead of creating a JSZip instance from a constructor function and generating the zip file. i.e. use `ExcelBuilder.createFile(new JSZip(), ...).generateAsync(...)` instead of previously using `ExcelBuilder.createFile(JSZip, ...)`
+  * `JSZip` is only required if using `ZipWorker`
+
+
+--------
+### [0.3.2](https://github.com/TeamworkGuy2/excel-builder-ts/commit/ce1061e1897a1b369c97a2d70d3da05510926b20) - 2018-02-28
 #### Changed
 * Update to TypeScript 2.7
 * Update dependencies: mocha, @types/chai, @types/mocha

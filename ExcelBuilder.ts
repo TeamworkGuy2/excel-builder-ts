@@ -1,6 +1,5 @@
-/// <reference path="../definitions/jszip/jszip.d.ts" />
-
 import Workbook = require("./workbook/Workbook");
+import XmlDom = require("./xml/XmlDom")
 
 /**
  * @name Excel
@@ -25,9 +24,9 @@ class ExcelBuilder {
      * options.base64 Whether to 'return' the generated file as a base64 string
      * options.success The callback function to run after workbook creation is successful.
      * options.error The callback function to run if there is an error creating the workbook.
-     * options.requireJsPath (Optional) The path to requirejs. Will use the id 'requirejs' to look up the script if not specified.
+     * options.requireJsPath The path to requirejs.
      */
-    static createFileAsync(workbook: Workbook, options: { base64: boolean; error: () => void; requireJsPath?: string; success: (data: any) => void; }, jszipPath: string, zipWorkerPath: string, worksheetExportWorkerPath: string) {
+    static createFileAsync(workbook: Workbook, options: { base64: boolean; error: () => void; requireJsPath: string; success: (data: any) => void; }, jszipPath: string, zipWorkerPath: string, worksheetExportWorkerPath: string) {
 
         workbook.generateFilesAsync({
             requireJsPath: options.requireJsPath,
@@ -51,26 +50,25 @@ class ExcelBuilder {
     }
 
 
-    /** Turns a workbook into a downloadable file.
-     * @param jszip A JSZip equivalent library to use to generate/zip the excel file
+    /** Generates the xml/binary data files for a workbook and loads them into the provided object.
+     * @param zip A JSZip library equivalent object with a file() method to add all the xlsx files to
      * @param workbook The workbook that is being converted
-     * @param options - options to modify how the excel doc is created. Only accepts a base64 boolean at the moment.
+     * @param options options to modify how the excel doc is created. Only accepts a base64 boolean at the moment.
+     * @returns the JSZip style object
      */
-    static createFile(jszip: typeof JSZip, workbook: Workbook, options?: { base64?: boolean; }) {
-        var zip = new jszip();
+    static createFile<F extends { file(path: string, content: string | XmlDom, opts?: { base64?: boolean; binary?: boolean }): void }>(zip: F, workbook: Workbook): F {
         var files = workbook.generateFiles();
         Object.keys(files).forEach(function (path) {
             var content = files[path];
             path = path.substr(1);
             if (path.indexOf(".xml") !== -1 || path.indexOf(".rel") !== -1) {
                 zip.file(path, content, { base64: false });
-            } else {
+            }
+            else {
                 zip.file(path, content, { base64: true, binary: true });
             }
-        })
-        return zip.generateAsync({
-            base64: (!options || options.base64 !== false)
         });
+        return zip;
     }
 
 }

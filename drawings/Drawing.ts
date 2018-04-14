@@ -28,17 +28,17 @@ abstract class Drawing implements Drawings.Drawing {
      * @returns a cell anchor object
      */
     public createAnchor(type: "absoluteAnchor" | "oneCellAnchor" | "twoCellAnchor", config?: { drawing?: Drawings.Drawing; from?: Util.OffsetConfig; to?: Util.OffsetConfig; } & Util.Pos): Drawing.AnchorLike {
-        config = config || <any>{};
-        config.drawing = this;
+        var cfg = (config != null ? config : <any>{});
+        cfg.drawing = this;
         switch (type) {
             case "absoluteAnchor":
-                this.anchor = new AbsoluteAnchor(config);
+                this.anchor = new AbsoluteAnchor(cfg);
                 break;
             case "oneCellAnchor":
-                this.anchor = new OneCellAnchor(config);
+                this.anchor = new OneCellAnchor(cfg);
                 break;
             case "twoCellAnchor":
-                this.anchor = new TwoCellAnchor(<{ from: Util.OffsetConfig; to: Util.OffsetConfig; }><any>config);
+                this.anchor = new TwoCellAnchor(<{ from: Util.OffsetConfig; to: Util.OffsetConfig; }><any>cfg);
                 break;
         }
         return this.anchor;

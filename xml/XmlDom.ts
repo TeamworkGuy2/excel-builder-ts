@@ -3,7 +3,7 @@ class XmlDom {
     documentElement: XmlDom.XMLNode;
 
 
-    constructor(ns: string, rootNodeName: string, documentType: any) {
+    constructor(ns: string | null | undefined, rootNodeName: string, documentType: any) {
         this.documentElement = this.createElement(rootNodeName);
         this.documentElement.setAttribute("xmlns", ns);
     }
@@ -31,7 +31,7 @@ class XmlDom {
             case "TEXT":
                 return new XmlDom.TextNode(config.nodeValue);
             default:
-                return null;
+                return <never>null;
         }
     }
 
@@ -50,15 +50,19 @@ module XmlDom {
     }
 
 
-    export interface NodeInfo {
-        nodeValue?: string;
-        type: "XML" | "TEXT";
-    }
+    export type NodeInfo = {
+        nodeName: string;
+        nodeValue: string;
+        type: "XML";
+    } | {
+        nodeValue: string;
+        type: "TEXT";
+    };
 
 
     export interface NodeBase {
-        nodeValue?: string;
-        toJSON?(): NodeInfo;
+        nodeValue: string | number;
+        toJSON(): NodeInfo;
     }
 
 
@@ -98,7 +102,7 @@ module XmlDom {
         attributes: { [key: string]: any };
 
 
-        constructor(config: { nodeName?: string; nodeValue?: string; children?: NodeInfo[]; attributes?: { [key: string]: any }; }) {
+        constructor(config: { nodeName: string; nodeValue?: string; children?: NodeInfo[]; attributes?: { [key: string]: any }; }) {
             this.nodeName = config.nodeName;
             this.children = [];
             this.nodeValue = config.nodeValue || "";
@@ -135,15 +139,15 @@ module XmlDom {
         }
 
 
-        public toJSON(): (NodeInfo & StringMap<any>) {
+        public toJSON(): (NodeInfo & { nodeName: string; children: NodeInfo[]; attributes: { [key: string]: any }; }) {
             var children: NodeInfo[] = [];
             for (var i = 0, l = this.children.length; i < l; i++) {
                 children.push(this.children[i].toJSON());
             }
             return {
                 nodeName: this.nodeName,
-                children: children,
                 nodeValue: this.nodeValue,
+                children: children,
                 attributes: this.attributes,
                 type: "XML"
             };

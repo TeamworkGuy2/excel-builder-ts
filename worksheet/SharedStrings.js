@@ -12,7 +12,7 @@ var SharedStrings = /** @class */ (function () {
     /** Adds a string to the shared string file, and returns the ID of the
      * string which can be used to reference it in worksheets.
      * @param str the string to add
-     * @return int the string index
+     * @returns int the string index
      */
     SharedStrings.prototype.addString = function (str) {
         this.strings[str] = this.stringArray.length;

@@ -1,5 +1,6 @@
 
 declare function importScripts(...urls: string[]): void;
+declare var JSZip: any;
 
 onmessage = function (event: { data: any; }) {
     importScripts(event.data.ziplib);
@@ -14,14 +15,14 @@ onmessage = function (event: { data: any; }) {
 
     postMessage({
         base64: !!event.data.base64
-    }, undefined);
+    }, <any>undefined);
 
     zip.generateAsync({
         base64: !!event.data.base64
-    }).then(function (data) {
+    }).then(function (data: any) {
         postMessage({
             status: 'done',
             data: data
-        }, undefined);
+        }, <any>undefined);
     });
 };

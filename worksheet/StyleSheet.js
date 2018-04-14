@@ -460,22 +460,24 @@ var StyleSheet = /** @class */ (function () {
             fillDef.setAttribute("bottom", data.bottom);
         }
         var start = doc.createElement("stop");
-        start.setAttribute("position", data.start.pureAt || 0);
+        var dataStart = data.start;
+        start.setAttribute("position", dataStart.pureAt || 0);
         var startColor = doc.createElement("color");
-        if (isStr(data.start) || data.start.color) {
-            startColor.setAttribute("rgb", data.start.color || data.start);
+        if (isStr(dataStart) || dataStart.color) {
+            startColor.setAttribute("rgb", dataStart.color || dataStart);
         }
-        else if (typeof data.start.theme) {
-            startColor.setAttribute("theme", data.start.theme);
+        else if (typeof dataStart.theme) {
+            startColor.setAttribute("theme", dataStart.theme);
         }
         var end = doc.createElement("stop");
         var endColor = doc.createElement("color");
-        end.setAttribute("position", data.end.pureAt || 1);
-        if (isStr(data.end) || data.end.color) {
-            endColor.setAttribute("rgb", data.end.color || data.end);
+        var dataEnd = data.end;
+        end.setAttribute("position", dataEnd.pureAt || 1);
+        if (isStr(dataEnd) || dataEnd.color) {
+            endColor.setAttribute("rgb", dataEnd.color || dataEnd);
         }
-        else if (typeof data.end.theme) {
-            endColor.setAttribute("theme", data.end.theme);
+        else if (typeof dataEnd.theme) {
+            endColor.setAttribute("theme", dataEnd.theme);
         }
         start.appendChild(startColor);
         end.appendChild(endColor);

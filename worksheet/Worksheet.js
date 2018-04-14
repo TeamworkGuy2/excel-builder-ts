@@ -35,12 +35,12 @@ var Worksheet = /** @class */ (function () {
         this.initialize(config);
     }
     Worksheet.prototype.initialize = function (config) {
-        config = config || {};
-        this.name = config.name;
+        var cfg = (config != null ? config : {});
+        this.name = cfg.name;
         this.id = Util._uniqueId("Worksheet");
         this._timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-        if (config.columns) {
-            this.setColumns(config.columns);
+        if (cfg.columns) {
+            this.setColumns(cfg.columns);
         }
         this.relations = new RelationshipManager();
     };
@@ -157,6 +157,7 @@ var Worksheet = /** @class */ (function () {
             str += piece.text;
             return str;
         }
+        return undefined;
     };
     /** Creates the header node.
      * @todo implement the ability to do even/odd headers
@@ -294,7 +295,7 @@ var Worksheet = /** @class */ (function () {
                         break;
                     case "text":
                     default:
-                        var id = sharedStrs.strings[cellValue] || sharedStrs.addString(cellValue);
+                        var id = sharedStrs.strings[cellValue] || (sharedStrs.addString && sharedStrs.addString(cellValue));
                         var cell = cellCache.string.cloneNode(true);
                         cell.firstChild.firstChild.nodeValue = id;
                         break;

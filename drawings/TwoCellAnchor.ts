@@ -16,7 +16,7 @@ class TwoCellAnchor {
     }
 
 
-    public setFrom(x: number, y: number, xOff: number, yOff: number) {
+    public setFrom(x: number | undefined, y: number | undefined, xOff: number, yOff: number) {
         this.from.x = x;
         this.from.y = y;
         if (xOff !== undefined) {
@@ -28,7 +28,7 @@ class TwoCellAnchor {
     }
 
 
-    public setTo(x: number, y: number, xOff: number, yOff: number) {
+    public setTo(x: number | undefined, y: number | undefined, xOff: number, yOff: number) {
         this.to.x = x;
         this.to.y = y;
         if (xOff !== undefined) {

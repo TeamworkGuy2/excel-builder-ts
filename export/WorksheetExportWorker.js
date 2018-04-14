@@ -2,9 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Worksheet = require("../worksheet/Worksheet");
 var worksheet;
-var console = {
-    log: postMessage
-};
 var start = function (data) {
     worksheet = new Worksheet();
     worksheet.importData(data);

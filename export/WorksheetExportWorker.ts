@@ -12,14 +12,10 @@ interface WorksheetExportWorkerData {
 
 var worksheet: Worksheet;
 
-var console = {
-    log: postMessage
-};
-
 var start = function (data: any) {
     worksheet = new Worksheet();
     worksheet.importData(data);
-    postMessage({ status: "sharedStrings", data: worksheet.collectSharedStrings() }, undefined);
+    postMessage({ status: "sharedStrings", data: worksheet.collectSharedStrings() }, <any>undefined);
 };
 
 onmessage = function (event: { data: WorksheetExportWorkerData }) {
@@ -28,7 +24,7 @@ onmessage = function (event: { data: WorksheetExportWorkerData }) {
         switch (data.instruction) {
             case "setup":
                 importScripts(data.requireJsPath);
-                postMessage({ status: "ready" }, undefined);
+                postMessage({ status: "ready" }, <any>undefined);
                 break;
             case "start":
                 start(data.data);
@@ -37,7 +33,7 @@ onmessage = function (event: { data: WorksheetExportWorkerData }) {
                 worksheet.setSharedStringCollection({
                     strings: data.sharedStrings
                 });
-                postMessage({ status: "finished", data: worksheet.toXML().toString() }, undefined);
+                postMessage({ status: "finished", data: worksheet.toXML().toString() }, <any>undefined);
                 break;
         }
     }

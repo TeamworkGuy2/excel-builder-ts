@@ -63,7 +63,7 @@ class StyleSheet {
         var sid = this.masterCellFormats.length;
         var style = {
             id: sid,
-            numFmtId: <number>undefined,
+            numFmtId: <number><any>undefined,
         };
         switch (type) {
             case "date":
@@ -346,7 +346,7 @@ class StyleSheet {
     }
 
 
-    public exportColor(doc: XmlDom, color: string | { tint?: number | string; auto?: boolean; theme?: number | string; }) {
+    public exportColor(doc: XmlDom, color: string | { tint?: string | number; auto?: boolean; theme?: number | string; }) {
         var colorEl = doc.createElement("color");
         if (isStr(color)) {
             colorEl.setAttribute("rgb", color);
@@ -515,21 +515,23 @@ class StyleSheet {
             fillDef.setAttribute("bottom", data.bottom);
         }
         var start = doc.createElement("stop");
-        start.setAttribute("position", (<any>data.start).pureAt || 0);
+        var dataStart = <NonNullable<typeof data.start>><any>data.start;
+        start.setAttribute("position", (<any>dataStart).pureAt || 0);
         var startColor = doc.createElement("color");
-        if (isStr(data.start) || data.start.color) {
-            startColor.setAttribute("rgb", (<any>data.start).color || data.start);
-        } else if (typeof data.start.theme) {
-            startColor.setAttribute("theme", data.start.theme);
+        if (isStr(dataStart) || dataStart.color) {
+            startColor.setAttribute("rgb", (<any>dataStart).color || dataStart);
+        } else if (typeof dataStart.theme) {
+            startColor.setAttribute("theme", dataStart.theme);
         }
 
         var end = doc.createElement("stop");
         var endColor = doc.createElement("color");
-        end.setAttribute("position", (<any>data.end).pureAt || 1);
-        if (isStr(data.end) || data.end.color) {
-            endColor.setAttribute("rgb", (<any>data.end).color || data.end);
-        } else if (typeof data.end.theme) {
-            endColor.setAttribute("theme", data.end.theme);
+        var dataEnd = <NonNullable<typeof data.end>><any>data.end;
+        end.setAttribute("position", (<any>dataEnd).pureAt || 1);
+        if (isStr(dataEnd) || dataEnd.color) {
+            endColor.setAttribute("rgb", (<any>dataEnd).color || dataEnd);
+        } else if (typeof dataEnd.theme) {
+            endColor.setAttribute("theme", dataEnd.theme);
         }
         start.appendChild(startColor);
         end.appendChild(endColor);

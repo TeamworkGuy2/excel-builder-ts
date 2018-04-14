@@ -2,12 +2,12 @@ import Util = require("../util/Util");
 import XmlDom = require("../xml/XmlDom");
 
 class OneCellAnchor {
-    x: number;
-    y: number;
-    xOff: number;
-    yOff: number;
-    width: number;
-    height: number;
+    x: number | null;
+    y: number | null;
+    xOff: number | null;
+    yOff: number | null;
+    width: number | null;
+    height: number | null;
 
 
     /**
@@ -32,7 +32,7 @@ class OneCellAnchor {
     }
 
 
-    public setPos(x: number, y: number, xOff: number, yOff: number) {
+    public setPos(x: number, y: number, xOff: number | undefined, yOff: number | undefined) {
         this.x = x;
         this.y = y;
         if (xOff !== undefined) {

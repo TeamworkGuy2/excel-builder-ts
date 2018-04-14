@@ -7,7 +7,7 @@ var StyleSheet = require("../worksheet/StyleSheet");
 var Worksheet = require("../worksheet/Worksheet");
 /** Return base64 encoded data for the printer seeings binary file for a default portrait,
  * 0.25 margin, Excel .xlsx spreadsheet
- * @return a base64 encoded string with no initial 'data:...,' marker, just a base64 string of binary data
+ * @returns a base64 encoded string with no initial 'data:...,' marker, just a base64 string of binary data
  */
 function getXlsxPrinterSettings1binBase64() {
     return "UABEAEYAQwByAGUAYQB0AG8AcgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEAAbcAFwDU++A" +
@@ -46,11 +46,11 @@ var Workbook = /** @class */ (function () {
         this.relations.addRelation(this.sharedStrings, "sharedStrings");
     };
     Workbook.prototype.createWorksheet = function (config) {
-        config = config || {};
-        if (config.name == null) {
-            config.name = "Sheet ".concat(this.worksheets.length + 1);
+        var cfg = (config != null ? config : {});
+        if (cfg.name == null) {
+            cfg.name = "Sheet ".concat(this.worksheets.length + 1);
         }
-        return new Worksheet(config);
+        return new Worksheet(cfg);
     };
     Workbook.prototype.getStyleSheet = function () {
         return this.styleSheet;

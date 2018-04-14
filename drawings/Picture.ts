@@ -3,7 +3,7 @@ import XmlDom = require("../xml/XmlDom");
 import Drawing = require("./Drawing");
 import Drawings = require("./Drawings");
 
-class Picture {
+class Picture implements Drawings.Drawing {
     static Cctor = (function () {
         var thisProto = Picture.prototype;
         Picture.prototype = new (<any>Drawing)();
@@ -24,7 +24,7 @@ class Picture {
         this.id = Util._uniqueId("Picture");
         this.pictureId = Util.uniqueId("Picture");
         this.fill = {};
-        this.mediaData = null;
+        this.mediaData = <any>null;
     }
 
 
@@ -85,7 +85,7 @@ class Picture {
         var pictureFill = Util.createElement(xmlDoc, "xdr:blipFill");
         pictureFill.appendChild(Util.createElement(xmlDoc, "a:blip", [
             ["xmlns:r", Util.schemas.relationships],
-            ["r:embed", this.mediaData.rId]
+            ["r:embed", <any>this.mediaData.rId]
         ]));
         pictureFill.appendChild(Util.createElement(xmlDoc, "a:srcRect"));
         var stretch = Util.createElement(xmlDoc, "a:stretch");

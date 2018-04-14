@@ -79,8 +79,8 @@ var XmlDom = /** @class */ (function () {
             }
             return {
                 nodeName: this.nodeName,
-                children: children,
                 nodeValue: this.nodeValue,
+                children: children,
                 attributes: this.attributes,
                 type: "XML"
             };
