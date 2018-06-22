@@ -214,6 +214,20 @@ var Workbook = /** @class */ (function () {
             definedName.appendChild(doc.createTextNode(value));
             definedNames.appendChild(definedName);
         }
+        ctr = 0;
+        for (var sheetName in this.filterDatabases) {
+            if (!this.filterDatabases.hasOwnProperty(sheetName)) {
+                continue;
+            }
+            var filterDatabase = this.filterDatabases[sheetName];
+            var definedName = doc.createElement("definedName");
+            definedName.setAttribute("name", "_xlnm._FilterDatabase");
+            definedName.setAttribute("hidden", "1");
+            definedName.setAttribute("localSheetId", ctr++);
+            // Excel needs this format for a _FilterDatabase: "'Worksheet Name'!$A$11:$K$18"
+            definedName.appendChild(doc.createTextNode("'" + sheetName + "'!$" + filterDatabase.left + "$" + filterDatabase.top + ":$" + filterDatabase.right + "$" + filterDatabase.bottom));
+            definedNames.appendChild(definedName);
+        }
         wb.appendChild(definedNames);
         return doc;
     };

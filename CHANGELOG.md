@@ -4,7 +4,13 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.4.0](https://github.com/TeamworkGuy2/excel-builder-ts/commit/3e3b0e09a3ff939db25b3d5d83537adc213ad5f5) - 2018-04-14
+### [0.4.1](N/A) - 2018-06-22
+#### Added
+* Support for worksheet `<autoFilter>` and workbook `<definedName name="_FilterDatabase">` which add filter/search dropdowns on column header cells
+
+
+--------
+### [0.4.0](https://github.com/TeamworkGuy2/excel-builder-ts/commit/42ade4c544f9c9d5810a25b17262467a1a83ccd6) - 2018-04-14
 #### Changed
 * Update to TypeScript 2.8
 * Update tsconfig.json with `strictNullChecks: true`, `noImplicitReturns: true` and `forceConsistentCasingInFileNames: true`

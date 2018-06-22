@@ -36,6 +36,12 @@ class Worksheet {
     _printerSettings: any;
     // An array of attributes to apply to the 'pageMargins' element of the spreadsheet
     pageMargins: any;
+    // An array of attributes (only "ref" Ex: "A1:D1" for now) to apply to the autoFilter element of the spreadsheet. Only one autoFilter per Worksheet
+    autoFilter: {
+        left: string; // Letter portion of cell name that defines left to right where filter database starts at
+        right: string; // Letter portion of cell name that defines left to right where filter database ends at
+        rowNum: number; // Row Number autFilter is applied to
+    };
     // An array of attributes to apply to the 'pageSetup' element of the spreadsheet
     pageSetup: any;
 
@@ -63,6 +69,8 @@ class Worksheet {
         this._printerSettings;
         // An array of attributes to apply to the 'pageMargins' element of the spreadsheet
         this.pageMargins;
+        // An array of attributes (only "ref" Ex: "A1:D1" for now) to apply to the autoFilter element of the spreadsheet
+        this.autoFilter;
         // An array of attributes to apply to the 'pageSetup' element of the spreadsheet
         this.pageSetup;
 
@@ -129,9 +137,10 @@ class Worksheet {
     }
 
 
-    public addPagePrintSetup(pageSetup: any, pageMargins: any) {
+    public addPagePrintSetup(pageSetup: any, pageMargins: any, autoFilter?: any) {
         this.pageSetup = pageSetup;
         this.pageMargins = pageMargins;
+        this.autoFilter = autoFilter;
         //this._printerSettings = { id: _.uniqueId('PrinterSettings') };
         //this.relations.addRelation(this._printerSettings, 'printerSettings');
     }
@@ -323,6 +332,8 @@ class Worksheet {
         var worksheet = doc.documentElement;
         worksheet.setAttribute("xmlns:r", Util.schemas.relationships);
         worksheet.setAttribute("xmlns:mc", Util.schemas.markupCompat);
+        worksheet.setAttribute("mc:Ignorable", "x14ac");
+        worksheet.setAttribute("xmlns:x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac");
 
         var maxX = 0;
         var sheetData = Util.createElement(doc, "sheetData");
@@ -455,6 +466,12 @@ class Worksheet {
             worksheet.appendChild(mergeCells);
         }
 
+        // Add autoFilter element if there are custom autofilter attributes
+        if (this.autoFilter) {
+            var autoFilterEl = doc.createElement("autoFilter");
+            autoFilterEl.setAttribute("ref", (this.autoFilter.left + this.autoFilter.rowNum + ":" + this.autoFilter.right + this.autoFilter.rowNum));
+            worksheet.appendChild(autoFilterEl);
+        }
         // Add pageMargins element if there are custom page margin attributes
         if (this.pageMargins) {
             var pageMarginsEl = doc.createElement("pageMargins");

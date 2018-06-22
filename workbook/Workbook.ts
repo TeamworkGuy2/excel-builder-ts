@@ -52,6 +52,14 @@ class Workbook {
             left?: string;
         }
     };
+    filterDatabases: {
+        [sheetName: string]: {
+            left: string; // Letter portion of cell name that defines left to right where filter database starts at
+            right: string; // Letter portion of cell name that defines left to right where filter database ends at
+            top: number; // Numeric portion of cell name that defines top to bottom where filter database starts at
+            bottom: number; // Numeric portion of cell name that defines top to bottom where filter database ends at
+        }
+    };
     id: string;
     styleSheet: StyleSheet;
     sharedStrings: SharedStrings;
@@ -274,6 +282,23 @@ class Workbook {
             definedName.appendChild(doc.createTextNode(value));
             definedNames.appendChild(definedName);
         }
+
+        ctr = 0;
+        for (var sheetName in this.filterDatabases) {
+            if (!this.filterDatabases.hasOwnProperty(sheetName)) {
+                continue;
+            }
+            var filterDatabase = this.filterDatabases[sheetName];
+            var definedName = doc.createElement("definedName");
+            definedName.setAttribute("name", "_xlnm._FilterDatabase");
+            definedName.setAttribute("hidden", "1");
+            definedName.setAttribute("localSheetId", ctr++);
+
+            // Excel needs this format for a _FilterDatabase: "'Worksheet Name'!$A$11:$K$18"
+            definedName.appendChild(doc.createTextNode("'" + sheetName + "'!$" + filterDatabase.left + "$" + filterDatabase.top + ":$" + filterDatabase.right + "$" + filterDatabase.bottom));
+            definedNames.appendChild(definedName);
+        }
+
         wb.appendChild(definedNames);
 
         return doc;

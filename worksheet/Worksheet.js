@@ -30,6 +30,8 @@ var Worksheet = /** @class */ (function () {
         this._printerSettings;
         // An array of attributes to apply to the 'pageMargins' element of the spreadsheet
         this.pageMargins;
+        // An array of attributes (only "ref" Ex: "A1:D1" for now) to apply to the autoFilter element of the spreadsheet
+        this.autoFilter;
         // An array of attributes to apply to the 'pageSetup' element of the spreadsheet
         this.pageSetup;
         this.initialize(config);
@@ -80,9 +82,10 @@ var Worksheet = /** @class */ (function () {
         this._drawings.push(table);
         this.relations.addRelation(table, "drawingRelationship");
     };
-    Worksheet.prototype.addPagePrintSetup = function (pageSetup, pageMargins) {
+    Worksheet.prototype.addPagePrintSetup = function (pageSetup, pageMargins, autoFilter) {
         this.pageSetup = pageSetup;
         this.pageMargins = pageMargins;
+        this.autoFilter = autoFilter;
         //this._printerSettings = { id: _.uniqueId('PrinterSettings') };
         //this.relations.addRelation(this._printerSettings, 'printerSettings');
     };
@@ -250,6 +253,8 @@ var Worksheet = /** @class */ (function () {
         var worksheet = doc.documentElement;
         worksheet.setAttribute("xmlns:r", Util.schemas.relationships);
         worksheet.setAttribute("xmlns:mc", Util.schemas.markupCompat);
+        worksheet.setAttribute("mc:Ignorable", "x14ac");
+        worksheet.setAttribute("xmlns:x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac");
         var maxX = 0;
         var sheetData = Util.createElement(doc, "sheetData");
         var cellCache = this._buildCache(doc);
@@ -364,6 +369,12 @@ var Worksheet = /** @class */ (function () {
             }
             mergeCells.setAttribute("count", this.mergedCells.length);
             worksheet.appendChild(mergeCells);
+        }
+        // Add autoFilter element if there are custom autofilter attributes
+        if (this.autoFilter) {
+            var autoFilterEl = doc.createElement("autoFilter");
+            autoFilterEl.setAttribute("ref", (this.autoFilter.left + this.autoFilter.rowNum + ":" + this.autoFilter.right + this.autoFilter.rowNum));
+            worksheet.appendChild(autoFilterEl);
         }
         // Add pageMargins element if there are custom page margin attributes
         if (this.pageMargins) {
