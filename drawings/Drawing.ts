@@ -10,7 +10,7 @@ import TwoCellAnchor = require("./TwoCellAnchor");
  * @module Excel/Drawing
  */
 abstract class Drawing implements Drawings.Drawing {
-    anchor: Drawing.AnchorLike;
+    anchor: Drawing.AnchorLike | null = null;
     id: string;
 
 
@@ -32,16 +32,12 @@ abstract class Drawing implements Drawings.Drawing {
         cfg.drawing = this;
         switch (type) {
             case "absoluteAnchor":
-                this.anchor = new AbsoluteAnchor(cfg);
-                break;
+                return this.anchor = new AbsoluteAnchor(cfg);
             case "oneCellAnchor":
-                this.anchor = new OneCellAnchor(cfg);
-                break;
+                return this.anchor = new OneCellAnchor(cfg);
             case "twoCellAnchor":
-                this.anchor = new TwoCellAnchor(<{ from: Util.OffsetConfig; to: Util.OffsetConfig; }><any>cfg);
-                break;
+                return this.anchor = new TwoCellAnchor(<{ from: Util.OffsetConfig; to: Util.OffsetConfig; }><any>cfg);
         }
-        return this.anchor;
     }
 
 

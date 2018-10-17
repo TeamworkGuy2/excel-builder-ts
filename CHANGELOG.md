@@ -4,7 +4,16 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.4.1](N/A) - 2018-06-22
+### [0.4.2](N/A) - 2018-10-17
+#### Changed
+* Update to TypeScript 3.1
+* Update dev dependencies and @types
+* Enable `tsconfig.json` `strict` and fix compile errors
+* Removed compiled bin tarball in favor of git tags
+
+
+--------
+### [0.4.1](https://github.com/TeamworkGuy2/excel-builder-ts/commit/41e334ce51bf376b53f4a7eee86efcffe6835bc7) - 2018-06-22
 #### Added
 * Support for worksheet `<autoFilter>` and workbook `<definedName name="_FilterDatabase">` which add filter/search dropdowns on column header cells
 

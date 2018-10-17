@@ -5,35 +5,25 @@ var Util = require("../util/Util");
  */
 var Table = /** @class */ (function () {
     function Table(config) {
-        var _this = this;
-        var defaults = {
-            autoFilter: null,
-            dataCellStyle: null,
-            dataDfxId: null,
-            displayName: "",
-            headerRowBorderDxfId: null,
-            headerRowCellStyle: null,
-            headerRowCount: 1,
-            headerRowDxfId: null,
-            insertRow: false,
-            insertRowShift: false,
-            name: "",
-            ref: null,
-            sortState: null,
-            styleInfo: {},
-            tableBorderDxfId: null,
-            totalsRowBorderDxfId: null,
-            totalsRowCellStyle: null,
-            totalsRowCount: 0,
-            totalsRowDxfId: null,
-            tableColumns: [],
-        };
-        Object.keys(defaults).forEach(function (key) {
-            if (_this[key] == null) {
-                _this[key] = defaults[key];
-            }
-        });
-        this.initialize(config);
+        this.autoFilter = null;
+        this.displayName = "";
+        this.headerRowBorderDxfId = null;
+        this.headerRowCount = 1;
+        this.headerRowDxfId = null;
+        this.name = "";
+        this.ref = null;
+        this.sortState = null;
+        this.styleInfo = {};
+        this.totalsRowCount = 0;
+        this.tableColumns = [];
+        // copy from intialize() to appease TypeScript
+        this.displayName = Util._uniqueId("Table");
+        this.name = this.displayName;
+        this.id = this.name;
+        this.tableId = this.id.replace("Table", '');
+        if (config != null) {
+            Object.assign(this, config);
+        }
     }
     Table.prototype.initialize = function (config) {
         this.displayName = Util._uniqueId("Table");

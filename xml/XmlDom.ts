@@ -98,13 +98,14 @@ module XmlDom {
         nodeName: string;
         nodeValue: string;
         children: NodeBase[];
-        firstChild: NodeBase;
+        firstChild: NodeBase | null;
         attributes: { [key: string]: any };
 
 
         constructor(config: { nodeName: string; nodeValue?: string; children?: NodeInfo[]; attributes?: { [key: string]: any }; }) {
             this.nodeName = config.nodeName;
             this.children = [];
+            this.firstChild = null;
             this.nodeValue = config.nodeValue || "";
             this.attributes = {};
 

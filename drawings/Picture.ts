@@ -10,8 +10,8 @@ class Picture implements Drawings.Drawing {
         Object.assign(Picture.prototype, thisProto);
     } ());
 
-    anchor: Drawing.AnchorLike;
-    description: string;
+    anchor: Drawing.AnchorLike | null = null;
+    description: string | null;
     fill: any;
     id: string;
     media: any;
@@ -20,6 +20,7 @@ class Picture implements Drawings.Drawing {
 
 
     constructor() {
+        this.description = null;
         this.media = null;
         this.id = Util._uniqueId("Picture");
         this.pictureId = Util.uniqueId("Picture");
@@ -126,7 +127,13 @@ class Picture implements Drawings.Drawing {
         //         </a:extLst>
         //     </xdr:spPr>
 
-        return this.anchor.toXML(xmlDoc, pictureNode);
+        var ach = this.anchor;
+        if (ach == null) {
+            throw new Error("picture " + this.id + " anchor null, cannot conver to XML");
+        }
+        else {
+            return ach.toXML(xmlDoc, pictureNode);
+        }
     }
 
 }

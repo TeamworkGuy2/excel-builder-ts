@@ -50,7 +50,7 @@ class SharedStrings {
 
         while (l--) {
             var clone = template.cloneNode(true);
-            (<XmlDom.XMLNode>clone.firstChild).firstChild.nodeValue = strings[l];
+            (<XmlDom.XMLNode>(<XmlDom.XMLNode>clone.firstChild).firstChild).nodeValue = strings[l];
             sharedStringTable.appendChild(clone);
         }
 

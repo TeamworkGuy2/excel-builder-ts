@@ -1,3 +1,4 @@
+"use strict";
 onmessage = function (event) {
     importScripts(event.data.ziplib);
     var zip = new JSZip();

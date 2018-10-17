@@ -12,6 +12,7 @@ var Drawing = /** @class */ (function () {
      * @constructor
      */
     function Drawing() {
+        this.anchor = null;
         this.id = Util._uniqueId("Drawing");
     }
     /**
@@ -24,16 +25,12 @@ var Drawing = /** @class */ (function () {
         cfg.drawing = this;
         switch (type) {
             case "absoluteAnchor":
-                this.anchor = new AbsoluteAnchor(cfg);
-                break;
+                return this.anchor = new AbsoluteAnchor(cfg);
             case "oneCellAnchor":
-                this.anchor = new OneCellAnchor(cfg);
-                break;
+                return this.anchor = new OneCellAnchor(cfg);
             case "twoCellAnchor":
-                this.anchor = new TwoCellAnchor(cfg);
-                break;
+                return this.anchor = new TwoCellAnchor(cfg);
         }
-        return this.anchor;
     };
     return Drawing;
 }());

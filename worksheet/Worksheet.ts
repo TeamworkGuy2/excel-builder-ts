@@ -23,9 +23,9 @@ class Worksheet {
     sharedStrings: { strings: { [key: string]: number }; addString?(str: string): number; };
     _timezoneOffset: number;
     // The page orientation
-    _orientation: string;
+    _orientation: string | null;
     // the page margins
-    _margin: Worksheet.Margins;
+    _margin: Worksheet.Margins | null;
     // A two dimensional array of objects with custom XML attributes to add this worksheet's cells
     // for example an object { style: 12b } at index [1][2] would add a {@code style="12b"} attribute to cell 'C2'
     customCellAttributes: any[];
@@ -41,7 +41,7 @@ class Worksheet {
         left: string; // Letter portion of cell name that defines left to right where filter database starts at
         right: string; // Letter portion of cell name that defines left to right where filter database ends at
         rowNum: number; // Row Number autFilter is applied to
-    };
+    } | null;
     // An array of attributes to apply to the 'pageSetup' element of the spreadsheet
     pageSetup: any;
 
@@ -59,6 +59,9 @@ class Worksheet {
         this._footers = <any>[];
         this._tables = [];
         this._drawings = [];
+        this._orientation = null;
+        this._margin = null;
+        this.sharedStrings = { strings: {} };
         // A two dimensional array of objects with custom XML attributes to add this worksheet's cells
         // for example an object { style: 12b } at index [1][2] would add a {@code style="12b"} attribute to cell 'C2'
         this.customCellAttributes = [];
@@ -68,17 +71,12 @@ class Worksheet {
         // The ID and settings for pageMargins and pageSetup
         this._printerSettings;
         // An array of attributes to apply to the 'pageMargins' element of the spreadsheet
-        this.pageMargins;
+        this.pageMargins = null;
         // An array of attributes (only "ref" Ex: "A1:D1" for now) to apply to the autoFilter element of the spreadsheet
-        this.autoFilter;
+        this.autoFilter = null;
         // An array of attributes to apply to the 'pageSetup' element of the spreadsheet
-        this.pageSetup;
+        this.pageSetup = null;
 
-        this.initialize(config);
-    }
-
-
-    private initialize(config?: { name: string; columns: Worksheet.Column[]; }) {
         var cfg = (config != null ? config : <any>{});
         this.name = cfg.name;
         this.id = Util._uniqueId("Worksheet");
@@ -370,15 +368,15 @@ class Worksheet {
                 switch (metadata.type) {
                     case "number":
                         var cell = cellCache.number.cloneNode(true);
-                        (<XmlDom.XMLNode>cell.firstChild).firstChild.nodeValue = cellValue;
+                        (<XmlDom.XMLNode>(<XmlDom.XMLNode>cell.firstChild).firstChild).nodeValue = cellValue;
                         break;
                     case "date":
                         var cell = cellCache.date.cloneNode(true);
-                        (<XmlDom.XMLNode>cell.firstChild).firstChild.nodeValue = <any>25569.0 + ((cellValue - this._timezoneOffset) / (60 * 60 * 24 * 1000));
+                        (<XmlDom.XMLNode>(<XmlDom.XMLNode>cell.firstChild).firstChild).nodeValue = <any>25569.0 + ((cellValue - this._timezoneOffset) / (60 * 60 * 24 * 1000));
                         break;
                     case "formula":
                         var cell = cellCache.formula.cloneNode(true);
-                        (<XmlDom.XMLNode>cell.firstChild).firstChild.nodeValue = cellValue;
+                        (<XmlDom.XMLNode>(<XmlDom.XMLNode>cell.firstChild).firstChild).nodeValue = cellValue;
                         break;
                     // empty cell that contains no value, valid in Excel
                     case "empty":
@@ -388,7 +386,7 @@ class Worksheet {
                     default:
                         var id = sharedStrs.strings[cellValue] || (sharedStrs.addString && sharedStrs.addString(cellValue));
                         var cell = cellCache.string.cloneNode(true);
-                        (<XmlDom.XMLNode>cell.firstChild).firstChild.nodeValue = <any>id;
+                        (<XmlDom.XMLNode>(<XmlDom.XMLNode>cell.firstChild).firstChild).nodeValue = <any>id;
                         break;
                 };
                 if (metadata.style) {

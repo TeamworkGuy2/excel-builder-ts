@@ -20,6 +20,9 @@ var Worksheet = /** @class */ (function () {
         this._footers = [];
         this._tables = [];
         this._drawings = [];
+        this._orientation = null;
+        this._margin = null;
+        this.sharedStrings = { strings: {} };
         // A two dimensional array of objects with custom XML attributes to add this worksheet's cells
         // for example an object { style: 12b } at index [1][2] would add a {@code style="12b"} attribute to cell 'C2'
         this.customCellAttributes = [];
@@ -29,14 +32,11 @@ var Worksheet = /** @class */ (function () {
         // The ID and settings for pageMargins and pageSetup
         this._printerSettings;
         // An array of attributes to apply to the 'pageMargins' element of the spreadsheet
-        this.pageMargins;
+        this.pageMargins = null;
         // An array of attributes (only "ref" Ex: "A1:D1" for now) to apply to the autoFilter element of the spreadsheet
-        this.autoFilter;
+        this.autoFilter = null;
         // An array of attributes to apply to the 'pageSetup' element of the spreadsheet
-        this.pageSetup;
-        this.initialize(config);
-    }
-    Worksheet.prototype.initialize = function (config) {
+        this.pageSetup = null;
         var cfg = (config != null ? config : {});
         this.name = cfg.name;
         this.id = Util._uniqueId("Worksheet");
@@ -45,7 +45,7 @@ var Worksheet = /** @class */ (function () {
             this.setColumns(cfg.columns);
         }
         this.relations = new RelationshipManager();
-    };
+    }
     /** Returns an object that can be consumed by a WorksheetExportWorker
      * @returns export ready data object containing this worksheet's data
      */

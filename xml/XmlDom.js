@@ -46,6 +46,7 @@ var XmlDom = /** @class */ (function () {
         function XMLNode(config) {
             this.nodeName = config.nodeName;
             this.children = [];
+            this.firstChild = null;
             this.nodeValue = config.nodeValue || "";
             this.attributes = {};
             if (config.children) {

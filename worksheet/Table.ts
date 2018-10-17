@@ -34,34 +34,25 @@ class Table {
 
 
     constructor(config?: any) {
-        var defaults = {
-            autoFilter: <[[number, number], [number, number]]><any>null,
-            dataCellStyle: <any>null,
-            dataDfxId: <any>null,
-            displayName: "",
-            headerRowBorderDxfId: <string><any>null,
-            headerRowCellStyle: <any>null,
-            headerRowCount: 1,
-            headerRowDxfId: <string | number><any>null,
-            insertRow: false,
-            insertRowShift: false,
-            name: "",
-            ref: <[[number, number], [number, number]]><any>null,
-            sortState: <SortState><any>null,
-            styleInfo: {},
-            tableBorderDxfId: <any>null,
-            totalsRowBorderDxfId: <any>null,
-            totalsRowCellStyle: <any>null,
-            totalsRowCount: 0,
-            totalsRowDxfId: <any>null,
-            tableColumns: <{ name: string; [prop: string]: any; }[]>[],
-        };
-        (<(keyof typeof defaults)[]>Object.keys(defaults)).forEach((key) => {
-            if ((<any>this)[key] == null) {
-                (<any>this)[key] = defaults[key];
-            }
-        });
-        this.initialize(config);
+        this.autoFilter = <[[number, number], [number, number]]><any>null;
+        this.displayName = "";
+        this.headerRowBorderDxfId = <string><any>null;
+        this.headerRowCount = 1;
+        this.headerRowDxfId = <string | number><any>null;
+        this.name = "";
+        this.ref = <[[number, number], [number, number]]><any>null;
+        this.sortState = <SortState><any>null;
+        this.styleInfo = {};
+        this.totalsRowCount = 0;
+        this.tableColumns = <{ name: string; [prop: string]: any; }[]>[];
+        // copy from intialize() to appease TypeScript
+        this.displayName = Util._uniqueId("Table");
+        this.name = this.displayName;
+        this.id = this.name;
+        this.tableId = this.id.replace("Table", '');
+        if (config != null) {
+            Object.assign(this, config);
+        }
     }
 
 

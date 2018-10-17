@@ -3,6 +3,8 @@ var Util = require("../util/Util");
 var Drawing = require("./Drawing");
 var Picture = /** @class */ (function () {
     function Picture() {
+        this.anchor = null;
+        this.description = null;
         this.media = null;
         this.id = Util._uniqueId("Picture");
         this.pictureId = Util.uniqueId("Picture");
@@ -85,7 +87,13 @@ var Picture = /** @class */ (function () {
         //             </a:ext>
         //         </a:extLst>
         //     </xdr:spPr>
-        return this.anchor.toXML(xmlDoc, pictureNode);
+        var ach = this.anchor;
+        if (ach == null) {
+            throw new Error("picture " + this.id + " anchor null, cannot conver to XML");
+        }
+        else {
+            return ach.toXML(xmlDoc, pictureNode);
+        }
     };
     Picture.Cctor = (function () {
         var thisProto = Picture.prototype;

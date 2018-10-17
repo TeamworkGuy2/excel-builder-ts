@@ -35,7 +35,15 @@ var Workbook = /** @class */ (function () {
         this.tables = [];
         this.drawings = [];
         this.media = {};
-        this.initialize(config);
+        this.printTitles = {};
+        this.filterDatabases = {};
+        // copy from initialize() to appease TypeScript
+        this.id = Util._uniqueId("Workbook");
+        this.styleSheet = new StyleSheet();
+        this.sharedStrings = new SharedStrings();
+        this.relations = new RelationshipManager();
+        this.relations.addRelation(this.styleSheet, "stylesheet");
+        this.relations.addRelation(this.sharedStrings, "sharedStrings");
     }
     Workbook.prototype.initialize = function (config) {
         this.id = Util._uniqueId("Workbook");
