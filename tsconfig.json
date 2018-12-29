@@ -2,7 +2,7 @@
   "compileOnSave": true,
   "compilerOptions": {
     "forceConsistentCasingInFileNames": true,
-    "lib": ["es2017", "dom", "dom.iterable"],
+    "lib": [ "es2017", "dom", "dom.iterable" ],
     "module": "commonjs",
     "noEmitOnError": true,
     "noImplicitReturns": true,

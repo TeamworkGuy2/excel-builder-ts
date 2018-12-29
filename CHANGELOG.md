@@ -4,7 +4,14 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.4.2](N/A) - 2018-10-17
+### [0.4.3](N/A) - 2018-12-29
+#### Changed
+* Update to TypeScript 3.2
+* Update dev and @types/ dependencies
+
+
+--------
+### [0.4.2](https://github.com/TeamworkGuy2/excel-builder-ts/commit/698bc9cdfdeb9fdda47e6569a7714918b95e9ca3) - 2018-10-17
 #### Changed
 * Update to TypeScript 3.1
 * Update dev dependencies and @types

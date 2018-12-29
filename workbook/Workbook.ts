@@ -436,7 +436,7 @@ class Workbook {
                                 workers[i].terminate();
                             }
                             //message, filename, lineno
-                            options.error.apply(this, arguments);
+                            options.error.apply(this, <any[]><any>arguments);
                         },
                         stringsCollected: function () {
                             stringsCollected();
