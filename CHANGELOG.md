@@ -4,7 +4,17 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.4.3](N/A) - 2018-12-29
+### [0.5.0](N/A) - 2019-01-12
+#### Added
+* `Worksheet.dataValidations` with `toXML()` output
+* `Worksheet` added `setAutoFilter()`, `setDataValidations()`, and `setPageSetupAndMargins()` (which got split out from `addPagePrintSetup()`)
+
+#### Removed
+* `Worksheet.addPagePrintSetup()`
+
+
+--------
+### [0.4.3](https://github.com/TeamworkGuy2/excel-builder-ts/commit/a9edc537d38c6e705e0aad42ec3edbbd18ddd36a) - 2018-12-29
 #### Changed
 * Update to TypeScript 3.2
 * Update dev and @types/ dependencies

@@ -5,7 +5,6 @@ import XmlDom = require("../xml/XmlDom");
 /**
  * This module represents an excel worksheet in its basic form - no tables, charts, etc. Its purpose is 
  * to hold data, the data's link to how it should be styled, and any links to other outside resources.
- * @module Excel/Worksheet
  */
 class Worksheet {
     relations: RelationshipManager;
@@ -21,29 +20,46 @@ class Worksheet {
     id: string;
     name: string;
     sharedStrings: { strings: { [key: string]: number }; addString?(str: string): number; };
+    // in milliseconds
     _timezoneOffset: number;
-    // The page orientation
+    /** The page orientation */
     _orientation: string | null;
-    // the page margins
+    /** the page margins */
     _margin: Worksheet.Margins | null;
-    // A two dimensional array of objects with custom XML attributes to add this worksheet's cells
-    // for example an object { style: 12b } at index [1][2] would add a {@code style="12b"} attribute to cell 'C2'
+    /** A two dimensional array of objects with custom XML attributes to add this worksheet's cells
+     * for example an object { style: 12b } at index [1][2] would add a {@code style="12b"} attribute to cell 'C2' */
     customCellAttributes: any[];
-    // A one dimensional array with the same purpose as the custom cell attributes array except the custom
-    // attributes are applied to the worksheet's rows
+    /** A one dimensional array with the same purpose as the custom cell attributes array except the custom
+     * attributes are applied to the worksheet's rows */
     customRowAttributes: any[];
-    // The ID and settings for pageMargins and pageSetup
+    /** The ID and settings for pageMargins and pageSetup */
     _printerSettings: any;
-    // An array of attributes to apply to the 'pageMargins' element of the spreadsheet
-    pageMargins: any;
-    // An array of attributes (only "ref" Ex: "A1:D1" for now) to apply to the autoFilter element of the spreadsheet. Only one autoFilter per Worksheet
+    /** An array of attributes to apply to the 'pageMargins' element of the spreadsheet */
+    pageMargins: { [prop: string]: any } | null;
+    /** An array of attributes to apply to the 'pageSetup' element of the spreadsheet */
+    pageSetup: { [prop: string]: any } | null;
+    /** An array of attributes (only "ref" Ex: "A1:D1" for now) to apply to the autoFilter element of the spreadsheet. Only one autoFilter per Worksheet */
     autoFilter: {
-        left: string; // Letter portion of cell name that defines left to right where filter database starts at
-        right: string; // Letter portion of cell name that defines left to right where filter database ends at
-        rowNum: number; // Row Number autFilter is applied to
+        /** Letter portion of cell name that defines left to right where filter database starts at */
+        left: string;
+        /** Letter portion of cell name that defines left to right where filter database ends at */
+        right: string;
+        /** Row Number autFilter is applied to */
+        rowNum: number;
     } | null;
-    // An array of attributes to apply to the 'pageSetup' element of the spreadsheet
-    pageSetup: any;
+    /** An array of attributes to apply to the 'extLst' element of a worksheet. Used for creating "Data Validations" or drop downs with specific data sets. */
+    dataValidations: {
+        /** cell where data validation drop down is */
+        sqref: string;
+        /** sheet where data is stored */
+        dataSheetName: string;
+        /** Column where data set sits */
+        column: string;
+        /** Row where data set starts */
+        topRow: number;
+        /** Row where data set ends */
+        bottomRow: number;
+    }[] | null;
 
 
     /**
@@ -62,22 +78,15 @@ class Worksheet {
         this._orientation = null;
         this._margin = null;
         this.sharedStrings = { strings: {} };
-        // A two dimensional array of objects with custom XML attributes to add this worksheet's cells
-        // for example an object { style: 12b } at index [1][2] would add a {@code style="12b"} attribute to cell 'C2'
         this.customCellAttributes = [];
-        // A one dimensional array with the same purpose as the custom cell attributes array except the custom
-        // attributes are applied to the worksheet's rows
         this.customRowAttributes = [];
-        // The ID and settings for pageMargins and pageSetup
         this._printerSettings;
-        // An array of attributes to apply to the 'pageMargins' element of the spreadsheet
         this.pageMargins = null;
-        // An array of attributes (only "ref" Ex: "A1:D1" for now) to apply to the autoFilter element of the spreadsheet
         this.autoFilter = null;
-        // An array of attributes to apply to the 'pageSetup' element of the spreadsheet
         this.pageSetup = null;
+        this.dataValidations = null;
 
-        var cfg = (config != null ? config : <any>{});
+        var cfg = (config != null ? config : <Exclude<typeof config, undefined>>{});
         this.name = cfg.name;
         this.id = Util._uniqueId("Worksheet");
         this._timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
@@ -92,7 +101,7 @@ class Worksheet {
     /** Returns an object that can be consumed by a WorksheetExportWorker
      * @returns export ready data object containing this worksheet's data
      */
-    public exportData() {
+    public exportData(): Worksheet.ExportData {
         return {
             relations: this.relations.exportData(),
             columnFormats: this.columnFormats,
@@ -111,7 +120,7 @@ class Worksheet {
     /** Imports data - to be used while inside of a WorksheetExportWorker.
      * @param data
      */
-    public importData(data: { columns?: Worksheet.Column[]; columnFormats?: Worksheet.ColumnFormat[]; data?: any[][]; mergedCells?: [string, string][]; pageMargins?: any; pageSetup?: any; relations: RelationshipManager.ExportData }) {
+    public importData(data: Partial<Worksheet.ExportData> & { relations: RelationshipManager.ExportData }): void {
         this.relations.importData(data.relations);
         delete data.relations;
         Object.assign(this, data);
@@ -123,31 +132,49 @@ class Worksheet {
     }
 
 
-    public addTable(table: { id: string }) {
+    public addTable(table: { id: string; [prop: string]: any }) {
         this._tables.push(table);
         this.relations.addRelation(table, "table");
     }
 
 
-    public addDrawings(table: { id: string }) {
+    public addDrawings(table: { id: string; [prop: string]: any }) {
         this._drawings.push(table);
         this.relations.addRelation(table, "drawingRelationship");
     }
 
 
-    public addPagePrintSetup(pageSetup: any, pageMargins: any, autoFilter?: any) {
+    //public addPagePrintSetup() {
+    //    this._printerSettings = { id: Util.uniqueId('PrinterSettings') };
+    //    this.relations.addRelation(this._printerSettings, 'printerSettings');
+    //}
+
+
+    public setAutoFilter(autoFilter: { left: string; right: string; rowNum: number } | null) {
+        this.autoFilter = autoFilter;
+    }
+
+
+    public setDataValidations(dataValidations: {
+        sqref: string;
+        dataSheetName: string;
+        column: string;
+        topRow: number;
+        bottomRow: number;
+    }[]) {
+        this.dataValidations = dataValidations;
+    }
+
+
+    public setPageSetupAndMargins(pageSetup: { [prop: string]: any } | null, pageMargins: { [prop: string]: any } | null) {
         this.pageSetup = pageSetup;
         this.pageMargins = pageMargins;
-        this.autoFilter = autoFilter;
-        //this._printerSettings = { id: _.uniqueId('PrinterSettings') };
-        //this.relations.addRelation(this._printerSettings, 'printerSettings');
     }
 
 
     /** Expects an array length of three.
-     * @see Excel/Worksheet compilePageDetailPiece
+     * @see compilePageDetailPiece()
      * @see <a href='/cookbook/addingHeadersAndFooters.html'>Adding headers and footers to a worksheet</a>
-     *
      * @param headers [left, center, right]
      */
     public setHeader(headers: [string, string, string]) {
@@ -159,9 +186,8 @@ class Worksheet {
 
 
     /** Expects an array length of three.
-     * @see Excel/Worksheet compilePageDetailPiece
+     * @see compilePageDetailPiece()
      * @see <a href='/cookbook/addingHeadersAndFooters.html'>Adding headers and footers to a worksheet</a>
-     *
      * @param footers [left, center, right]
      */
     public setFooter(footers: [string, string, string]) {
@@ -186,9 +212,7 @@ class Worksheet {
     }
 
 
-    /** Turns instructions on page header/footer details into something
-     * usable by Excel.
-     *
+    /** Turns instructions on page header/footer details into something usable by Excel.
      * @param piece
      * @returns string | reduce
      */
@@ -252,8 +276,6 @@ class Worksheet {
     /** This creates some nodes ahead of time, which cuts down on generation time due to
      * most cell definitions being essentially the same, but having multiple nodes that need
      * to be created. Cloning takes less time than creation.
-     *
-     * @private
      * @param doc XmlDom
      * @returns
      */
@@ -274,7 +296,6 @@ class Worksheet {
         stringValue.appendChild(doc.createTextNode("--temp--"));
         stringNode.appendChild(stringValue);
 
-
         return {
             number: numberNode,
             date: numberNode,
@@ -286,31 +307,32 @@ class Worksheet {
 
     /** Runs through the XML document and grabs all of the strings that will
      * be sent to the 'shared strings' document.
-     *
-     * @returns
+     * @returns list of cell 'value' strings with 'metadata.type' equal to 'text'
      */
     public collectSharedStrings() {
         var data = this.data;
         var maxX = 0;
         var strings: { [id: string]: boolean; } = {};
-        for (var row = 0, l = data.length; row < l; row++) {
-            var dataRow = data[row];
-            var cellCount = dataRow.length;
-            maxX = cellCount > maxX ? cellCount : maxX;
-            for (var c = 0; c < cellCount; c++) {
-                var cellValue = dataRow[c];
-                if (typeof dataRow[c] == "object") {
-                    cellValue = dataRow[c].value;
+
+        for (var r = 0, dLen = data.length; r < dLen; r++) {
+            var row = data[r];
+            var rLen = row.length;
+            maxX = rLen > maxX ? rLen : maxX;
+
+            for (var c = 0; c < rLen; c++) {
+                var cellValue = row[c];
+                if (typeof row[c] === "object") {
+                    cellValue = row[c].value;
                 }
-                var metadata = dataRow[c].metadata || {};
+                var metadata = row[c].metadata || {};
 
                 if (!metadata.type) {
-                    if (typeof cellValue == "number") {
+                    if (typeof cellValue === "number") {
                         metadata.type = "number";
                     }
                 }
                 if (metadata.type == "text" || !metadata.type) {
-                    if (typeof strings[cellValue] == "undefined") {
+                    if (typeof strings[cellValue] === "undefined") {
                         strings[cellValue] = true;
                     }
                 }
@@ -339,24 +361,23 @@ class Worksheet {
         var cellCache = this._buildCache(doc);
         var sharedStrs = this.sharedStrings;
 
-        for (var row = 0, l = data.length; row < l; row++) {
-            var dataRow = data[row];
-            var cellCount = dataRow.length;
-            maxX = cellCount > maxX ? cellCount : maxX;
-            var rowNode = doc.createElement("row");
+        for (var r = 0, dLen = data.length; r < dLen; r++) {
+            var row = data[r];
+            var rLen = row.length;
+            maxX = rLen > maxX ? rLen : maxX;
 
-            for (var c = 0; c < cellCount; c++) {
+            var rowNode = doc.createElement("row");
+            for (var c = 0; c < rLen; c++) {
                 columns[c] = columns[c] || {};
-                var cellValue = dataRow[c];
-                if (cellValue != null && typeof cellValue == "object") {
+                var cellValue = row[c];
+                if (cellValue != null && typeof cellValue === "object") {
                     cellValue = cellValue.value;
                 }
                 //fix undefined or null value
-                var metadata = dataRow[c] ? (dataRow[c].metadata || {}) : {};
-
+                var metadata = row[c] ? (row[c].metadata || {}) : {};
 
                 if (!metadata.type) {
-                    if (typeof cellValue == "number") {
+                    if (typeof cellValue === "number") {
                         metadata.type = "number";
                     }
                     // Allows for empty cells in switch statement below
@@ -392,11 +413,11 @@ class Worksheet {
                 if (metadata.style) {
                     cell.setAttribute("s", metadata.style);
                 }
-                cell.setAttribute("r", Util.positionToLetterRef(c + 1, row + 1));
+                cell.setAttribute("r", Util.positionToLetterRef(c + 1, r + 1));
 
                 // add any additional custom attributes to this cell's XML element
-                if (row < customCellAttributes.length && customCellAttributes[row] != null && c < customCellAttributes[row].length) {
-                    var attribs = customCellAttributes[row][c];
+                if (r < customCellAttributes.length && customCellAttributes[r] != null && c < customCellAttributes[r].length) {
+                    var attribs = customCellAttributes[r][c];
                     for (var attrib in attribs) {
                         cell.setAttribute(attrib, attribs[attrib]);
                     }
@@ -404,11 +425,11 @@ class Worksheet {
 
                 rowNode.appendChild(cell);
             }
-            rowNode.setAttribute("r", row + 1);
+            rowNode.setAttribute("r", r + 1);
 
             // add any additional custom attributes to this row's XML element
-            if (row < customRowAttributes.length) {
-                var rowAttribs = customRowAttributes[row];
+            if (r < customRowAttributes.length) {
+                var rowAttribs = customRowAttributes[r];
                 for (var attrib in rowAttribs) {
                     rowNode.setAttribute(attrib, rowAttribs[attrib]);
                 }
@@ -445,7 +466,7 @@ class Worksheet {
         if (this._tables.length > 0) {
             var tables = doc.createElement("tableParts");
             tables.setAttribute("count", this._tables.length);
-            for (var i = 0, l = this._tables.length; i < l; i++) {
+            for (var i = 0, tLen = this._tables.length; i < tLen; i++) {
                 var table = doc.createElement("tablePart");
                 table.setAttribute("r:id", this.relations.getRelationshipId(this._tables[i]));
                 tables.appendChild(table);
@@ -455,7 +476,7 @@ class Worksheet {
 
         if (this.mergedCells.length > 0) {
             var mergeCells = doc.createElement("mergeCells");
-            for (var i = 0, l = this.mergedCells.length; i < l; i++) {
+            for (var i = 0, mcLen = this.mergedCells.length; i < mcLen; i++) {
                 var mergeCell = doc.createElement("mergeCell");
                 mergeCell.setAttribute("ref", this.mergedCells[i][0] + ':' + this.mergedCells[i][1]);
                 mergeCells.appendChild(mergeCell);
@@ -488,10 +509,46 @@ class Worksheet {
             worksheet.appendChild(pageSetupEl);
         }
 
-        for (var i = 0, l = this._drawings.length; i < l; i++) {
+        for (var i = 0, dLen = this._drawings.length; i < dLen; i++) {
             var drawing = doc.createElement("drawing");
             drawing.setAttribute("r:id", this.relations.getRelationshipId(this._drawings[i]));
             worksheet.appendChild(drawing);
+        }
+
+        // Add extLst element if there are custom dataValidations attributes
+        if (this.dataValidations) {
+            var extLstEl = doc.createElement("extLst");
+            var extChildEl = doc.createElement("ext");
+            extChildEl.setAttribute("xmlns:x14", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/main");
+            extChildEl.setAttribute("uri", "{CCE6A557-97BC-4b89-ADB6-D9C93CAAB3DF}");
+
+            var dataValidationsEl = doc.createElement("x14:dataValidations");
+            dataValidationsEl.setAttribute("xmlns:xm", "http://schemas.microsoft.com/office/excel/2006/main");
+            dataValidationsEl.setAttribute("count", this.dataValidations.length.toString());
+
+            for (var i = 0; i < this.dataValidations.length; i++) {
+                var dataValadation = this.dataValidations[i];
+                var dataValidationEl = doc.createElement("x14:dataValidation");
+                dataValidationEl.setAttribute("showErrorMessage", "1");
+                dataValidationEl.setAttribute("showInputMessage", "1");
+                dataValidationEl.setAttribute("allowBlank", "1");
+                dataValidationEl.setAttribute("type", "list");
+                var formulaEl = doc.createElement("x14:formula1");
+                var xmfEl = doc.createElement("xm:f");
+                // Build formula to specify range where data set lies. Ex: SheetName!$A$5:$A$10
+                xmfEl.appendChild(doc.createTextNode(dataValadation.dataSheetName + "!$" + dataValadation.column + "$" + dataValadation.topRow + ":$" + dataValadation.column + "$" + dataValadation.bottomRow));
+                var sqrefEl = doc.createElement("xm:sqref");
+                sqrefEl.appendChild(doc.createTextNode(dataValadation.sqref));
+
+                formulaEl.appendChild(xmfEl);
+                dataValidationEl.appendChild(formulaEl);
+                dataValidationEl.appendChild(sqrefEl);
+                dataValidationsEl.appendChild(dataValidationEl);
+            }
+
+            extChildEl.appendChild(dataValidationsEl);
+            extLstEl.appendChild(extChildEl);
+            worksheet.appendChild(extLstEl);
         }
 
         return doc;
@@ -532,7 +589,6 @@ class Worksheet {
 
 
     /** Sets the page settings on a worksheet node.
-     *
      * @param doc XmlDom
      * @param worksheet XmlDom.XMLNode
      */
@@ -581,7 +637,6 @@ class Worksheet {
 
     /** Can be one of 'portrait' or 'landscape'.
      * http://www.schemacentral.com/sc/ooxml/t-ssml_ST_Orientation.html
-     *
      * @param orientation
      */
     public setPageOrientation(orientation: string) {
@@ -590,7 +645,6 @@ class Worksheet {
 
 
     /** Expects an array of column definitions. Each column definition needs to have a width assigned to it. 
-     *
      * @param columns
      */
     public setColumns(columns: Worksheet.Column[]) {
@@ -599,7 +653,6 @@ class Worksheet {
 
 
     /** Expects an array of data to be translated into cells.
-     *
      * @param data Two dimensional array - [ [A1, A2], [B1, B2] ]
      * @see <a href='/cookbook/addingDataToAWorksheet.html'>Adding data to a worksheet</a>
      */
@@ -609,7 +662,6 @@ class Worksheet {
 
 
     /** Merge cells in given range
-     *
      * @param cell1 - A1, A2...
      * @param cell2 - A2, A3...
      */
@@ -660,6 +712,22 @@ module Worksheet {
         phonetic: boolean;
         style: number;
         width: number;
+    }
+
+
+    export interface ExportData {
+        id: string;
+        name: string;
+        columns: Worksheet.Column[];
+        columnFormats: Worksheet.ColumnFormat[];
+        data: any[][];
+        mergedCells: [string, string][];
+        pageMargins?: any;
+        pageSetup?: any;
+        relations: RelationshipManager.ExportData;
+        _headers: [string, string, string]; // [left, center, right]
+        _footers: [string, string, string]; // [left, center, right]
+        _tables: { id: string; schema?: string; }[];
     }
 
 
