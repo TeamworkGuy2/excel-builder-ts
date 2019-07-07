@@ -1,7 +1,7 @@
 "use strict";
 var Util = require("../util/Util");
 var OneCellAnchor = /** @class */ (function () {
-    /**
+    /** Create <xdr:oneCellAnchor> element
      * @param config
      * config.x The cell column number that the top left of the picture will start in
      * config.y The cell row number that the top left of the picture will start in

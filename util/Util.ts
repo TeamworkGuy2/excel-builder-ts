@@ -63,7 +63,7 @@ module Util {
     }
 
 
-    export function defaults<T1, T2>(obj: T1, overrides: T2): T1 & T2 {
+    export function defaults<T1 extends object, T2 extends object>(obj: T1, overrides: T2): T1 & T2 {
         for (var key in overrides) {
             if (overrides.hasOwnProperty(key) && (obj[<keyof T1><string>key] === undefined)) {
                 obj[<keyof T1><string>key] = <any>overrides[key];
@@ -108,10 +108,11 @@ module Util {
         attributes = attributes || [];
         var i = attributes.length;
         while (i--) {
-            if (!ie && attributes[i][0].indexOf("xmlns") != -1) {
-                el.setAttributeNS("http://www.w3.org/2000/xmlns/", attributes[i][0], <any>attributes[i][1]);
+            var attr = attributes[i];
+            if (!ie && attr[0].indexOf("xmlns") != -1) {
+                el.setAttributeNS("http://www.w3.org/2000/xmlns/", attr[0], <any>attr[1]);
             } else {
-                el.setAttribute(attributes[i][0], <any>attributes[i][1]);
+                el.setAttribute(attr[0], <any>attr[1]);
             }
         }
         return el;

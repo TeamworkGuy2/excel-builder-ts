@@ -77,11 +77,12 @@ var Util;
         attributes = attributes || [];
         var i = attributes.length;
         while (i--) {
-            if (!ie && attributes[i][0].indexOf("xmlns") != -1) {
-                el.setAttributeNS("http://www.w3.org/2000/xmlns/", attributes[i][0], attributes[i][1]);
+            var attr = attributes[i];
+            if (!ie && attr[0].indexOf("xmlns") != -1) {
+                el.setAttributeNS("http://www.w3.org/2000/xmlns/", attr[0], attr[1]);
             }
             else {
-                el.setAttribute(attributes[i][0], attributes[i][1]);
+                el.setAttribute(attr[0], attr[1]);
             }
         }
         return el;

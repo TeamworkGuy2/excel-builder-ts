@@ -6,6 +6,9 @@ class TwoCellAnchor {
     to: Util.OffsetConfig;
 
 
+    /** Create <xdr:twoCellAnchor> elem
+     * @param config
+     */
     constructor(config?: { from: Util.OffsetConfig; to: Util.OffsetConfig; }) {
         this.from = { xOff: 0, yOff: 0 };
         this.to = { xOff: 0, yOff: 0 };

@@ -10,7 +10,7 @@ class OneCellAnchor {
     height: number | null;
 
 
-    /**
+    /** Create <xdr:oneCellAnchor> element
      * @param config
      * config.x The cell column number that the top left of the picture will start in
      * config.y The cell row number that the top left of the picture will start in

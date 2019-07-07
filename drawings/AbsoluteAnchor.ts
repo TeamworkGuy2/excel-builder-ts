@@ -8,7 +8,7 @@ class AbsoluteAnchor {
     height: number | null;
 
 
-    /**
+    /** Create <xdr:absoluteAnchor> element
      * @param config
      * config.x X offset in EMU's
      * config.y Y offset in EMU's

@@ -1,6 +1,9 @@
 "use strict";
 var Util = require("../util/Util");
 var TwoCellAnchor = /** @class */ (function () {
+    /** Create <xdr:twoCellAnchor> elem
+     * @param config
+     */
     function TwoCellAnchor(config) {
         this.from = { xOff: 0, yOff: 0 };
         this.to = { xOff: 0, yOff: 0 };

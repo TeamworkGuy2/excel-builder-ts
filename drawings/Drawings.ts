@@ -11,6 +11,8 @@ class Drawings {
     id: any;
 
 
+    /** Create <xdr:wsDr> element
+     */
     constructor() {
         this.drawings = [];
         this.relations = new RelationshipManager();
@@ -19,7 +21,6 @@ class Drawings {
 
 
     /** Adds a drawing (more likely a subclass of a Drawing) to the 'Drawings' for a particular worksheet.
-     * 
      * @param drawing
      */
     public addDrawing(drawing: Drawings.Drawing) {

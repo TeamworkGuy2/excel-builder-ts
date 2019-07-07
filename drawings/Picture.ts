@@ -19,6 +19,8 @@ class Picture implements Drawings.Drawing {
     pictureId: number;
 
 
+    /** Create <xdr:pic> element
+     */
     constructor() {
         this.description = null;
         this.media = null;

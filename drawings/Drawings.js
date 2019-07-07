@@ -5,13 +5,14 @@ var RelationshipManager = require("../worksheet/RelationshipManager");
  * @module Excel/Drawings
  */
 var Drawings = /** @class */ (function () {
+    /** Create <xdr:wsDr> element
+     */
     function Drawings() {
         this.drawings = [];
         this.relations = new RelationshipManager();
         this.id = Util._uniqueId("Drawings");
     }
     /** Adds a drawing (more likely a subclass of a Drawing) to the 'Drawings' for a particular worksheet.
-     *
      * @param drawing
      */
     Drawings.prototype.addDrawing = function (drawing) {

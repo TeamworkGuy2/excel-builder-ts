@@ -2,6 +2,8 @@
 var Util = require("../util/Util");
 var Drawing = require("./Drawing");
 var Picture = /** @class */ (function () {
+    /** Create <xdr:pic> element
+     */
     function Picture() {
         this.anchor = null;
         this.description = null;

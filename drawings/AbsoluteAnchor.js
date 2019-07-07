@@ -1,7 +1,7 @@
 "use strict";
 var Util = require("../util/Util");
 var AbsoluteAnchor = /** @class */ (function () {
-    /**
+    /** Create <xdr:absoluteAnchor> element
      * @param config
      * config.x X offset in EMU's
      * config.y Y offset in EMU's
