@@ -2,9 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project does its best to adhere to [Semantic Versioning](http://semver.org/).
 
+--------
+### [0.5.2](N/A) - 2019-11-08
+#### Changed
+* Update to TypeScript 3.7
+
 
 --------
-### [0.5.1](N/A) - 2019-07-16
+### [0.5.1](https://github.com/TeamworkGuy2/excel-builder-ts/commit/b3a14d9f8e559e3071297c85aaa6bb6537137082) - 2019-07-16
 #### Changed
 * Update to TypeScript 3.5
 * Cache attributes array lookup in `Utils.defaults`

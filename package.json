@@ -1,6 +1,6 @@
 {
   "name": "excel-builder-ts",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "TypeScript Port of excel-builder.js - A way to build excel files with javascript",
   "author": "TeamworkGuy2",
   "homepage": "https://github.com/TeamworkGuy2/excel-builder-ts",
@@ -11,14 +11,14 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/chai": "~4.1.7",
-    "@types/mocha": "~5.2.5",
+    "@types/chai": "~4.2.4",
+    "@types/mocha": "~5.2.7",
     "chai": "~4.2.0",
     "mocha": "~5.2.0",
-    "typescript": "~3.5.2"
+    "typescript": "~3.7.2"
   },
   "scripts": {
-    "test": "mocha -u tdd --recursive",
-    "tsc": "tsc"
+    "test": "node node_modules/mocha/bin/_mocha -u tdd --recursive",
+    "tsc": "node node_modules/typescript/bin/tsc"
   }
 }
