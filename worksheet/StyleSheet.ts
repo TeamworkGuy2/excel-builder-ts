@@ -226,7 +226,7 @@ class StyleSheet {
      * }
      */
     public createBorderFormatter(border?: { top?: any; left?: any; right?: any; bottom?: any; diagonal?: any; outline?: boolean; diagonalUp?: boolean; diagonalDown?: boolean;[id: string]: any; }) {
-        var res: StyleSheet.Border & { id: number } = Util.defaults(<Exclude<typeof border, undefined>>border, {
+        var res = <StyleSheet.Border & { id: number }>Util.defaults(<Exclude<typeof border, undefined>>border, {
             top: {},
             left: {},
             right: {},

@@ -122,7 +122,7 @@ class Worksheet {
      */
     public importData(data: Partial<Worksheet.ExportData> & { relations: RelationshipManager.ExportData }): void {
         this.relations.importData(data.relations);
-        delete data.relations;
+        delete (<any>data).relations;
         Object.assign(this, data);
     }
 

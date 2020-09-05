@@ -2,8 +2,15 @@
 All notable changes to this project will be documented in this file.
 This project does its best to adhere to [Semantic Versioning](http://semver.org/).
 
+
 --------
-### [0.5.2](N/A) - 2019-11-08
+### [0.6.0](N/A) - 2020-09-04
+#### Changed
+* Update to TypeScript 4.0
+
+
+--------
+### [0.5.2](https://github.com/TeamworkGuy2/excel-builder-ts/commit/df4ce3b7a57d68c64cc1a285b5cd80fca8deedca) - 2019-11-08
 #### Changed
 * Update to TypeScript 3.7
 
