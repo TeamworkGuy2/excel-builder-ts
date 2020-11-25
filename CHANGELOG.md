@@ -4,7 +4,17 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.6.1](N/A) - 2020-11-24
+### [0.6.2](N/A) - 2020-11-25
+#### Changed
+* Fix issue with `StyleSheet` `BorderProperty.color` and `FontStyle.color` fields not supporting type `string`
+* Split `StyleSheet` `Fill` interface into `PatternFill` and `GradientFill` and make `Fill` a union type
+
+#### Fixed
+* `Fill` (now changed to `PatternFill`) `bgColor` and `fgColor` fields having an incorrect custom color type with a misspelled `rbg` field, now those fields use the correct `Color` interface
+
+
+--------
+### [0.6.1](https://github.com/TeamworkGuy2/excel-builder-ts/commit/3f06fa54d88ffb1c22773da579c89fd53c56b4e9) - 2020-11-24
 #### Changed
 * Improve types in `StyleSheet`
 * Reorganize `Util`

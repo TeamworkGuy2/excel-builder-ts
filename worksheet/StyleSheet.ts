@@ -75,7 +75,7 @@ class StyleSheet {
     }
 
 
-    public createFill(fillInstructions: StyleSheet.Fill): StyleSheet.Fill & { id: number } {
+    public createFill<T extends StyleSheet.Fill>(fillInstructions: T): T & { id: number } {
         var id = this.fills.length;
         var fill = fillInstructions;
         fill.id = id;
@@ -510,7 +510,7 @@ class StyleSheet {
     }
 
 
-    public exportGradientFill(doc: XmlDom, data: StyleSheet.Fill) {
+    public exportGradientFill(doc: XmlDom, data: StyleSheet.GradientFill) {
         var fillDef = doc.createElement("gradientFill");
         if (data.degree) {
             fillDef.setAttribute("degree", data.degree);
@@ -555,7 +555,7 @@ class StyleSheet {
     /**
      * Pattern types: http://www.schemacentral.com/sc/ooxml/t-ssml_ST_PatternType.html
      */
-    public exportPatternFill(doc: XmlDom, data: StyleSheet.Fill) {
+    public exportPatternFill(doc: XmlDom, data: StyleSheet.PatternFill) {
         var fillDef = Util.createElement(doc, "patternFill", [
             ["patternType", data.patternType]
         ]);
@@ -571,7 +571,7 @@ class StyleSheet {
                 bgColorElem.setAttribute("theme", bgColor.theme);
             }
             else {
-                bgColorElem.setAttribute("rgb", bgColor.rbg);
+                bgColorElem.setAttribute("rgb", bgColor.rgb);
             }
         }
 
@@ -584,7 +584,7 @@ class StyleSheet {
                 fgColorElem.setAttribute("theme", fgColor.theme);
             }
             else {
-                fgColorElem.setAttribute("rgb", fgColor.rbg);
+                fgColorElem.setAttribute("rgb", fgColor.rgb);
             }
         }
 
@@ -720,9 +720,13 @@ class StyleSheet {
 }
 
 module StyleSheet {
-    // All ST_* types have exact names taken from W3C XML §A.2
+    // All ST_* types have exact names taken from W3C XML A.2
 
-    type ST_BorderStyle = ("none" | "thin" | "medium" | "dashed" | "dotted" | "thick" | "double" | "hair" | "mediumDashed" | "dashDot" | "mediumDashDot" | "dashDotDot" | "mediumDashDotDot" | "slantDashDot");
+    export type ST_BorderStyle = ("none" | "thin" | "medium" | "dashed" | "dotted" | "thick" | "double" | "hair" | "mediumDashed" | "dashDot" | "mediumDashDot" | "dashDotDot" | "mediumDashDotDot" | "slantDashDot");
+
+    export type ST_GradientType = ("linear" | "path");
+
+    export type ST_PatternType = ("none" | "solid" | "mediumGray" | "darkGray" | "lightGray" | "darkHorizontal" | "darkVertical" | "darkDown" | "darkUp" | "darkGrid" | "darkTrellis" | "lightHorizontal" | "lightVertical" | "lightDown" | "lightUp" | "lightGrid" | "lightTrellis" | "gray125" | "gray0625");
 
 
     export interface Alignment {
@@ -758,7 +762,7 @@ module StyleSheet {
 
 
     export interface BorderProperty {
-        color?: Color;
+        color?: Color | string;
         style?: ST_BorderStyle;
     }
 
@@ -827,28 +831,35 @@ module StyleSheet {
     }
 
 
-    export interface Fill {
+    export interface PatternFill {
         id?: number;
-        type: string; // 'pattern'
-        patternType: string;
-        // Pattern fill
-        bgColor?: string | { theme?: string; rbg?: string; }; // ARGB
-        fgColor?: string | { theme?: string; rbg?: string; }; // ARGB
-        // Gradient fill
-        degree?: any;
-        left?: any;
-        right?: any;
-        top?: any;
-        bottom?: any;
-        start?: string | { pureAt?: number; color?: string; theme?: string; };
-        end?: string | { pureAt?: number; color?: string; theme?: string; };
+        type: "pattern";
+        bgColor?: Color | string;
+        fgColor?: Color | string;
+        patternType: ST_PatternType;
     }
+
+
+    export interface GradientFill {
+        id?: number;
+        type: "gradient";
+        degree?: number;
+        left?: number;
+        right?: number;
+        top?: number;
+        bottom?: number;
+        start?: string | { pureAt?: number; color?: string; theme?: string; }; // stops: GradientStop[];
+        end?: string | { pureAt?: number; color?: string; theme?: string; }; // stops: GradientStop[];
+    }
+
+
+    export type Fill = PatternFill | GradientFill;
 
 
     export interface FontStyle {
         id?: number;
         bold?: boolean;
-        color?: string;
+        color?: Color | string;
         fontName?: string;
         italic?: boolean;
         outline?: boolean;

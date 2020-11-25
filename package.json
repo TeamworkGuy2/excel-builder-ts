@@ -1,6 +1,6 @@
 {
   "name": "excel-builder-ts",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "TypeScript Port of excel-builder.js - A way to build excel files with javascript",
   "author": "TeamworkGuy2",
   "homepage": "https://github.com/TeamworkGuy2/excel-builder-ts",

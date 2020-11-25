@@ -503,7 +503,7 @@ var StyleSheet = /** @class */ (function () {
                 bgColorElem.setAttribute("theme", bgColor.theme);
             }
             else {
-                bgColorElem.setAttribute("rgb", bgColor.rbg);
+                bgColorElem.setAttribute("rgb", bgColor.rgb);
             }
         }
         var fgColorElem = doc.createElement("fgColor");
@@ -515,7 +515,7 @@ var StyleSheet = /** @class */ (function () {
                 fgColorElem.setAttribute("theme", fgColor.theme);
             }
             else {
-                fgColorElem.setAttribute("rgb", fgColor.rbg);
+                fgColorElem.setAttribute("rgb", fgColor.rgb);
             }
         }
         fillDef.appendChild(fgColorElem);
