@@ -4,7 +4,15 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.6.0](N/A) - 2020-09-04
+### [0.6.1](N/A) - 2020-11-24
+#### Changed
+* Improve types in `StyleSheet`
+* Reorganize `Util`
+* Add first unit tests for `Util`
+
+
+--------
+### [0.6.0](https://github.com/TeamworkGuy2/excel-builder-ts/commit/c82cfe597bf45e83ac0be84a992272d9cbf07f23) - 2020-09-04
 #### Changed
 * Update to TypeScript 4.0
 

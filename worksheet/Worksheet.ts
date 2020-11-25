@@ -232,15 +232,19 @@ class Worksheet {
                 var weighting = piece.bold ? "Bold" : "Regular";
                 str += '&"' + (piece.font || '-');
                 str += ',' + weighting + '"';
-            } else {
+            }
+            else {
                 str += '&"-,Regular"';
             }
+
             if (piece.underline) {
                 str += "&U";
             }
+
             if (piece.fontSize) {
                 str += "&" + piece.fontSize;
             }
+
             str += piece.text;
 
             return str;
@@ -567,18 +571,23 @@ class Worksheet {
                 ["min", cd.min || i + 1],
                 ["max", cd.max || i + 1]
             ]);
+
             if (cd.hidden) {
                 col.setAttribute("hidden", <any>1);
             }
+
             if (cd.bestFit) {
                 col.setAttribute("bestFit", <any>1);
             }
+
             if (cd.customWidth || cd.width) {
                 col.setAttribute("customWidth", <any>1);
             }
+
             if (cd.width) {
                 col.setAttribute("width", cd.width);
-            } else {
+            }
+            else {
                 col.setAttribute("width", <any>9.140625);
             }
 

@@ -99,7 +99,7 @@ class StyleSheet {
      *  horizontal: http://www.schemacentral.com/sc/ooxml/t-ssml_ST_HorizontalAlignment.html
      *  vertical: http://www.schemacentral.com/sc/ooxml/t-ssml_ST_VerticalAlignment.html
      */
-    public createFormat(styleInstructions: { font?: object | number; format?: string | number; border?: { [key: string]: any } | number; fill?: StyleSheet.Fill | number; alignment?: Partial<StyleSheet.Alignment>; }) {
+    public createFormat(styleInstructions: StyleSheet.CellFormatOpts) {
         var sid = this.masterCellFormats.length;
         var style: StyleSheet.CellFormat & { id: number } = {
             id: sid,
@@ -111,7 +111,8 @@ class StyleSheet {
         };
         if (isObj(styleInstructions.font)) {
             style.fontId = this.createFontStyle(styleInstructions.font).id;
-        } else if (styleInstructions.font) {
+        }
+        else if (styleInstructions.font) {
             if (isNaN(parseInt(<any>styleInstructions.font, 10))) {
                 throw new Error("Passing a non-numeric font id is not supported");
             }
@@ -120,7 +121,8 @@ class StyleSheet {
 
         if (isStr(styleInstructions.format)) {
             style.numFmtId = this.createNumberFormatter(styleInstructions.format).id;
-        } else if (styleInstructions.format) {
+        }
+        else if (styleInstructions.format) {
             if (isNaN(parseInt(<any>styleInstructions.format))) {
                 throw new Error("Invalid number formatter id");
             }
@@ -129,7 +131,8 @@ class StyleSheet {
 
         if (isObj(styleInstructions.border)) {
             style.borderId = this.createBorderFormatter(styleInstructions.border).id;
-        } else if (styleInstructions.border) {
+        }
+        else if (styleInstructions.border) {
             if (isNaN(parseInt(<any>styleInstructions.border))) {
                 throw new Error("Passing a non-numeric border id is not supported");
             }
@@ -138,7 +141,8 @@ class StyleSheet {
 
         if (isObj(styleInstructions.fill)) {
             style.fillId = this.createFill(styleInstructions.fill).id;
-        } else if (styleInstructions.fill) {
+        }
+        else if (styleInstructions.fill) {
             if (isNaN(parseInt(<any>styleInstructions.fill))) {
                 throw new Error("Passing a non-numeric fill id is not supported");
             }
@@ -163,7 +167,7 @@ class StyleSheet {
     }
 
 
-    public createDifferentialStyle(styleInstructions: { font?: StyleSheet.FontStyle; border?: object; fill?: StyleSheet.Fill; alignment?: object; format?: string; }) {
+    public createDifferentialStyle(styleInstructions: { font?: StyleSheet.FontStyle; border?: StyleSheet.Border; fill?: StyleSheet.Fill; alignment?: object; format?: string; }) {
         var id = this.differentialStyles.length;
         var style: StyleSheet.DifferentialStyle & { id: number } = {
             id: id,
@@ -225,7 +229,7 @@ class StyleSheet {
      * color: ARBG color (requires the A, so for example FF006666)
      * }
      */
-    public createBorderFormatter(border?: { top?: any; left?: any; right?: any; bottom?: any; diagonal?: any; outline?: boolean; diagonalUp?: boolean; diagonalDown?: boolean;[id: string]: any; }) {
+    public createBorderFormatter(border?: StyleSheet.BorderOpts) {
         var res = <StyleSheet.Border & { id: number }>Util.defaults(<Exclude<typeof border, undefined>>border, {
             top: {},
             left: {},
@@ -254,7 +258,7 @@ class StyleSheet {
      *
      * Color is a future goal - at the moment it's looking a bit complicated
      */
-    public createFontStyle(instructions: { bold?: boolean; color?: string; fontName?: string; italic?: boolean; size?: number; shadow?: boolean; strike?: boolean; superscript?: boolean; subscript?: boolean; underline?: boolean | string; outline?: boolean; }) {
+    public createFontStyle(instructions: StyleSheet.FontStyleOpts) {
         var fontId = this.fonts.length;
         var fontStyle: StyleSheet.FontStyle & { id: number } = {
             id: fontId,
@@ -284,7 +288,8 @@ class StyleSheet {
         if (instructions.underline) {
             if (["double", "singleAccounting", "doubleAccounting"].indexOf(<string>instructions.underline) != -1) {
                 fontStyle.underline = <any>instructions.underline;
-            } else {
+            }
+            else {
                 fontStyle.underline = true;
             }
         }
@@ -346,7 +351,7 @@ class StyleSheet {
     }
 
 
-    public exportColor(doc: XmlDom, color: string | { tint?: string | number; auto?: boolean; theme?: number | string; }) {
+    public exportColor(doc: XmlDom, color: string | StyleSheet.Color) {
         var colorEl = doc.createElement("color");
         if (isStr(color)) {
             colorEl.setAttribute("rgb", color);
@@ -496,7 +501,8 @@ class StyleSheet {
         if (fd.type == "pattern") {
             var fillDef = this.exportPatternFill(doc, fd);
             fill.appendChild(fillDef);
-        } else if (fd.type == "gradient") {
+        }
+        else if (fd.type == "gradient") {
             var fillDef = this.exportGradientFill(doc, fd);
             fill.appendChild(fillDef);
         }
@@ -508,19 +514,22 @@ class StyleSheet {
         var fillDef = doc.createElement("gradientFill");
         if (data.degree) {
             fillDef.setAttribute("degree", data.degree);
-        } else if (data.left) {
+        }
+        else if (data.left) {
             fillDef.setAttribute("left", data.left);
             fillDef.setAttribute("right", data.right);
             fillDef.setAttribute("top", data.top);
             fillDef.setAttribute("bottom", data.bottom);
         }
+
         var start = doc.createElement("stop");
         var dataStart = <NonNullable<typeof data.start>><any>data.start;
         start.setAttribute("position", (<any>dataStart).pureAt || 0);
         var startColor = doc.createElement("color");
         if (isStr(dataStart) || dataStart.color) {
             startColor.setAttribute("rgb", (<any>dataStart).color || dataStart);
-        } else if (typeof dataStart.theme) {
+        }
+        else if (typeof dataStart.theme) {
             startColor.setAttribute("theme", dataStart.theme);
         }
 
@@ -530,9 +539,11 @@ class StyleSheet {
         end.setAttribute("position", (<any>dataEnd).pureAt || 1);
         if (isStr(dataEnd) || dataEnd.color) {
             endColor.setAttribute("rgb", (<any>dataEnd).color || dataEnd);
-        } else if (typeof dataEnd.theme) {
+        }
+        else if (typeof dataEnd.theme) {
             endColor.setAttribute("theme", dataEnd.theme);
         }
+
         start.appendChild(startColor);
         end.appendChild(endColor);
         fillDef.appendChild(start);
@@ -554,10 +565,12 @@ class StyleSheet {
         var bgColorElem = doc.createElement("bgColor");
         if (isStr(bgColor)) {
             bgColorElem.setAttribute("rgb", bgColor)
-        } else {
+        }
+        else {
             if (bgColor.theme) {
                 bgColorElem.setAttribute("theme", bgColor.theme);
-            } else {
+            }
+            else {
                 bgColorElem.setAttribute("rgb", bgColor.rbg);
             }
         }
@@ -565,13 +578,16 @@ class StyleSheet {
         var fgColorElem = doc.createElement("fgColor");
         if (isStr(fgColor)) {
             fgColorElem.setAttribute("rgb", fgColor)
-        } else {
+        }
+        else {
             if (fgColor.theme) {
                 fgColorElem.setAttribute("theme", fgColor.theme);
-            } else {
+            }
+            else {
                 fgColorElem.setAttribute("rgb", fgColor.rbg);
             }
         }
+
         fillDef.appendChild(fgColorElem);
         fillDef.appendChild(bgColorElem);
         return fillDef;
@@ -704,6 +720,10 @@ class StyleSheet {
 }
 
 module StyleSheet {
+    // All ST_* types have exact names taken from W3C XML §A.2
+
+    type ST_BorderStyle = ("none" | "thin" | "medium" | "dashed" | "dotted" | "thick" | "double" | "hair" | "mediumDashed" | "dashDot" | "mediumDashDot" | "dashDotDot" | "mediumDashDotDot" | "slantDashDot");
+
 
     export interface Alignment {
         horizontal?: string;
@@ -720,20 +740,43 @@ module StyleSheet {
 
     export interface Border {
         id?: number;
-        left?: BorderProperty;
-        right?: BorderProperty;
+        start?: BorderProperty;
+        end?: BorderProperty;
         top?: BorderProperty;
         bottom?: BorderProperty;
         diagonal?: BorderProperty;
-        diagonalDown?: 0 | 1;
-        diagonalUp?: 0 | 1;
-        outline?: 0 | 1;
+        vertical?: BorderProperty;
+        horizontal?: BorderProperty;
+        diagonalDown?: 0 | 1 | boolean;
+        diagonalUp?: 0 | 1 | boolean;
+        outline?: 0 | 1 | boolean;
+
+        // not part of the spec but required by MS Office
+        left?: BorderProperty;
+        right?: BorderProperty;
     }
 
 
     export interface BorderProperty {
         color?: Color;
-        style?: string;
+        style?: ST_BorderStyle;
+    }
+
+    export interface BorderOpts {
+        start?: BorderProperty;
+        end?: BorderProperty;
+        top?: BorderProperty;
+        bottom?: BorderProperty;
+        diagonal?: BorderProperty;
+        vertical?: BorderProperty;
+        horizontal?: BorderProperty;
+        diagonalDown?: 0 | 1 | boolean;
+        diagonalUp?: 0 | 1 | boolean;
+        outline?: 0 | 1 | boolean;
+        // not part of the spec but required by MS Office
+        left?: BorderProperty;
+        right?: BorderProperty;
+        [id: string]: any;
     }
 
 
@@ -744,6 +787,15 @@ module StyleSheet {
         fillId?: number;
         borderId?: number;
         xfid?: number;
+        alignment?: Partial<Alignment>;
+    }
+
+
+    export interface CellFormatOpts {
+        font?: FontStyleOpts | number;
+        format?: string | number;
+        border?: BorderOpts | number;
+        fill?: Fill | number;
         alignment?: Partial<Alignment>;
     }
 
@@ -805,6 +857,21 @@ module StyleSheet {
         size?: number;
         vertAlign?: string;
         underline?: boolean | ("single" | "double" | "singleAccounting" | "doubleAccounting" | "none");
+    }
+
+
+    export interface FontStyleOpts {
+        bold?: boolean;
+        color?: string;
+        fontName?: string;
+        italic?: boolean;
+        outline?: boolean;
+        shadow?: boolean;
+        strike?: boolean;
+        size?: number;
+        superscript?: boolean;
+        subscript?: boolean;
+        underline?: FontStyle["underline"];
     }
 
 
