@@ -4,7 +4,13 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.6.2](N/A) - 2020-11-25
+### [0.7.0](N/A) - 2021-06-12
+#### Changed
+* Update to TypeScript 4.3
+
+
+--------
+### [0.6.2](https://github.com/TeamworkGuy2/excel-builder-ts/commit/c0ed9a93212b19b16118f59f55cbb8b4bf9b74f4) - 2020-11-25
 #### Changed
 * Fix issue with `StyleSheet` `BorderProperty.color` and `FontStyle.color` fields not supporting type `string`
 * Split `StyleSheet` `Fill` interface into `PatternFill` and `GradientFill` and make `Fill` a union type
