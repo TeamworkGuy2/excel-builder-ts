@@ -37,15 +37,7 @@ class Workbook {
     worksheets: Worksheet[];
     tables: Workbook.Table[];
     drawings: Workbook.Drawing[];
-    media: {
-        [id: string]: {
-            id: string;
-            data: any;
-            fileName: string;
-            contentType: string;
-            extension: string;
-        }
-    };
+    media: { [id: string]: Workbook.Media };
     printTitles: {
         [sheetName: string]: {
             top?: number;
@@ -527,6 +519,15 @@ module Workbook {
     export interface Table {
         id: string;
         toXML(): string;
+    }
+
+
+    export interface Media {
+        id: string;
+        data: any;
+        fileName: string;
+        contentType: string;
+        extension: string;
     }
 
 }

@@ -39,27 +39,9 @@ class Worksheet {
     /** An array of attributes to apply to the 'pageSetup' element of the spreadsheet */
     pageSetup: { [prop: string]: any } | null;
     /** An array of attributes (only "ref" Ex: "A1:D1" for now) to apply to the autoFilter element of the spreadsheet. Only one autoFilter per Worksheet */
-    autoFilter: {
-        /** Letter portion of cell name that defines left to right where filter database starts at */
-        left: string;
-        /** Letter portion of cell name that defines left to right where filter database ends at */
-        right: string;
-        /** Row Number autFilter is applied to */
-        rowNum: number;
-    } | null;
+    autoFilter: Worksheet.AutoFilter | null;
     /** An array of attributes to apply to the 'extLst' element of a worksheet. Used for creating "Data Validations" or drop downs with specific data sets. */
-    dataValidations: {
-        /** cell where data validation drop down is */
-        sqref: string;
-        /** sheet where data is stored */
-        dataSheetName: string;
-        /** Column where data set sits */
-        column: string;
-        /** Row where data set starts */
-        topRow: number;
-        /** Row where data set ends */
-        bottomRow: number;
-    }[] | null;
+    dataValidations: Worksheet.DataValidation[] | null;
 
 
     /**
@@ -150,18 +132,12 @@ class Worksheet {
     //}
 
 
-    public setAutoFilter(autoFilter: { left: string; right: string; rowNum: number } | null) {
+    public setAutoFilter(autoFilter: Worksheet.AutoFilter | null) {
         this.autoFilter = autoFilter;
     }
 
 
-    public setDataValidations(dataValidations: {
-        sqref: string;
-        dataSheetName: string;
-        column: string;
-        topRow: number;
-        bottomRow: number;
-    }[]) {
+    public setDataValidations(dataValidations: Worksheet.DataValidation[]) {
         this.dataValidations = dataValidations;
     }
 
@@ -216,7 +192,7 @@ class Worksheet {
      * @param piece
      * @returns string | reduce
      */
-    public compilePageDetailPiece(piece: string | { font?: number; bold?: boolean; underline?: boolean; fontSize?: number; text?: string; [id: string]: any } | any[]): string {
+    public compilePageDetailPiece(piece: string | Worksheet.PageDetailPiece | Worksheet.PageDetailPiece[]): string {
         if (typeof piece === "string") {
             return '&"-,Regular"'.concat(piece);
         }
@@ -700,6 +676,16 @@ class Worksheet {
 
 module Worksheet {
 
+    export interface AutoFilter {
+        /** Letter portion of cell name that defines left to right where filter database starts at */
+        left: string;
+        /** Letter portion of cell name that defines left to right where filter database ends at */
+        right: string;
+        /** Row Number autFilter is applied to */
+        rowNum: number;
+    }
+
+
     export interface Column {
         min?: number;
         max?: number;
@@ -721,6 +707,20 @@ module Worksheet {
         phonetic: boolean;
         style: number;
         width: number;
+    }
+
+
+    export interface DataValidation {
+        /** cell where data validation drop down is */
+        sqref: string;
+        /** sheet where data is stored */
+        dataSheetName: string;
+        /** Column where data set sits */
+        column: string;
+        /** Row where data set starts */
+        topRow: number;
+        /** Row where data set ends */
+        bottomRow: number;
     }
 
 
@@ -747,6 +747,16 @@ module Worksheet {
         right?: string | number;
         header?: string | number;
         footer?: string | number;
+    }
+
+
+    export interface PageDetailPiece {
+        font?: number;
+        bold?: boolean;
+        underline?: boolean;
+        fontSize?: number;
+        text?: string;
+        [id: string]: any;
     }
 
 }

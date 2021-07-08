@@ -396,7 +396,7 @@ class StyleSheet {
 
 
     public exportCellFormatElement(doc: XmlDom, styleInstructions: StyleSheet.CellFormat) {
-        var xf = doc.createElement("xf"), i = 0;
+        var xf = doc.createElement("xf");
         var allowed = ["applyAlignment", "applyBorder", "applyFill", "applyFont", "applyNumberFormat",
             "applyProtection", "borderId", "fillId", "fontId", "numFmtId", "pivotButton", "quotePrefix", "xfId"]
         var attributes = <(keyof StyleSheet.CellFormat)[]>Object.keys(styleInstructions).filter((key) => allowed.indexOf(key) != -1);

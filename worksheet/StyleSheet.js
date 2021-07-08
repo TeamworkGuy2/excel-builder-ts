@@ -349,7 +349,7 @@ var StyleSheet = /** @class */ (function () {
         return records;
     };
     StyleSheet.prototype.exportCellFormatElement = function (doc, styleInstructions) {
-        var xf = doc.createElement("xf"), i = 0;
+        var xf = doc.createElement("xf");
         var allowed = ["applyAlignment", "applyBorder", "applyFill", "applyFont", "applyNumberFormat",
             "applyProtection", "borderId", "fillId", "fontId", "numFmtId", "pivotButton", "quotePrefix", "xfId"];
         var attributes = Object.keys(styleInstructions).filter(function (key) { return allowed.indexOf(key) != -1; });
