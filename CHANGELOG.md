@@ -4,7 +4,13 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.7.1](N/A) - 2021-07-08
+### [0.8.0](N/A) - 2022-01-03
+#### Changed
+* Update to TypeScript 4.4
+
+
+--------
+### [0.7.1](https://github.com/TeamworkGuy2/excel-builder-ts/commit/3dc8863f5bb3703c7f7867121e281c7a02876bf8) - 2021-07-08
 #### Changed
 * Extract several parameter and field types into public interfaces
 
